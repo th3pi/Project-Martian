@@ -88,7 +88,7 @@ class _AuthState extends State<Auth> {
         maxLines: 1,
         keyboardType: TextInputType.emailAddress,
         autofocus: false,
-        decoration: InputDecoration(labelText: 'Email'),
+        decoration: InputDecoration(labelText: 'Email', suffix: Text('@mars.untss')),
         validator: (String value) =>
             value.isEmpty ? 'Email can\'t be empty' : null,
         onSaved: (value) {

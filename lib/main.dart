@@ -11,6 +11,7 @@ class MyApp extends StatelessWidget {
       title: 'Project Martian',
       theme: ThemeData(primarySwatch: Colors.deepOrange, accentColor: Colors.deepOrangeAccent, fontFamily: 'SamsungOne'),
       home: Auth(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
