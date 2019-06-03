@@ -126,7 +126,7 @@ class _AuthState extends State<Auth> {
     return Container(
       margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
       child: RaisedButton(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         splashColor: Colors.orangeAccent,
         elevation: 5,
         color: Colors.white,
