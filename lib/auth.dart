@@ -38,7 +38,7 @@ class _AuthState extends State<Auth> {
 
   Widget _showBody() {
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: EdgeInsets.fromLTRB(20,0,20,0),
       child: Form(
         key: _formKey,
         child: ListView(
@@ -84,6 +84,7 @@ class _AuthState extends State<Auth> {
       margin: const EdgeInsets.fromLTRB(0, 65, 0, 0),
       padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
       child: TextFormField(
+        cursorColor: Colors.deepOrangeAccent,
         maxLines: 1,
         keyboardType: TextInputType.emailAddress,
         autofocus: false,
@@ -107,10 +108,12 @@ class _AuthState extends State<Auth> {
       margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
       padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
       child: TextFormField(
+        cursorColor: Colors.deepOrangeAccent,
         maxLines: 1,
         obscureText: true,
         focusNode: secondNode,
         decoration: InputDecoration(
+          labelStyle: TextStyle(fontFamily: 'SamsungOne'),
           labelText: 'Password',
         ),
         validator: (value) => value.isEmpty ? 'Password can\'t be empty' : null,
@@ -121,18 +124,20 @@ class _AuthState extends State<Auth> {
 
   Widget _showPrimaryButton() {
     return Container(
-      padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
+      margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
       child: RaisedButton(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        splashColor: Colors.orangeAccent,
         elevation: 5,
         color: Colors.white,
         child: _formMode == FormMode.LOGIN
             ? Text(
                 'Login',
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(fontSize: 20, color: Colors.orangeAccent),
               )
             : Text(
                 'Create Account',
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(fontSize: 20, color: Colors.deepOrangeAccent, fontFamily: 'SamsungOne'),
               ),
         onPressed: () {
 //          _validateAndSubmit;
@@ -143,9 +148,10 @@ class _AuthState extends State<Auth> {
 
   Widget _showSecondaryButton() {
     return FlatButton(
+      splashColor: Colors.white,
       child: _formMode == FormMode.LOGIN
-          ? Text('Create an account')
-          : Text('Have an account? Sign in'),
+          ? Text('Create an account', style: TextStyle(color: Colors.white),)
+          : Text('Have an account? Sign in', style: TextStyle(color: Colors.white)),
       onPressed: () {
         if (_formMode == FormMode.LOGIN) {
           _changeFormToSignUp();
