@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "163541764653",
+    "firebase_url": "https://project-martian.firebaseio.com",
+    "project_id": "project-martian",
+    "storage_bucket": "project-martian.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:163541764653:android:7463f875e8de0180",
+        "android_client_info": {
+          "package_name": "com.strykapps.project_martian"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "163541764653-vuiufla3rlla9vei68fsgour5lf5r76q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRSF6yMFcyAxtkqp8J-YGfeGBhZyZUNXw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "163541764653-vuiufla3rlla9vei68fsgour5lf5r76q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

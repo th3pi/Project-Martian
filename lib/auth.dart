@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:project_martian/services/auth_service.dart';
 
 class Auth extends StatefulWidget {
+  final BaseAuth auth;
+  final VoidCallback onSignedIn;
+
+  Auth({this.auth, this.onSignedIn});
+
   @override
   State<StatefulWidget> createState() {
     return _AuthState();
@@ -15,6 +21,7 @@ class _AuthState extends State<Auth> {
   String _email, _password;
   FocusNode secondNode = FocusNode();
   FormMode _formMode;
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -32,13 +39,27 @@ class _AuthState extends State<Auth> {
               fontWeight: FontWeight.bold)),
         ),
       ),
-      body: _showBody(),
+      body: Stack(children: <Widget>[_showBody(), _showCircularProgress()],),
     );
+  }
+
+  @override
+  void initState() {
+    _errorMessage = '';
+    _isLoading = false;
+    super.initState();
+  }
+
+  Widget _showCircularProgress() {
+    if (_isLoading) {
+      return Center(child: CircularProgressIndicator(),);
+    }
+    return Container();
   }
 
   Widget _showBody() {
     return Container(
-      padding: EdgeInsets.fromLTRB(20,0,20,0),
+      padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
       child: Form(
         key: _formKey,
         child: ListView(
@@ -80,7 +101,9 @@ class _AuthState extends State<Auth> {
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
-          boxShadow: [BoxShadow(color: Colors.white, offset: Offset(2, 0), blurRadius: 5)]),
+          boxShadow: [
+            BoxShadow(color: Colors.white, offset: Offset(2, 0), blurRadius: 5)
+          ]),
       margin: const EdgeInsets.fromLTRB(0, 65, 0, 0),
       padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
       child: TextFormField(
@@ -88,9 +111,10 @@ class _AuthState extends State<Auth> {
         maxLines: 1,
         keyboardType: TextInputType.emailAddress,
         autofocus: false,
-        decoration: InputDecoration(labelText: 'Email', suffix: Text('@mars.untss')),
+        decoration: InputDecoration(
+            labelText: 'Email'),
         validator: (String value) =>
-            value.isEmpty ? 'Email can\'t be empty' : null,
+        value.isEmpty ? 'Email can\'t be empty' : null,
         onSaved: (value) {
           FocusScope.of(context).requestFocus(secondNode);
           _email = value;
@@ -104,7 +128,9 @@ class _AuthState extends State<Auth> {
     return Container(decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
-        boxShadow: [BoxShadow(color: Colors.white, offset: Offset(2, 0), blurRadius: 5)]),
+        boxShadow: [
+          BoxShadow(color: Colors.white, offset: Offset(2, 0), blurRadius: 5)
+        ]),
       margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
       padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
       child: TextFormField(
@@ -122,36 +148,43 @@ class _AuthState extends State<Auth> {
     );
   }
 
+  ///Create account button
+  ///Button changes depending form type
+
   Widget _showPrimaryButton() {
     return Container(
       margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
       child: RaisedButton(
+        padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         splashColor: Colors.orangeAccent,
         elevation: 5,
         color: Colors.white,
         child: _formMode == FormMode.LOGIN
             ? Text(
-                'Login',
-                style: TextStyle(fontSize: 20, color: Colors.orangeAccent),
-              )
+          'Login',
+          style: TextStyle(fontSize: 20, color: Colors.deepOrangeAccent),
+        )
             : Text(
-                'Create Account',
-                style: TextStyle(fontSize: 20, color: Colors.deepOrangeAccent, fontFamily: 'SamsungOne'),
-              ),
-        onPressed: () {
-//          _validateAndSubmit;
-        },
+          'Create Account',
+          style: TextStyle(fontSize: 20,
+              color: Colors.deepOrangeAccent,
+              fontFamily: 'SamsungOne'),
+        ),
+        onPressed: _validateAndSubmit,
       ),
     );
   }
+
+  ///Form Type Change Button
 
   Widget _showSecondaryButton() {
     return FlatButton(
       splashColor: Colors.white,
       child: _formMode == FormMode.LOGIN
           ? Text('Create an account', style: TextStyle(color: Colors.white),)
-          : Text('Have an account? Sign in', style: TextStyle(color: Colors.white)),
+          : Text(
+          'Have an account? Sign in', style: TextStyle(color: Colors.white)),
       onPressed: () {
         if (_formMode == FormMode.LOGIN) {
           _changeFormToSignUp();
@@ -162,7 +195,9 @@ class _AuthState extends State<Auth> {
     );
   }
 
-  Widget _changeFormToSignUp() {
+  ///Changes for state to sign up mode
+
+  void _changeFormToSignUp() {
     _formKey.currentState.reset();
     _errorMessage = '';
     setState(() {
@@ -170,7 +205,9 @@ class _AuthState extends State<Auth> {
     });
   }
 
-  Widget _changeFormToLogin() {
+  ///Changes form state to login mode
+
+  void _changeFormToLogin() {
     _formKey.currentState.reset();
     _errorMessage = '';
     setState(() {
@@ -192,6 +229,48 @@ class _AuthState extends State<Auth> {
       );
     } else {
       return Container();
+    }
+  }
+
+  bool _validateAndSave() {
+    final form = _formKey.currentState;
+    if (form.validate()) {
+      form.save();
+      return true;
+    }
+    return false;
+  }
+
+  void _validateAndSubmit() async {
+    setState(() {
+      _errorMessage = '';
+      _isLoading = true;
+    });
+    if (_validateAndSave()) {
+      String userId = "";
+      try {
+        if (_formMode == FormMode.LOGIN) {
+          userId = await widget.auth.signIn(_email, _password);
+          print('Signed in user: $userId');
+        } else {
+          userId = await widget.auth.signUp(_email, _password);
+          widget.auth.sendEmailVerificiation();
+          _changeFormToLogin();
+          Scaffold.of(context).showSnackBar(SnackBar(
+            content: Text('Verification email sent'),
+            duration: Duration(seconds: 3),));
+          print('Signed up user: $userId');
+        }
+        setState(() {
+          _isLoading = false;
+        });
+        if (userId != null && userId.length > 0 &&
+            _formMode == FormMode.LOGIN) {
+          widget.onSignedIn();
+        }
+      } catch (e) {
+        print(e);
+      }
     }
   }
 }
