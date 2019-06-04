@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:project_martian/services/auth_service.dart';
 
-class Auth extends StatefulWidget {
+class UserOnBoarding extends StatefulWidget {
   final BaseAuth auth;
-  final VoidCallback onSignedIn;
 
-  Auth({this.auth, this.onSignedIn});
+  UserOnBoarding({this.auth});
 
   @override
   State<StatefulWidget> createState() {
-    return _AuthState();
+    return _UserOnBoardingState();
   }
 }
 
 enum FormMode { LOGIN, SIGNUP }
 
-class _AuthState extends State<Auth> {
+class _UserOnBoardingState extends State<UserOnBoarding> {
   final _formKey = GlobalKey<FormState>();
   String _errorMessage = '';
   String _email, _password;
@@ -266,7 +265,7 @@ class _AuthState extends State<Auth> {
         });
         if (userId != null && userId.length > 0 &&
             _formMode == FormMode.LOGIN) {
-          widget.onSignedIn();
+          print('signed in');
         }
       } catch (e) {
         print(e);

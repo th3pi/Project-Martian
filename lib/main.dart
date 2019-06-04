@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_martian/services/auth_service.dart';
 
 import 'auth.dart';
 
@@ -10,7 +11,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Project Martian',
       theme: ThemeData(primarySwatch: Colors.deepOrange, accentColor: Colors.deepOrangeAccent, fontFamily: 'SamsungOne'),
-      home: Auth(),
+      home: UserOnBoarding(auth: Auth(),),
       debugShowCheckedModeBanner: false,
     );
   }
