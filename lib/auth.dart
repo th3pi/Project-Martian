@@ -38,7 +38,9 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
               fontWeight: FontWeight.bold)),
         ),
       ),
-      body: Stack(children: <Widget>[_showBody(), _showCircularProgress()],),
+      body: Stack(
+        children: <Widget>[_showBody(), _showCircularProgress()],
+      ),
     );
   }
 
@@ -51,7 +53,9 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
 
   Widget _showCircularProgress() {
     if (_isLoading) {
-      return Center(child: CircularProgressIndicator(),);
+      return Center(
+        child: CircularProgressIndicator(),
+      );
     }
     return Container();
   }
@@ -65,11 +69,11 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
           shrinkWrap: false,
           children: <Widget>[
             _showLogo(),
+            _showErrorMessage(),
             _showEmailInput(),
             _showPasswordInput(),
             _showPrimaryButton(),
             _showSecondaryButton(),
-            _showErrorMessage()
           ],
         ),
       ),
@@ -81,7 +85,7 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
       tag: 'Hero',
       child: Center(
         child: Container(
-          padding: EdgeInsets.fromLTRB(0, 70, 0, 0),
+          padding: EdgeInsets.fromLTRB(0, 70, 0, 50),
           child: Text(
             'Martian',
             style: TextStyle(
@@ -103,19 +107,20 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
           boxShadow: [
             BoxShadow(color: Colors.white, offset: Offset(2, 0), blurRadius: 5)
           ]),
-      margin: const EdgeInsets.fromLTRB(0, 65, 0, 0),
+      margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
       padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
       child: TextFormField(
         cursorColor: Colors.deepOrangeAccent,
         maxLines: 1,
         keyboardType: TextInputType.emailAddress,
         autofocus: false,
-        decoration: InputDecoration(
-            labelText: 'Email'),
+        decoration: InputDecoration(labelText: 'Email'),
         validator: (String value) =>
-        value.isEmpty ? 'Email can\'t be empty' : null,
-        onSaved: (value) {
+            value.isEmpty ? 'Email can\'t be empty' : null,
+        onFieldSubmitted: (value){
           FocusScope.of(context).requestFocus(secondNode);
+        },
+        onSaved: (value) {
           _email = value;
         },
       ),
@@ -124,12 +129,13 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
 
   Widget _showPasswordInput() {
     bool _showPassword = false;
-    return Container(decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(color: Colors.white, offset: Offset(2, 0), blurRadius: 5)
-        ]),
+    return Container(
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(color: Colors.white, offset: Offset(2, 0), blurRadius: 5)
+          ]),
       margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
       padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
       child: TextFormField(
@@ -161,15 +167,16 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
         color: Colors.white,
         child: _formMode == FormMode.LOGIN
             ? Text(
-          'Login',
-          style: TextStyle(fontSize: 20, color: Colors.deepOrangeAccent),
-        )
+                'Login',
+                style: TextStyle(fontSize: 20, color: Colors.deepOrangeAccent),
+              )
             : Text(
-          'Create Account',
-          style: TextStyle(fontSize: 20,
-              color: Colors.deepOrangeAccent,
-              fontFamily: 'SamsungOne'),
-        ),
+                'Create Account',
+                style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.deepOrangeAccent,
+                    fontFamily: 'SamsungOne'),
+              ),
         onPressed: _validateAndSubmit,
       ),
     );
@@ -181,9 +188,12 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
     return FlatButton(
       splashColor: Colors.white,
       child: _formMode == FormMode.LOGIN
-          ? Text('Create an account', style: TextStyle(color: Colors.white),)
-          : Text(
-          'Have an account? Sign in', style: TextStyle(color: Colors.white)),
+          ? Text(
+              'Not a Martian? Get visitor pass',
+              style: TextStyle(color: Colors.white),
+            )
+          : Text('Are you a Martian? Sign in',
+              style: TextStyle(color: Colors.white)),
       onPressed: () {
         if (_formMode == FormMode.LOGIN) {
           _changeFormToSignUp();
@@ -216,19 +226,24 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
 
   Widget _showErrorMessage() {
     if (_errorMessage.length > 0 && _errorMessage != null) {
-      return AlertDialog(
-        title: Text('Oops'),
-        content: Text('Something went wrong'),
-        actions: <Widget>[
-          FlatButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('OK'),
-          )
-        ],
+      return Container(height: 20,
+        child: Center(
+          child: Text(
+            'Invalid email or password, please try again',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
       );
     } else {
-      return Container();
+      return Container(height: 20,);
     }
+  }
+
+  Widget _showVerificationEmailNotification() {
+    return SnackBar(
+      duration: Duration(seconds: 5),
+      content: Text('Verification email sent at $_email'),
+    );
   }
 
   bool _validateAndSave() {
@@ -253,21 +268,24 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
           print('Signed in user: $userId');
         } else {
           userId = await widget.auth.signUp(_email, _password);
+          _showVerificationEmailNotification();
           widget.auth.sendEmailVerificiation();
           _changeFormToLogin();
-          Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text('Verification email sent'),
-            duration: Duration(seconds: 3),));
           print('Signed up user: $userId');
         }
         setState(() {
           _isLoading = false;
         });
-        if (userId != null && userId.length > 0 &&
+        if (userId != null &&
+            userId.length > 0 &&
             _formMode == FormMode.LOGIN) {
           print('signed in');
         }
       } catch (e) {
+        setState(() {
+          _isLoading = false;
+          _errorMessage = 'Invalid id';
+        });
         print(e);
       }
     }
