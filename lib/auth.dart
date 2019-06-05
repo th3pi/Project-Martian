@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:project_martian/services/auth_service.dart';
 
+import 'home.dart';
+
 class UserOnBoarding extends StatefulWidget {
   final BaseAuth auth;
 
@@ -229,7 +231,7 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
       return Container(height: 20,
         child: Center(
           child: Text(
-            'Invalid email or password, please try again',
+            _errorMessage,
             style: TextStyle(color: Colors.white),
           ),
         ),
@@ -242,7 +244,7 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
   Widget _showVerificationEmailNotification() {
     return SnackBar(
       duration: Duration(seconds: 5),
-      content: Text('Verification email sent at $_email'),
+      content: Text('Verification email sent to $_email'),
     );
   }
 
@@ -266,6 +268,7 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
         if (_formMode == FormMode.LOGIN) {
           userId = await widget.auth.signIn(_email, _password);
           print('Signed in user: $userId');
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext) => HomePage(_email)));
         } else {
           userId = await widget.auth.signUp(_email, _password);
           _showVerificationEmailNotification();
@@ -284,10 +287,13 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
       } catch (e) {
         setState(() {
           _isLoading = false;
-          _errorMessage = 'Invalid id';
+          _errorMessage = 'Invalid email or password';
         });
         print(e);
       }
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 }
