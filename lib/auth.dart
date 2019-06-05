@@ -48,9 +48,9 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
 
   @override
   void initState() {
+    super.initState();
     _errorMessage = '';
     _isLoading = false;
-    super.initState();
   }
 
   Widget _showCircularProgress() {
