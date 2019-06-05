@@ -23,7 +23,7 @@ An app available on all devices running MarsOS issued by the Martian Corps. This
 
 **Glimpse Into the app**
 
-![](https://i.imgur.com/A7V2fQw.png)
+![](https://i.imgur.com/P8tOhic.png)
 
 
 ### Credits
