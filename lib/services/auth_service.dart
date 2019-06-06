@@ -9,6 +9,7 @@ abstract class BaseAuth{
   Future<void> sendEmailVerificiation();
   Future<void> signOut();
   Future<void> isEmailVerified();
+  Future<String> getEmail();
 }
 
 class Auth implements BaseAuth{
@@ -49,5 +50,9 @@ class Auth implements BaseAuth{
     return user.isEmailVerified;
   }
 
-
+  @override
+  Future<String> getEmail() async {
+    FirebaseUser user = await _firebaseAuth.currentUser();
+    return user.email;
+  }
 }
