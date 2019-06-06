@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:project_martian/services/auth_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'home.dart';
+import 'account_creation.dart';
 
 class UserOnBoarding extends StatefulWidget {
   final BaseAuth auth;
@@ -276,7 +278,7 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
           userId = await widget.auth.signUp(_email, _password);
           _showVerificationEmailNotification();
           widget.auth.sendEmailVerificiation();
-          _changeFormToLogin();
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext) => CreateAccountPage(userId)));
           print('Signed up user: $userId');
         }
         setState(() {
