@@ -5,8 +5,9 @@ import 'home.dart';
 
 class UserOnBoarding extends StatefulWidget {
   final BaseAuth auth;
+  final VoidCallback onSignedIn;
 
-  UserOnBoarding({this.auth});
+  UserOnBoarding({this.auth, this.onSignedIn});
 
   @override
   State<StatefulWidget> createState() {
@@ -33,7 +34,7 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
         centerTitle: true,
         backgroundColor: Colors.white,
         title: Text(
-          'Login',
+          'Onboarding',
           style: (TextStyle(
               color: Colors.deepOrangeAccent,
               fontFamily: 'SamsungOne',
@@ -268,7 +269,6 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
         if (_formMode == FormMode.LOGIN) {
           userId = await widget.auth.signIn(_email, _password);
           print('Signed in user: $userId');
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext) => HomePage(_email)));
         } else {
           userId = await widget.auth.signUp(_email, _password);
           _showVerificationEmailNotification();
@@ -282,6 +282,7 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
         if (userId != null &&
             userId.length > 0 &&
             _formMode == FormMode.LOGIN) {
+          widget.onSignedIn();
           print('signed in');
         }
       } catch (e) {
