@@ -85,7 +85,7 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
 
   Widget _showLogo() {
     return Hero(
-      tag: 'Hero',
+      tag: 'marsLogo',
       child: Center(
         child: Container(
           padding: EdgeInsets.fromLTRB(0, 70, 0, 50),
@@ -120,7 +120,7 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
         decoration: InputDecoration(labelText: 'Email'),
         validator: (String value) =>
             value.isEmpty ? 'Email can\'t be empty' : null,
-        onFieldSubmitted: (value){
+        onFieldSubmitted: (value) {
           FocusScope.of(context).requestFocus(secondNode);
         },
         onSaved: (value) {
@@ -229,7 +229,8 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
 
   Widget _showErrorMessage() {
     if (_errorMessage.length > 0 && _errorMessage != null) {
-      return Container(height: 20,
+      return Container(
+        height: 20,
         child: Center(
           child: Text(
             _errorMessage,
@@ -238,7 +239,9 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
         ),
       );
     } else {
-      return Container(height: 20,);
+      return Container(
+        height: 20,
+      );
     }
   }
 

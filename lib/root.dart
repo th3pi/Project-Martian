@@ -35,10 +35,8 @@ class _RootPageState extends State<RootPage> {
       case AuthStatus.LOGGED_IN:
         if (_userId.length > 0 && _userId != null) {
           return HomePage(
-              userId: _userId,
-              auth: widget.auth,
-              onSignedOut: _onSignedOut);
-        }else{
+              userId: _userId, auth: widget.auth, onSignedOut: _onSignedOut);
+        } else {
           return _showLoadingScreen();
         }
         break;
@@ -80,9 +78,17 @@ class _RootPageState extends State<RootPage> {
 
   Widget _showLoadingScreen() {
     return Scaffold(
-      body: Container(
-        alignment: Alignment.center,
-        child: LinearProgressIndicator(),
+      backgroundColor: Colors.deepOrange,
+      body: Center(
+        child: Hero(
+            tag: 'marsLogo',
+            child: Text(
+              'Martian',
+              style: TextStyle(
+                  fontSize: 80,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
+            )),
       ),
     );
   }

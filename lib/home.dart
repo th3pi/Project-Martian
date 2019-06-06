@@ -15,14 +15,36 @@ class HomePage extends StatefulWidget {
   }
 }
 
-class _HomePageState extends State<HomePage>{
-
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text('Welcome'),
+        actions: <Widget>[_showLogOutButton()],
       ),
     );
+  }
+
+  Widget _showLogOutButton() {
+    return IconButton(tooltip: 'Logout',
+      iconSize: 25,
+        icon: Icon(
+          Icons.close,
+          color: Colors.white,
+        ),
+        onPressed: () {
+          _signOut();
+        });
+  }
+
+  void _signOut() async {
+    try {
+      await widget.auth.signOut();
+      widget.onSignedOut();
+    } catch (e) {
+      print(e);
+    }
   }
 }
