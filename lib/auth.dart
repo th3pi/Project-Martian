@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:project_martian/services/auth_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+
+
 
 import 'account_creation.dart';
 
@@ -23,7 +26,7 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
   String _errorMessage = '';
   String _email, _password;
   FocusNode secondNode = FocusNode();
-  FormMode _formMode;
+  FormMode _formMode = FormMode.LOGIN;
   bool _isLoading = false;
 
   @override
@@ -57,8 +60,9 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
 
   Widget _showCircularProgress() {
     if (_isLoading) {
-      return Center(
-        child: CircularProgressIndicator(),
+      return Container(
+        alignment: Alignment.topCenter,
+        child: SpinKitThreeBounce(size: 50, color: Colors.white,),
       );
     }
     return Container();
