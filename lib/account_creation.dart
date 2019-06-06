@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'models/new_user.dart';
+import 'home.dart';
+import './services/auth_service.dart';
+import 'root.dart';
 
 class CreateAccountPage extends StatefulWidget {
   final String userId;
+  final BaseAuth auth;
 
-  CreateAccountPage(this.userId);
+  CreateAccountPage({this.userId, this.auth});
 
   @override
   State<StatefulWidget> createState() {
@@ -45,6 +49,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           lastName: _lastName,
           mother_planet: _motherPlanet,
           gsid: _gsid);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext) => RootPage(auth: widget.auth,)));
     }
   }
 
