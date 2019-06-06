@@ -172,11 +172,12 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
         child: _formMode == FormMode.LOGIN
             ? Text(
                 'Login',
-                style: TextStyle(fontSize: 20, color: Colors.deepOrangeAccent),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.deepOrangeAccent),
               )
             : Text(
-                'Create Account',
+                'Get Visitor Pass',
                 style: TextStyle(
+                  fontWeight: FontWeight.bold,
                     fontSize: 20,
                     color: Colors.deepOrangeAccent,
                     fontFamily: 'SamsungOne'),
@@ -229,8 +230,11 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
   }
 
   Widget _showErrorMessage() {
-    if (_errorMessage.length > 0 && _errorMessage != null) {
-      return Container(
+    return AnimatedOpacity(
+      curve: Curves.bounceInOut,
+      duration: Duration(milliseconds: 600),
+      opacity: _errorMessage.length > 0 ? 1.0 : 0.0,
+      child: Container(
         height: 20,
         child: Center(
           child: Text(
@@ -238,12 +242,8 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
             style: TextStyle(color: Colors.white),
           ),
         ),
-      );
-    } else {
-      return Container(
-        height: 20,
-      );
-    }
+      ),
+    );
   }
 
   Widget _showVerificationEmailNotification() {
@@ -277,7 +277,13 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
           userId = await widget.auth.signUp(_email, _password);
           _showVerificationEmailNotification();
           widget.auth.sendEmailVerificiation();
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext) => CreateAccountPage(userId: userId, auth: widget.auth,)));
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext) => CreateAccountPage(
+                        userId: userId,
+                        auth: widget.auth,
+                      )));
           print('Signed up user: $userId');
         }
         setState(() {

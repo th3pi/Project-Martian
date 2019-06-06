@@ -83,15 +83,7 @@ class _RootPageState extends State<RootPage> {
     return Scaffold(
       backgroundColor: Colors.deepOrange,
       body: Center(
-        child: Hero(
-            tag: 'marsLogo',
-            child: Text(
-              'Martian',
-              style: TextStyle(
-                  fontSize: 80,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
-            )),
+        child: LinearProgressIndicator()
       ),
     );
   }
