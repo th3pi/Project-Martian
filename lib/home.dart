@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:project_martian/services/auth_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'root.dart';
+import 'package:project_martian/models/user_data.dart';
 
 class HomePage extends StatefulWidget {
   final BaseAuth auth;
@@ -13,7 +15,6 @@ class HomePage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-
     return _HomePageState();
   }
 }
@@ -32,22 +33,43 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+//  Text(
+//  UserData(userId: widget.userId).getFirstName().toString(),
+//  style: TextStyle(
+//  fontSize: 50,
+//  color: Colors.deepOrangeAccent,
+//  fontFamily: 'SamsungOne',
+//  fontWeight: FontWeight.bold),
+//  ),
+
   Widget _showLogo() {
     return Hero(
-      tag: 'marsLogo',
-      child: Container(
-        alignment: Alignment.topCenter,
-        padding: EdgeInsets.fromLTRB(0, 30, 0, 50),
-        child: Text(
-          'Martian',
-          style: TextStyle(
-              fontSize: 50,
-              color: Colors.deepOrangeAccent,
-              fontFamily: 'SamsungOne',
-              fontWeight: FontWeight.bold),
-        ),
-      ),
-    );
+        tag: 'marsLogo',
+        child: Container(
+          alignment: Alignment.topCenter,
+          padding: EdgeInsets.fromLTRB(0, 30, 0, 50),
+          child: StreamBuilder<DocumentSnapshot>(
+              stream: Firestore.instance
+                  .collection('users')
+                  .document(widget.userId)
+                  .snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<DocumentSnapshot> snapshot) {
+                if(snapshot.hasError){
+                  return Text('Error');
+                }else if(snapshot.hasData){
+                  return Text(snapshot.data['firstName'],style: TextStyle(
+                      fontSize: 50,
+                      color: Colors.deepOrangeAccent,
+                      fontFamily: 'SamsungOne',
+                      fontWeight: FontWeight.bold),
+                );
+                }
+                else{
+                  return SpinKitWave(color: Colors.deepOrange,);
+                }
+              }),
+        ));
   }
 
   Widget _showLogOutButton() {

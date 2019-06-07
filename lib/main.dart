@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:project_martian/services/auth_service.dart';
-import 'package:splashscreen/splashscreen.dart';
 
 import 'root.dart';
 import 'auth.dart';
