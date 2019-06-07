@@ -26,8 +26,7 @@ class User {
 
   void _saveInfo() {
     Firestore.instance.runTransaction((Transaction transaction) async {
-      CollectionReference reference = Firestore.instance.collection('users');
-      await reference.add({
+      await Firestore.instance.collection('users').document(userId).setData({
         'userId': userId,
         'firstName': firstName,
         'lastName': lastName,
