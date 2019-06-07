@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'auth.dart';
 import 'package:project_martian/services/auth_service.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'home.dart';
 
 class RootPage extends StatefulWidget {
@@ -83,7 +84,7 @@ class _RootPageState extends State<RootPage> {
     return Scaffold(
       backgroundColor: Colors.deepOrange,
       body: Center(
-        child: LinearProgressIndicator()
+        child: SpinKitCubeGrid(color: Colors.white)
       ),
     );
   }

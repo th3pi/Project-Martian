@@ -3,8 +3,6 @@ import 'package:project_martian/services/auth_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-
-
 import 'account_creation.dart';
 
 class UserOnBoarding extends StatefulWidget {
@@ -62,7 +60,10 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
     if (_isLoading) {
       return Container(
         alignment: Alignment.topCenter,
-        child: SpinKitThreeBounce(size: 50, color: Colors.white,),
+        child: SpinKitThreeBounce(
+          size: 50,
+          color: Colors.white,
+        ),
       );
     }
     return Container();
@@ -176,12 +177,15 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
         child: _formMode == FormMode.LOGIN
             ? Text(
                 'Login',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.deepOrangeAccent),
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: Colors.deepOrangeAccent),
               )
             : Text(
                 'Get Visitor Pass',
                 style: TextStyle(
-                  fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.bold,
                     fontSize: 20,
                     color: Colors.deepOrangeAccent,
                     fontFamily: 'SamsungOne'),
@@ -287,6 +291,7 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
                   builder: (BuildContext) => CreateAccountPage(
                         userId: userId,
                         auth: widget.auth,
+                        email: _email,
                       )));
           print('Signed up user: $userId');
         }

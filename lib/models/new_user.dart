@@ -8,8 +8,11 @@ class User {
       mother_planet,
       dateOfBirth,
       species,
+  email,
+  reason,
       gender;
   num gsid;
+  bool martian;
 
   User(
       {this.key,
@@ -20,7 +23,9 @@ class User {
       this.userId,
       this.species,
       this.dateOfBirth,
-      this.gender}) {
+      this.gender,
+      this.email,
+      this.martian, this.reason}) {
     _saveInfo();
   }
 
@@ -34,7 +39,10 @@ class User {
         'gsid': gsid,
         'species': species,
         'gender': gender,
-        'dateOfBirth': dateOfBirth
+        'dateOfBirth': dateOfBirth,
+        'email': email,
+        'reason': reason,
+        'martian': martian
       });
     });
   }

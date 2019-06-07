@@ -33,15 +33,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-//  Text(
-//  UserData(userId: widget.userId).getFirstName().toString(),
-//  style: TextStyle(
-//  fontSize: 50,
-//  color: Colors.deepOrangeAccent,
-//  fontFamily: 'SamsungOne',
-//  fontWeight: FontWeight.bold),
-//  ),
-
   Widget _showLogo() {
     return Hero(
         tag: 'marsLogo',

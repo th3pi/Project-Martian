@@ -7,8 +7,9 @@ import 'root.dart';
 class CreateAccountPage extends StatefulWidget {
   final String userId;
   final BaseAuth auth;
+  final String email;
 
-  CreateAccountPage({this.userId, this.auth});
+  CreateAccountPage({this.userId, this.auth, this.email});
 
   @override
   State<StatefulWidget> createState() {
@@ -18,8 +19,21 @@ class CreateAccountPage extends StatefulWidget {
 
 class _CreateAccountPageState extends State<CreateAccountPage> {
   final _formKey = GlobalKey<FormState>();
-  String _firstName, _lastName, _motherPlanet, _dateOfBirth, _species, _gender;
+  String _firstName,
+      _lastName,
+      _motherPlanet,
+      _dateOfBirth,
+      _species,
+      _gender,
+      _email,
+      _reason;
+  bool _martian;
   num _gsid;
+  String tourist = 'Tourist',
+      business = 'Business',
+      family = 'Visiting family',
+      asylum = 'Seeking Asylum',
+      immigration = 'Moving to Mars';
   final FocusNode firstFocus = FocusNode(),
       secondFocus = FocusNode(),
       thirdForcus = FocusNode(),
@@ -64,7 +78,10 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           gsid: _gsid,
           dateOfBirth: _dateOfBirth,
           gender: _gender,
-          species: _species);
+          species: _species,
+          email: widget.email,
+          reason: _reason,
+          martian: false);
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -86,6 +103,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
             _showLastNameInput(),
             _showMotherPlanetInput(),
             _showGsidInput(),
+            _showReasonForVisit(),
             _showSecondaryQueries(),
             _showTermsAndConditions(),
             _showDoneButton()
@@ -325,5 +343,45 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         },
       ),
     );
+  }
+
+  Widget _showReasonForVisit() {
+    return Container(
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.white, offset: Offset(2, 0), blurRadius: 5)
+            ]),
+        margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+        padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
+        child: DropdownButton<String>(
+            hint: Text('Reason for visit'),
+            items: [
+              DropdownMenuItem<String>(
+                value: 'Tourist',
+                child: Text(tourist),
+              ),
+              DropdownMenuItem<String>(
+                value: 'Business',
+                child: Text(business),
+              ),
+              DropdownMenuItem<String>(
+                value: 'Family',
+                child: Text(family),
+              ),
+              DropdownMenuItem<String>(
+                value: 'Asylum',
+                child: Text(asylum),
+              ),
+              DropdownMenuItem<String>(
+                value: 'Immigration',
+                child: Text(immigration),
+              ),
+            ],
+            onChanged: (value) {
+              _reason = value;
+            }));
   }
 }
