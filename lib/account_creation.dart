@@ -9,7 +9,7 @@ class CreateAccountPage extends StatefulWidget {
   final String userId; //Holds userId
   final BaseAuth auth; //Holds user authorization status
   final String email; //Holds user email
-  final VoidCallback onCancel; //Redundent at the moment
+  final VoidCallback onCancel; //Redundant at the moment
 
   CreateAccountPage({this.userId, this.auth, this.email, this.onCancel});
 
