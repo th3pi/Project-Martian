@@ -22,9 +22,20 @@ class HomePage extends StatefulWidget {
 enum DataStatus { NOT_DETERMINED, DETERMINED }
 
 class _HomePageState extends State<HomePage> {
+  UserData userData;
+  String userId,
+      firstName = '',
+      lastName,
+      mother_planet,
+      dateOfBirth,
+      species,
+      reason,
+      email,
+      gender;
+  num gsid;
   String _errorMessage = 'Resending Verification Email',
       _errorDetails =
-          'Please check your inbox - logout and log back in to activate your account';
+          'Please check your inbox - LOG OUT and LOG BACK IN to activate your account';
   DataStatus dataStatus = DataStatus.NOT_DETERMINED;
   bool _status;
 
@@ -34,7 +45,7 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
-        title: Text(widget.email),
+        title: Text(firstName),
         actions: <Widget>[_showLogOutButton()],
       ),
       body: dataStatus == DataStatus.NOT_DETERMINED
@@ -52,6 +63,27 @@ class _HomePageState extends State<HomePage> {
             value == null ? DataStatus.NOT_DETERMINED : DataStatus.DETERMINED;
         if (value != null) {
           _status = value;
+        }
+      });
+    });
+    Firestore.instance
+        .collection('users')
+        .document(widget.userId)
+        .get()
+        .then((data) {
+      setState(() {
+        dataStatus =
+            data == null ? DataStatus.NOT_DETERMINED : DataStatus.DETERMINED;
+        if (data.exists) {
+          firstName = data.data['firstName'];
+          lastName = data.data['lastName'];
+          dateOfBirth = data.data['dateOfBirth'];
+          gender = data.data['gender'];
+          mother_planet = data.data['mother_planet'];
+          reason = data.data['reason'];
+          species = data.data['species'];
+          userId = data.data['userId'];
+          email = data.data['email'];
         }
       });
     });
@@ -150,33 +182,16 @@ class _HomePageState extends State<HomePage> {
     return Hero(
         tag: 'marsLogo',
         child: Container(
-          alignment: Alignment.topCenter,
-          padding: EdgeInsets.fromLTRB(0, 30, 0, 50),
-          child: StreamBuilder<DocumentSnapshot>(
-              stream: Firestore.instance
-                  .collection('users')
-                  .document(widget.userId)
-                  .snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<DocumentSnapshot> snapshot) {
-                if (snapshot.hasError) {
-                  return Text('Error');
-                } else if (snapshot.hasData) {
-                  return Text(
-                    snapshot.data['firstName'],
-                    style: TextStyle(
-                        fontSize: 50,
-                        color: Colors.deepOrangeAccent,
-                        fontFamily: 'SamsungOne',
-                        fontWeight: FontWeight.bold),
-                  );
-                } else {
-                  return SpinKitWave(
-                    color: Colors.deepOrange,
-                  );
-                }
-              }),
-        ));
+            alignment: Alignment.topCenter,
+            padding: EdgeInsets.fromLTRB(0, 30, 0, 50),
+            child: Text(
+              firstName,
+              style: TextStyle(
+                  fontSize: 50,
+                  color: Colors.deepOrangeAccent,
+                  fontFamily: 'SamsungOne',
+                  fontWeight: FontWeight.bold),
+            )));
   }
 
   Widget _showLogOutButton() {
