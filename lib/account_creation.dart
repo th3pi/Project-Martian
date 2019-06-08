@@ -6,7 +6,7 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'root.dart';
 
 class CreateAccountPage extends StatefulWidget {
-  final String userId; //Holds userid
+  final String userId; //Holds userId
   final BaseAuth auth; //Holds user authorization status
   final String email; //Holds user email
   final VoidCallback onCancel; //Redundent at the moment
