@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_martian/services/auth_service.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flushbar/flushbar.dart';
 
 import 'account_creation.dart';
 
@@ -24,7 +25,7 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
   String _errorMessage = ''; //Error message that pops up above email field
   String _email, _password;
   FocusNode secondNode = FocusNode(); //To change form focus
-  FormMode _formMode = FormMode.LOGIN; //Form mode initialized to login
+  FormMode _formMode = FormMode.SIGNUP; //Form mode initialized to login
   bool _isLoading = false;
 
   @override
@@ -121,7 +122,7 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
           boxShadow: [
             BoxShadow(color: Colors.white, offset: Offset(2, 0), blurRadius: 5)
           ]),
-      margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+      margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
       padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
       child: TextFormField(
         cursorColor: Colors.deepOrangeAccent,
@@ -130,7 +131,8 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
         autofocus: false,
         decoration: InputDecoration(labelText: 'Email'),
         validator: (String value) =>
-            value.isEmpty ? 'Email can\'t be empty' : null, //Doesn't let user submit empty field
+            value.isEmpty ? 'Email can\'t be empty' : null,
+        //Doesn't let user submit empty field
         onFieldSubmitted: (value) {
           FocusScope.of(context).requestFocus(secondNode);
         },
@@ -208,10 +210,12 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
       child: _formMode == FormMode.LOGIN
           ? Text(
               'Not a Martian? Get visitor pass',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(
+                  color: Colors.white, decoration: TextDecoration.underline),
             )
           : Text('Are you a Martian? Sign in',
-              style: TextStyle(color: Colors.white)),
+              style: TextStyle(
+                  color: Colors.white, decoration: TextDecoration.underline)),
       onPressed: () {
         if (_formMode == FormMode.LOGIN) {
           _changeFormToSignUp();
@@ -247,24 +251,52 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
     return AnimatedOpacity(
       curve: Curves.bounceInOut,
       duration: Duration(milliseconds: 600),
-      opacity: _errorMessage.length > 0 ? 1.0 : 0.0, //This widget pops up if error message gets a value
-      child: Container(
-        height: 20,
-        child: Center(
-          child: Text(
-            _errorMessage,
-            style: TextStyle(color: Colors.white),
+      opacity: _errorMessage.length > 0 ? 1.0 : 0.0,
+      //This widget pops up if error message gets a value
+      child: Center(
+        child: Text(
+          _errorMessage,
+          style: TextStyle(
+            color: Colors.white,
           ),
+          textAlign: TextAlign.center,
         ),
       ),
     );
   }
 
-  Widget _showVerificationEmailNotification() {
-    return SnackBar(
-      duration: Duration(seconds: 5),
-      content: Text('Verification email sent to $_email'),
-    );
+  void _showVerificationEmailNotification() {
+    Flushbar(
+      flushbarPosition: FlushbarPosition.TOP,
+      isDismissible: true,
+      reverseAnimationCurve: Curves.decelerate,
+      forwardAnimationCurve: Curves.elasticOut,
+      icon: Icon(
+        Icons.info_outline,
+        color: Colors.white,
+      ),
+      backgroundColor: Colors.green,
+      flushbarStyle: FlushbarStyle.FLOATING,
+      borderRadius: 3,
+      aroundPadding: EdgeInsets.all(15),
+      showProgressIndicator: true,
+      boxShadows: [
+        BoxShadow(
+          color: Colors.black26,
+          offset: Offset(0.0, 2.0),
+          blurRadius: 3.0,
+        )
+      ],
+      titleText: Text(
+        'Opening application form...',
+        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      ),
+      messageText: Text(
+        'An email verification request has been sent. Martian Port Authority only processes verified applicants.',
+        style: TextStyle(color: Colors.white),
+      ),
+      duration: Duration(seconds: 6),
+    ).show(context);
   }
 
   bool _validateAndSave() {
@@ -291,15 +323,20 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
           userId = await widget.auth.signUp(_email, _password);
           _showVerificationEmailNotification();
           widget.auth.sendEmailVerificiation();
-          Navigator.pushReplacement(  //If user doesn't exist, they are redirected to the account creation page.
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext) => CreateAccountPage(
-                        userId: userId,
-                        auth: widget.auth,
-                        email: _email,
-                        onCancel: widget.onCancel,
-                      )));
+          Future.delayed(Duration(seconds: 4), () {
+            setState(() {
+              Navigator.pushReplacement(
+                  //If user doesn't exist, they are redirected to the account creation page.
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext) => CreateAccountPage(
+                            userId: userId,
+                            auth: widget.auth,
+                            email: _email,
+                            onCancel: widget.onCancel,
+                          )));
+            });
+          });
           print('Signed up user: $userId');
         }
         setState(() {
@@ -314,9 +351,28 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
       } catch (e) {
         setState(() {
           _isLoading = false;
-          _errorMessage = 'Invalid email or password';
+          switch (e.toString()) {
+            case 'PlatformException(ERROR_USER_NOT_FOUND, There is no user record corresponding to this identifier. The user may have been deleted., null)':
+              _errorMessage = 'No record of visitor pass/citizenship in our databases';
+              break;
+            case 'PlatformException(ERROR_WRONG_PASSWORD, The password is invalid or the user does not have a password., null)':
+              _errorMessage = 'Wrong password';
+              break;
+            case 'PlatformException(ERROR_INVALID_EMAIL, The email address is badly formatted., null)':
+              _errorMessage =
+                  'Not a valid email address - double check the formatting';
+              break;
+            case 'PlatformException(ERROR_NETWORK_REQUEST_FAILED, A network error (such as timeout, interrupted connection or unreachable host) has occurred., null)':
+              _errorMessage =
+                  'Could not communicate to Mars Data Center - please check your network connection and try again';
+              break;
+            default:
+              _errorMessage =
+                  'Sorry we do not know what went wrong - Check your internet connection, email and password';
+              break;
+          }
         });
-        print(e);
+        print('ERROR:: ${e.toString()}');
       }
     }
     setState(() {

@@ -55,7 +55,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 color: Colors.deepOrangeAccent, fontWeight: FontWeight.bold),
           ),
         ),
-        body: _showBody());
+        body: _showBody(),);
   }
 
   bool _validateAndSave() {
@@ -70,7 +70,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   void _validateAndSubmit() async {
     if (_validateAndSave()) {
       print(_firstName);
-      User( //Submits all the value to the database
+      User(
+          //Submits all the value to the database
           userId: widget.userId,
           firstName: _firstName,
           lastName: _lastName,
@@ -82,7 +83,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           email: widget.email,
           reason: _reason,
           martian: false);
-      Navigator.pushReplacement(  //User is the logged in sent to home page by the RootPage
+      Navigator.pushReplacement(
+          //User is the logged in sent to home page by the RootPage
           context,
           MaterialPageRoute(
               builder: (BuildContext) => RootPage(
@@ -267,7 +269,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       child: Row(
         children: <Widget>[
           Flexible(
-            fit: FlexFit.tight, //So that all the field take up the entire container
+            fit: FlexFit.tight,
+            //So that all the field take up the entire container
             child: Container(
               child: FlatButton(
                 child: Text(
@@ -279,10 +282,11 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 onPressed: () {
                   DatePicker.showDatePicker(context,
                       showTitleActions: true,
-                      minTime: DateTime(2800, 3, 5),  //Maximum age 210
+                      minTime: DateTime(2800, 3, 5), //Maximum age 210
                       maxTime: DateTime(3010, 6, 7), onConfirm: (date) {
                     setState(() {
-                      _dateOfBirth = '${date.month}/${date.day}/${date.year}'; //The format at which DOB is submitted to the database as well as output to the user
+                      _dateOfBirth =
+                          '${date.month}/${date.day}/${date.year}'; //The format at which DOB is submitted to the database as well as output to the user
                     });
                   });
                 },
@@ -337,8 +341,10 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
       child: TextFormField(
         focusNode: thirdForcus,
-        maxLength: 9, //Max 9 digits
-        keyboardType: TextInputType.number,  //Only numbers can be input
+        maxLength: 9,
+        //Max 9 digits
+        keyboardType: TextInputType.number,
+        //Only numbers can be input
         cursorColor: Colors.deepOrangeAccent,
         maxLines: 1,
         decoration: InputDecoration(
@@ -421,7 +427,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                  builder: (BuildContext) => RootPage(auth: widget.auth))); //Redirects to root page to figure out authorization status
+                  builder: (BuildContext) => RootPage(
+                      auth: widget
+                          .auth))); //Redirects to root page to figure out authorization status
         });
   }
 
