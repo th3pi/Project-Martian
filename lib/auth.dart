@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:project_martian/services/auth_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'account_creation.dart';
@@ -21,16 +20,15 @@ class UserOnBoarding extends StatefulWidget {
 enum FormMode { LOGIN, SIGNUP }
 
 class _UserOnBoardingState extends State<UserOnBoarding> {
-  final _formKey = GlobalKey<FormState>();
-  String _errorMessage = '';
+  final _formKey = GlobalKey<FormState>(); // Manages form state
+  String _errorMessage = ''; //Error message that pops up above email field
   String _email, _password;
-  FocusNode secondNode = FocusNode();
-  FormMode _formMode = FormMode.LOGIN;
+  FocusNode secondNode = FocusNode(); //To change form focus
+  FormMode _formMode = FormMode.LOGIN; //Form mode initialized to login
   bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       backgroundColor: Colors.deepOrange,
       appBar: AppBar(
@@ -45,11 +43,15 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
         ),
       ),
       body: Stack(
-        children: <Widget>[_showBody(), _showCircularProgress()],
+        children: <Widget>[
+          _showBody(),
+          _showCircularProgress()
+        ], //_showBody  manages the UI
       ),
     );
   }
 
+  //Page initialized with no error message and no loading
   @override
   void initState() {
     super.initState();
@@ -57,6 +59,7 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
     _isLoading = false;
   }
 
+  //Loading icon
   Widget _showCircularProgress() {
     if (_isLoading) {
       return Container(
@@ -70,6 +73,7 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
     return Container();
   }
 
+  //Scrollable body. Rearrange children order to rearrange UI.
   Widget _showBody() {
     return Container(
       padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
@@ -126,7 +130,7 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
         autofocus: false,
         decoration: InputDecoration(labelText: 'Email'),
         validator: (String value) =>
-            value.isEmpty ? 'Email can\'t be empty' : null,
+            value.isEmpty ? 'Email can\'t be empty' : null, //Doesn't let user submit empty field
         onFieldSubmitted: (value) {
           FocusScope.of(context).requestFocus(secondNode);
         },
@@ -238,11 +242,12 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
     });
   }
 
+  //Animated error message
   Widget _showErrorMessage() {
     return AnimatedOpacity(
       curve: Curves.bounceInOut,
       duration: Duration(milliseconds: 600),
-      opacity: _errorMessage.length > 0 ? 1.0 : 0.0,
+      opacity: _errorMessage.length > 0 ? 1.0 : 0.0, //This widget pops up if error message gets a value
       child: Container(
         height: 20,
         child: Center(
@@ -286,14 +291,14 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
           userId = await widget.auth.signUp(_email, _password);
           _showVerificationEmailNotification();
           widget.auth.sendEmailVerificiation();
-          Navigator.pushReplacement(
+          Navigator.pushReplacement(  //If user doesn't exist, they are redirected to the account creation page.
               context,
               MaterialPageRoute(
                   builder: (BuildContext) => CreateAccountPage(
                         userId: userId,
                         auth: widget.auth,
                         email: _email,
-                    onCancel: widget.onCancel,
+                        onCancel: widget.onCancel,
                       )));
           print('Signed up user: $userId');
         }

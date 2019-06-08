@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'models/new_user.dart';
 import './services/auth_service.dart';
-import 'package:flutter_picker/flutter_picker.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
-import 'home.dart';
 import 'root.dart';
 
 class CreateAccountPage extends StatefulWidget {
-  final String userId;
-  final BaseAuth auth;
-  final String email;
-  final VoidCallback onCancel;
+  final String userId; //Holds userid
+  final BaseAuth auth; //Holds user authorization status
+  final String email; //Holds user email
+  final VoidCallback onCancel; //Redundent at the moment
 
   CreateAccountPage({this.userId, this.auth, this.email, this.onCancel});
 
@@ -72,7 +70,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   void _validateAndSubmit() async {
     if (_validateAndSave()) {
       print(_firstName);
-      User(
+      User( //Submits all the value to the database
           userId: widget.userId,
           firstName: _firstName,
           lastName: _lastName,
@@ -84,7 +82,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           email: widget.email,
           reason: _reason,
           martian: false);
-      Navigator.pushReplacement(
+      Navigator.pushReplacement(  //User is the logged in sent to home page by the RootPage
           context,
           MaterialPageRoute(
               builder: (BuildContext) => RootPage(
@@ -93,6 +91,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     }
   }
 
+  //Body determines the. Can be rearranged here to rearrange the whole UI
   Widget _showBody() {
     return Container(
       child: Form(
@@ -135,6 +134,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     );
   }
 
+  //Terms and condition automatically accepted when clicked done
   Widget _showTermsAndConditions() {
     return Container(
       padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
@@ -224,6 +224,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     );
   }
 
+  //Gets user's birth planet
   Widget _showMotherPlanetInput() {
     return Container(
       decoration: BoxDecoration(
@@ -252,6 +253,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     );
   }
 
+  //Three connected queries that collect tertiary user info  - DOB, Gender and Species. Application decision isn't affected by this.
   Widget _showSecondaryQueries() {
     return Container(
       decoration: BoxDecoration(
@@ -265,7 +267,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       child: Row(
         children: <Widget>[
           Flexible(
-            fit: FlexFit.tight,
+            fit: FlexFit.tight, //So that all the field take up the entire container
             child: Container(
               child: FlatButton(
                 child: Text(
@@ -277,10 +279,10 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 onPressed: () {
                   DatePicker.showDatePicker(context,
                       showTitleActions: true,
-                      minTime: DateTime(2800, 3, 5),
+                      minTime: DateTime(2800, 3, 5),  //Maximum age 210
                       maxTime: DateTime(3010, 6, 7), onConfirm: (date) {
                     setState(() {
-                      _dateOfBirth = '${date.month}/${date.day}/${date.year}';
+                      _dateOfBirth = '${date.month}/${date.day}/${date.year}'; //The format at which DOB is submitted to the database as well as output to the user
                     });
                   });
                 },
@@ -322,6 +324,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     );
   }
 
+  //GSID is the new ID system for the milkyway galaxy. Every citizen of this galaxy has one.
   Widget _showGsidInput() {
     return Container(
       decoration: BoxDecoration(
@@ -334,9 +337,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
       child: TextFormField(
         focusNode: thirdForcus,
-        enableInteractiveSelection: true,
-        maxLength: 9,
-        keyboardType: TextInputType.number,
+        maxLength: 9, //Max 9 digits
+        keyboardType: TextInputType.number,  //Only numbers can be input
         cursorColor: Colors.deepOrangeAccent,
         maxLines: 1,
         decoration: InputDecoration(
@@ -392,7 +394,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
             ],
             onChanged: (value) {
               setState(() {
-                tourist = value;
+                tourist = value; //State changed to update dropdown box value
                 _reason = value;
               });
             }),
@@ -400,19 +402,30 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     );
   }
 
+  //Cancel button
   Widget _showCancelButton() {
     return FlatButton(
         child: Text(
           'Cancel Application',
-          style: TextStyle(decoration: TextDecoration.underline, color: Colors.white, shadows: [Shadow(color: Colors.white, blurRadius: 20, offset: Offset(3, 4))]),
+          style: TextStyle(
+              decoration: TextDecoration.underline,
+              color: Colors.white,
+              shadows: [
+                Shadow(
+                    color: Colors.white, blurRadius: 20, offset: Offset(3, 4))
+              ]),
           textAlign: TextAlign.center,
         ),
         onPressed: () {
           _onCancel();
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext) => RootPage(auth: widget.auth)));
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext) => RootPage(auth: widget.auth))); //Redirects to root page to figure out authorization status
         });
   }
 
+  //On cancel, user account is deleted from the database
   void _onCancel() async {
     try {
       widget.auth.deleteAccount();
