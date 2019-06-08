@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'models/new_user.dart';
-import 'home.dart';
 import './services/auth_service.dart';
+import 'package:flutter_picker/flutter_picker.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+
+import 'home.dart';
 import 'root.dart';
 
 class CreateAccountPage extends StatefulWidget {
   final String userId;
   final BaseAuth auth;
   final String email;
+  final VoidCallback onCancel;
 
-  CreateAccountPage({this.userId, this.auth, this.email});
+  CreateAccountPage({this.userId, this.auth, this.email, this.onCancel});
 
   @override
   State<StatefulWidget> createState() {
@@ -22,12 +26,10 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   String _firstName,
       _lastName,
       _motherPlanet,
-      _dateOfBirth,
+      _dateOfBirth = 'Date of Birth',
       _species,
       _gender,
-      _email,
-      _reason;
-  bool _martian;
+      _reason = 'Tourist';
   num _gsid;
   String tourist = 'Tourist',
       business = 'Business',
@@ -106,7 +108,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
             _showReasonForVisit(),
             _showSecondaryQueries(),
             _showTermsAndConditions(),
-            _showDoneButton()
+            _showDoneButton(),
+            _showCancelButton()
           ],
         ),
       ),
@@ -261,21 +264,25 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
       child: Row(
         children: <Widget>[
-          Container(
-            child: Expanded(
-              flex: 1,
-              child: TextFormField(
-                focusNode: fourthFocus,
-                decoration: InputDecoration(
-                  hintText: 'MM/DD/YYYY',
-                  labelStyle: TextStyle(fontFamily: 'SamsungOne'),
-                  labelText: 'Date Of Birth',
+          Flexible(
+            fit: FlexFit.tight,
+            child: Container(
+              child: FlatButton(
+                child: Text(
+                  _dateOfBirth,
+                  style: TextStyle(
+                    fontSize: 14,
+                  ),
                 ),
-                validator: (value) =>
-                    value.isEmpty ? 'Date of Birth is required' : null,
-                onSaved: (value) => _dateOfBirth = value,
-                onFieldSubmitted: (value) {
-                  FocusScope.of(context).requestFocus(fifthFocus);
+                onPressed: () {
+                  DatePicker.showDatePicker(context,
+                      showTitleActions: true,
+                      minTime: DateTime(2800, 3, 5),
+                      maxTime: DateTime(3010, 6, 7), onConfirm: (date) {
+                    setState(() {
+                      _dateOfBirth = '${date.month}/${date.day}/${date.year}';
+                    });
+                  });
                 },
               ),
             ),
@@ -296,8 +303,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
               },
             ),
           ),
-          Expanded(
+          Flexible(
             child: TextFormField(
+              enableInteractiveSelection: true,
               focusNode: sixthFocus,
               decoration: InputDecoration(
                 hintText: 'Homo sapiens',
@@ -347,17 +355,19 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
   Widget _showReasonForVisit() {
     return Container(
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.white, offset: Offset(2, 0), blurRadius: 5)
-            ]),
-        margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-        padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(color: Colors.white, offset: Offset(2, 0), blurRadius: 5)
+          ]),
+      margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+      padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
+      child: Container(
         child: DropdownButton<String>(
-            hint: Text('Reason for visit'),
+            isExpanded: true,
+            value: tourist,
+            hint: Text(_reason),
             items: [
               DropdownMenuItem<String>(
                 value: 'Tourist',
@@ -381,7 +391,33 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
               ),
             ],
             onChanged: (value) {
-              _reason = value;
-            }));
+              setState(() {
+                tourist = value;
+                _reason = value;
+              });
+            }),
+      ),
+    );
+  }
+
+  Widget _showCancelButton() {
+    return FlatButton(
+        child: Text(
+          'Cancel Application',
+          style: TextStyle(decoration: TextDecoration.underline, color: Colors.white, shadows: [Shadow(color: Colors.white, blurRadius: 20, offset: Offset(3, 4))]),
+          textAlign: TextAlign.center,
+        ),
+        onPressed: () {
+          _onCancel();
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext) => RootPage(auth: widget.auth)));
+        });
+  }
+
+  void _onCancel() async {
+    try {
+      widget.auth.deleteAccount();
+    } catch (e) {
+      print(e);
+    }
   }
 }

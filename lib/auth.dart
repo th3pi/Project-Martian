@@ -8,8 +8,9 @@ import 'account_creation.dart';
 class UserOnBoarding extends StatefulWidget {
   final BaseAuth auth;
   final VoidCallback onSignedIn;
+  final VoidCallback onCancel;
 
-  UserOnBoarding({this.auth, this.onSignedIn});
+  UserOnBoarding({this.auth, this.onSignedIn, this.onCancel});
 
   @override
   State<StatefulWidget> createState() {
@@ -292,6 +293,7 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
                         userId: userId,
                         auth: widget.auth,
                         email: _email,
+                    onCancel: widget.onCancel,
                       )));
           print('Signed up user: $userId');
         }

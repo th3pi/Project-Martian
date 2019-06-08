@@ -10,6 +10,7 @@ abstract class BaseAuth{
   Future<void> signOut();
   Future<void> isEmailVerified();
   Future<String> getEmail();
+  Future<void> deleteAccount();
 }
 
 class Auth implements BaseAuth{
@@ -55,4 +56,13 @@ class Auth implements BaseAuth{
     FirebaseUser user = await _firebaseAuth.currentUser();
     return user.email;
   }
+
+  @override
+  Future<void> deleteAccount() async {
+    FirebaseUser user = await _firebaseAuth.currentUser();
+    user.delete();
+    _firebaseAuth.signOut();
+  }
+
+
 }

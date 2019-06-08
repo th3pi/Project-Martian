@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
-import 'auth.dart';
 import 'package:project_martian/services/auth_service.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:after_layout/after_layout.dart';
+
+import 'auth.dart';
 import 'home.dart';
 
 class RootPage extends StatefulWidget {
   final BaseAuth auth;
-
-  RootPage({this.auth});
+  final String userId;
+  RootPage({this.auth, this.userId});
 
   @override
   State<StatefulWidget> createState() {
@@ -32,12 +36,17 @@ class _RootPageState extends State<RootPage> {
         return UserOnBoarding(
           auth: widget.auth,
           onSignedIn: _onLoggedIn,
+          onCancel: _onSignedOut,
         );
         break;
       case AuthStatus.LOGGED_IN:
         if (_userId.length > 0 && _userId != null) {
           return HomePage(
-              userId: _userId, auth: widget.auth, onSignedOut: _onSignedOut, email: _email,);
+            userId: _userId,
+            auth: widget.auth,
+            onSignedOut: _onSignedOut,
+            email: _email,
+          );
         } else {
           return _showLoadingScreen();
         }
@@ -62,6 +71,19 @@ class _RootPageState extends State<RootPage> {
     });
   }
 
+//  void _determineAuthStatus() async {
+//    FirebaseUser user = await widget.auth.getCurrentUser();
+//    if(user != null){
+//      _userId = user?.uid;
+//      _email = user?.email.toString();
+//    }
+//    if(user?.uid == null){
+//      authStatus = AuthStatus.NOT_LOGGED_IN;
+//    }else{
+//      authStatus = AuthStatus.LOGGED_IN;
+//    }
+//  }
+
   void _onLoggedIn() {
     widget.auth.getCurrentUser().then((user) {
       setState(() {
@@ -75,17 +97,17 @@ class _RootPageState extends State<RootPage> {
   }
 
   void _onSignedOut() {
-    setState(() {
-      authStatus = AuthStatus.NOT_LOGGED_IN;
-    });
+    if(this.mounted) {
+      setState(() {
+        authStatus = AuthStatus.NOT_LOGGED_IN;
+      });
+    }
   }
 
   Widget _showLoadingScreen() {
     return Scaffold(
       backgroundColor: Colors.deepOrange,
-      body: Center(
-        child: SpinKitCubeGrid(color: Colors.white)
-      ),
+      body: Center(child: SpinKitCubeGrid(color: Colors.white)),
     );
   }
 }
