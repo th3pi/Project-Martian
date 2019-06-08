@@ -75,18 +75,22 @@ class _HomePageState extends State<HomePage> {
         dataStatus =
             data == null ? DataStatus.NOT_DETERMINED : DataStatus.DETERMINED;
         if (data.exists) {
-          firstName = data.data['firstName'];
-          lastName = data.data['lastName'];
-          dateOfBirth = data.data['dateOfBirth'];
-          gender = data.data['gender'];
-          mother_planet = data.data['mother_planet'];
-          reason = data.data['reason'];
-          species = data.data['species'];
-          userId = data.data['userId'];
-          email = data.data['email'];
+          fetchData(data);
         }
       });
     });
+  }
+
+  void fetchData(DocumentSnapshot data){
+    firstName = data.data['firstName'];
+    lastName = data.data['lastName'];
+    dateOfBirth = data.data['dateOfBirth'];
+    gender = data.data['gender'];
+    mother_planet = data.data['mother_planet'];
+    reason = data.data['reason'];
+    species = data.data['species'];
+    userId = data.data['userId'];
+    email = data.data['email'];
   }
 
   Widget _showLoadingScreen() {
