@@ -6,9 +6,9 @@ abstract class BaseAuth{
   Future<String> signIn(String email, String password);
   Future<String> signUp(String email, String password);
   Future<FirebaseUser> getCurrentUser();
-  Future<void> sendEmailVerificiation();
+  Future<void> sendEmailVerification();
   Future<void> signOut();
-  Future<void> isEmailVerified();
+  Future<bool> isEmailVerified();
   Future<String> getEmail();
   Future<void> deleteAccount();
 }
@@ -35,7 +35,7 @@ class Auth implements BaseAuth{
   }
 
   @override
-  Future<void> sendEmailVerificiation() async {
+  Future<void> sendEmailVerification() async {
     FirebaseUser user = await _firebaseAuth.currentUser();
     user.sendEmailVerification();
   }
@@ -46,7 +46,7 @@ class Auth implements BaseAuth{
   }
 
   @override
-  Future<void> isEmailVerified() async {
+  Future<bool> isEmailVerified() async {
     FirebaseUser user = await _firebaseAuth.currentUser();
     return user.isEmailVerified;
   }

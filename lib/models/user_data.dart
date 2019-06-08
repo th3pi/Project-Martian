@@ -27,9 +27,7 @@ class UserData {
     document = Firestore.instance.collection('users').document(userId);
     document.get().then((data){
       if(data.exists){
-        print(data.documentID);
         firstName = data.data['firstName'];
-        print(data.data['firstName']);
         return firstName;
       }else{
         return firstName = '404';

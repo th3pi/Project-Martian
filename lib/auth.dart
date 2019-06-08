@@ -229,7 +229,7 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
   ///Changes for state to sign up mode
 
   void _changeFormToSignUp() {
-    _formKey.currentState.reset();
+//    _formKey.currentState.reset();
     _errorMessage = '';
     setState(() {
       _formMode = FormMode.SIGNUP;
@@ -239,7 +239,7 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
   ///Changes form state to login mode
 
   void _changeFormToLogin() {
-    _formKey.currentState.reset();
+//    _formKey.currentState.reset();
     _errorMessage = '';
     setState(() {
       _formMode = FormMode.LOGIN;
@@ -322,7 +322,7 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
         } else {
           userId = await widget.auth.signUp(_email, _password);
           _showVerificationEmailNotification();
-          widget.auth.sendEmailVerificiation();
+          widget.auth.sendEmailVerification();
           Future.delayed(Duration(seconds: 4), () {
             setState(() {
               Navigator.pushReplacement(
@@ -365,6 +365,9 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
             case 'PlatformException(ERROR_NETWORK_REQUEST_FAILED, A network error (such as timeout, interrupted connection or unreachable host) has occurred., null)':
               _errorMessage =
                   'Could not communicate to Mars Data Center - please check your network connection and try again';
+              break;
+            case 'PlatformException(ERROR_EMAIL_ALREADY_IN_USE, The email address is already in use by another account., null)':
+              _errorMessage = 'You already have a visitor pass/citizenship - log in instead';
               break;
             default:
               _errorMessage =
