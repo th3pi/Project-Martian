@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
   UserData userData;
 
   PageController pageController;
-  int currentPage = 1;
+  int currentPage = 2;
   double page = 2.0;
   double scaleFraction = 0.7,
       fullScale = 1.0,
@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
   num gsid;
   bool martian;
   int numOfIds;
-  List listOfIds;
+  List<Map<String, dynamic>> listOfIds = [];
 
   String _errorMessage = 'Resending Verification Email',
       _errorDetails =
@@ -89,16 +89,33 @@ class _HomePageState extends State<HomePage> {
         .get()
         .then((data) {
       setState(() {
-        dataStatus =
-            data == null ? DataStatus.NOT_DETERMINED : DataStatus.DETERMINED;
         if (data.exists) {
-          Firestore.instance.collection('users').document(widget.userId).collection('planetary_ids').getDocuments().then((value) {
+          Firestore.instance
+              .collection('users')
+              .document(widget.userId)
+              .collection('planetary_ids')
+              .getDocuments()
+              .then((value) {
             setState(() {
-              numOfIds = value.documents.length+1;
+              dataStatus = data == null || value == null
+                  ? DataStatus.NOT_DETERMINED
+                  : DataStatus.DETERMINED;
+              numOfIds = value.documents.length + 1;
+              currentPage = numOfIds - 1;
             });
           });
           fetchData(data);
         }
+      });
+    });
+    Firestore.instance
+        .collection('users')
+        .document(widget.userId)
+        .collection('planetary_ids')
+        .snapshots()
+        .listen((snapshot) {
+      snapshot.documents.forEach((doc) {
+        listOfIds.add(doc.data);
       });
     });
   }
@@ -252,7 +269,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Widget _idCards(double scale) {
+  Widget _idCards(int index, double scale) {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(
@@ -260,25 +277,29 @@ class _HomePageState extends State<HomePage> {
         height: pagerHeight * scale,
         width: 800,
         child: Card(
+          clipBehavior: Clip.antiAlias,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           elevation: 10,
-          clipBehavior: Clip.antiAlias,
           child: Container(
+            decoration: BoxDecoration(
+                gradient: _colorPicker(listOfIds[index]['planetName'])),
             child: Row(
               children: <Widget>[
                 Flexible(
+                  fit: FlexFit.tight,
                   flex: 2,
-                  child: Container(
-                    child: QrImage(
-                      data: userId,
-                      size: 180,
-                    ),
+                  child: QrImage(
+                    gapless: true,
+                    backgroundColor: Colors.white,
+                    data: userId,
+                    size: 500,
                   ),
                 ),
                 Flexible(
-                  flex: 2,
+                  flex: 3,
                   child: Container(
+                    padding: EdgeInsets.only(left: 10),
                     child: Column(
                       children: <Widget>[
                         Row(
@@ -293,8 +314,8 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     Container(
                                       child: Text(
-                                        firstName,
-                                        style: TextStyle(
+                                        listOfIds[index]['planetFirstName'],
+                                        style: TextStyle(color: Colors.black87,
                                             fontSize: 12,
                                             fontWeight: FontWeight.bold),
                                       ),
@@ -311,8 +332,8 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     Container(
                                       child: Text(
-                                        lastName,
-                                        style: TextStyle(
+                                        listOfIds[index]['planetLastName'],
+                                        style: TextStyle(color: Colors.black87,
                                             fontSize: 12,
                                             fontWeight: FontWeight.bold),
                                       ),
@@ -333,9 +354,8 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     Container(
                                       child: Text(
-                                        gsid.toString(),
-                                        //TODO: Change this to planetary ID.
-                                        style: TextStyle(
+                                        listOfIds[index]['planetaryId'],
+                                        style: TextStyle(color: Colors.black87,
                                             fontSize: 12,
                                             fontWeight: FontWeight.bold),
                                       ),
@@ -354,9 +374,8 @@ class _HomePageState extends State<HomePage> {
                                       alignment: Alignment.centerRight,
                                       padding: EdgeInsets.only(left: 5),
                                       child: Text(
-                                        mother_planet,
-                                        //TODO: Change this specific planet name
-                                        style: TextStyle(
+                                        listOfIds[index]['planetName'],
+                                        style: TextStyle(color: Colors.black87,
                                             fontSize: 12,
                                             fontWeight: FontWeight.bold),
                                       ),
@@ -377,9 +396,8 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     Container(
                                       child: Text(
-                                        martian ? 'Citizen' : 'Visitor',
-                                        //TODO: Change this to specific planet ID type.
-                                        style: TextStyle(
+                                        listOfIds[index]['idType'],
+                                        style: TextStyle(color: Colors.black87,
                                             fontSize: 12,
                                             fontWeight: FontWeight.bold),
                                       ),
@@ -397,9 +415,8 @@ class _HomePageState extends State<HomePage> {
                                     Container(
                                       padding: EdgeInsets.only(left: 5),
                                       child: Text(
-                                        dateOfBirth,
-                                        //TODO: Change this specific planet id expiration date
-                                        style: TextStyle(
+                                        listOfIds[index]['dateOfExpiration'],
+                                        style: TextStyle(color: Colors.black87,
                                             fontSize: 12,
                                             fontWeight: FontWeight.bold),
                                       ),
@@ -423,7 +440,13 @@ class _HomePageState extends State<HomePage> {
   Widget _showAddIdCard(double scale) {
     return InkWell(
       splashColor: Colors.deepOrangeAccent,
-      onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext) => IdForm(userId: widget.userId, auth: widget.auth,))),
+      onTap: () => Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext) => IdForm(
+                    userId: widget.userId,
+                    auth: widget.auth,
+                  ))),
       child: Align(
         alignment: Alignment.bottomCenter,
         child: Container(
@@ -432,10 +455,15 @@ class _HomePageState extends State<HomePage> {
           width: 800,
           child: Card(
             shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             elevation: 10,
             clipBehavior: Clip.antiAlias,
-            child: Center(child: Icon(Icons.add_circle_outline, size: 50,),),
+            child: Center(
+              child: Icon(
+                Icons.add_circle_outline,
+                size: 50,
+              ),
+            ),
           ),
         ),
       ),
@@ -446,6 +474,7 @@ class _HomePageState extends State<HomePage> {
     return Container(
       height: 400,
       child: ListView(
+        physics: BouncingScrollPhysics(),
         children: <Widget>[
           Container(
             height: pagerHeight,
@@ -454,7 +483,9 @@ class _HomePageState extends State<HomePage> {
                 itemBuilder: (context, index) {
                   final scale = max(scaleFraction,
                       (fullScale - (index - page).abs()) + viewportFraction);
-                  return index == 0 ? _showAddIdCard(scale) : _idCards(scale);
+                  return index == numOfIds - 1
+                      ? _showAddIdCard(scale)
+                      : _idCards(index, scale);
                 },
                 itemCount: numOfIds,
                 controller: pageController,
@@ -477,5 +508,64 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
+  }
+
+  LinearGradient _colorPicker(String planetName) {
+    switch (planetName) {
+      case 'Mercury':
+        return LinearGradient(
+            begin: FractionalOffset.topRight,
+            end: FractionalOffset.bottomLeft,
+            colors: [Colors.orangeAccent, Colors.deepOrangeAccent]);
+        break;
+      case 'Mars':
+        return LinearGradient(
+            begin: FractionalOffset.topRight,
+            end: FractionalOffset.bottomLeft,
+            colors: [Colors.redAccent, Colors.deepOrangeAccent, Colors.orangeAccent]);
+        break;
+      case 'Venus':
+        return LinearGradient(
+            begin: FractionalOffset.topRight,
+            end: FractionalOffset.bottomLeft,
+            colors: [Colors.grey, Colors.blueGrey]);
+        break;
+      case 'Earth':
+        return LinearGradient(
+            begin: FractionalOffset.topRight,
+            end: FractionalOffset.bottomLeft,
+            colors: [Colors.greenAccent, Colors.blue]);
+        break;
+      case 'Jupiter':
+        return LinearGradient(
+            begin: FractionalOffset.topRight,
+            end: FractionalOffset.bottomLeft,
+            colors: [Colors.redAccent, Colors.orangeAccent]);
+        break;
+      case 'Neptune':
+        return LinearGradient(
+            begin: FractionalOffset.topRight,
+            end: FractionalOffset.bottomLeft,
+            colors: [Colors.blue, Colors.blueAccent]);
+        break;
+      case 'Saturn':
+        return LinearGradient(
+            begin: FractionalOffset.topRight,
+            end: FractionalOffset.bottomLeft,
+            colors: [Colors.deepOrangeAccent, Colors.brown]);
+        break;
+      case 'Uranus':
+        return LinearGradient(
+            begin: FractionalOffset.topRight,
+            end: FractionalOffset.bottomLeft,
+            colors: [Colors.blueAccent, Colors.lightBlue]);
+        break;
+      default:
+        return LinearGradient(
+            begin: FractionalOffset.topRight,
+            end: FractionalOffset.bottomLeft,
+            colors: [Colors.grey, Colors.blueGrey]);
+        break;
+    }
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_picker/flutter_picker.dart';
+import 'dart:convert';
 
 import 'package:project_martian/services/auth_service.dart';
 import '../models/new_planet_id.dart';
@@ -48,10 +50,19 @@ class _IdFormState extends State<IdForm> {
       nNode = FocusNode(),
       teNode = FocusNode();
 
+  var PickerData =
+      '''[{ "Solar System" : ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Neptune", "Saturn", "Uranus"]}, {"Alpha Centauri A" : ["Proxima A" , "Proxima B"]}, {"Alpha Centauri B" : ["Pegasus A", "Pegasus 21"]}, {"Adonis" : ["Karak", "Dregos", "Sabux", "Poradis"]}]''';
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext) => CheckAuthentication(auth: widget.auth, userId: widget.userId,))),
+      onWillPop: () => Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext) => CheckAuthentication(
+                    auth: widget.auth,
+                    userId: widget.userId,
+                  ))),
       child: Scaffold(
         backgroundColor: Colors.deepOrange,
         appBar: AppBar(
@@ -92,7 +103,13 @@ class _IdFormState extends State<IdForm> {
           planetFirstName: planetFirstName,
           planetLastName: planetLastName,
           planetName: planetName);
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext) => CheckAuthentication(auth: widget.auth, userId: widget.userId,)));
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext) => CheckAuthentication(
+                    auth: widget.auth,
+                    userId: widget.userId,
+                  )));
     }
   }
 
@@ -111,6 +128,7 @@ class _IdFormState extends State<IdForm> {
             _showSecondaryQueries(),
             _showTertiaryQueries(),
             _showDoneButton(),
+            _showCancelButton(),
           ],
         ),
       ),
@@ -136,6 +154,28 @@ class _IdFormState extends State<IdForm> {
         onPressed: _validateAndSubmit,
       ),
     );
+  }
+  Widget _showCancelButton() {
+    return FlatButton(
+        child: Text(
+          'Cancel',
+          style: TextStyle(
+              decoration: TextDecoration.underline,
+              color: Colors.white,
+              shadows: [
+                Shadow(
+                    color: Colors.white, blurRadius: 20, offset: Offset(3, 4))
+              ]),
+          textAlign: TextAlign.center,
+        ),
+        onPressed: () {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext) => CheckAuthentication(
+                      auth: widget
+                          .auth, userId: widget.userId,))); //Redirects to root page to figure out authorization status
+        });
   }
 
   Widget _showPlanetaryFirstNameInput() {
@@ -230,20 +270,29 @@ class _IdFormState extends State<IdForm> {
           ]),
       margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
       padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
-      child: TextFormField(
-        focusNode: thNode,
-        cursorColor: Colors.deepOrangeAccent,
-        maxLines: 1,
-        decoration: InputDecoration(
-          labelStyle: TextStyle(fontFamily: 'SamsungOne'),
-          labelText: 'Planet Name',
-        ),
-        validator: (value) => value.isEmpty ? 'Planet Name is required' : null,
-        onSaved: (value) => planetName = value,
-        onFieldSubmitted: (value) {
-          FocusScope.of(context).requestFocus(fNode);
-        },
-      ),
+      child: Container(
+          //Id Type picker
+          child: RaisedButton(
+              color: Colors.white,
+              elevation: 0,
+              child: Center(
+                  child: Text(
+                planetName == null ? 'Planet Name' : 'Planet Name: $planetName',
+              )),
+              onPressed: () {
+                Picker(
+                  changeToFirst: true,
+                  hideHeader: false,
+                  onConfirm: (picker, value) {
+                    setState(() {
+                      planetName = picker.getSelectedValues()[1];
+                    });
+                    print(picker.getSelectedValues());
+                  },
+                  adapter: PickerDataAdapter<String>(
+                      pickerdata: JsonDecoder().convert(PickerData)),
+                ).showModal(this.context);
+              })),
     );
   }
 

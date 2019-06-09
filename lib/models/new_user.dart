@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'new_planet_id.dart';
+
 class User {
   String key;
   String userId,
@@ -27,6 +29,7 @@ class User {
       this.email,
       this.martian, this.reason}) {
     _saveInfo();
+    AddPlanetData(planetName: 'Mars', userId: userId, planetLastName: lastName, planetFirstName: firstName, idType: 'Visitor', planetaryId: gsid.toString(), flyingLicense: 'Yes', dateOfExpiration: '04/05/3010', dateIssued: '05/02/2900', criminalRecord: 'No', accessLevel: '1');
   }
 
   void _saveInfo() {
