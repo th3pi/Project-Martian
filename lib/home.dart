@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
   double scaleFraction = 0.7,
       fullScale = 1.0,
       pagerHeight = 200,
-      viewportFraction = 0.8;
+      viewportFraction = 0.95;
 
   String userId,
       firstName = '',
@@ -246,12 +246,13 @@ class _HomePageState extends State<HomePage> {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(
+        padding: EdgeInsets.only(bottom: 20),
         height: pagerHeight * scale,
         width: 1000,
         child: Card(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          elevation: 5,
+          elevation: 10,
           clipBehavior: Clip.antiAlias,
           child: Container(
             child: Row(
