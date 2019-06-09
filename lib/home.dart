@@ -28,7 +28,10 @@ class _HomePageState extends State<HomePage> {
   PageController pageController;
   int currentPage = 1;
   double page = 2.0;
-  double scaleFraction = 0.7, fullScale = 1.0, pagerHeight = 200, viewportFraction = 0.5;
+  double scaleFraction = 0.7,
+      fullScale = 1.0,
+      pagerHeight = 200,
+      viewportFraction = 0.5;
 
   String userId,
       firstName = '',
@@ -65,7 +68,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    pageController = PageController(initialPage: 1, viewportFraction: viewportFraction);
+    pageController =
+        PageController(initialPage: 1, viewportFraction: viewportFraction);
     widget.auth.isEmailVerified().then((value) {
       setState(() {
         dataStatus =
@@ -114,9 +118,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _showBody() {
-    return ListView(
-      children: <Widget>[_showUnverifiedEmailNotification(), _showLogo()],
-    );
+    return ListView(children: <Widget>[
+      _showUnverifiedEmailNotification(),
+      _showLogo(),
+      _showIdCards()
+    ]);
   }
 
   Widget _showUnverifiedEmailNotification() {
@@ -247,39 +253,78 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _showIdCards() {
-    return ListView(
-      children: <Widget>[
-        SizedBox(
-          height: 20,
-        ),
-        Container(
-          height: pagerHeight,
-          child: NotificationListener<ScrollNotification>(
-            onNotification: (ScrollNotification notification) {
-              if (notification is ScrollUpdateNotification) {
-                setState(() {
-                  page = pageController.page;
-                });
-              }
-            },
-            child: PageView.builder(
-              onPageChanged: (pos) {
-                setState(() {
-                  currentPage = pos;
-                });
-              },
-              physics: BouncingScrollPhysics(),
-              controller: pageController,
-              itemCount: 2,
-              itemBuilder: (context, index){
-                final scale = max(scaleFraction, (fullScale - (index - page).abs()) + viewportFraction);
-                return _idCards(scale);
+    return Container(
+      height: 400,
+      child: ListView(
+        children: <Widget>[
+          SizedBox(
+            height: 20,
+          ),
+          Container(
+            height: pagerHeight,
+            child: NotificationListener<ScrollNotification>(
+              child: PageView.builder(
+                itemBuilder: (context, index) {
+                  final scale = max(scaleFraction,
+                      (fullScale - (index - page).abs()) + viewportFraction);
+                  return _idCards(scale);
+                },
+                itemCount: 3,
+                controller: pageController,
+                onPageChanged: (pos) {
+                  setState(() {
+                    currentPage = pos;
+                  });
+                },
+                physics: BouncingScrollPhysics(),
+              ),
+              onNotification: (ScrollNotification notification) {
+                if (notification is ScrollUpdateNotification) {
+                  setState(() {
+                    page = pageController.page;
+                  });
+                }
               },
             ),
           ),
-        ),
-        Padding(padding: const EdgeInsets.all(20), child: Text(lastName),)
-      ],
+          Padding(
+            padding: EdgeInsets.all(20),
+            child: Text(dateOfBirth),
+          )
+//          Container(
+//            height: 200,
+//            width: 200,
+//            child: Card(
+//              elevation: 4,
+//              clipBehavior: Clip.antiAlias,
+//              shape: RoundedRectangleBorder(
+//                  borderRadius: BorderRadius.circular(20)),
+//              child: Text(firstName),
+//            ),
+//          ),
+//          Container(
+//            height: 200,
+//            width: 200,
+//            child: Card(
+//              elevation: 4,
+//              clipBehavior: Clip.antiAlias,
+//              shape: RoundedRectangleBorder(
+//                  borderRadius: BorderRadius.circular(20)),
+//              child: Text(firstName),
+//            ),
+//          ),
+//          Container(
+//            height: 200,
+//            width: 200,
+//            child: Card(
+//              elevation: 4,
+//              clipBehavior: Clip.antiAlias,
+//              shape: RoundedRectangleBorder(
+//                  borderRadius: BorderRadius.circular(20)),
+//              child: Text(firstName),
+//            ),
+        ],
+      ),
     );
   }
 }
