@@ -47,6 +47,8 @@ class _HomePageState extends State<HomePage> {
       gender;
   num gsid;
   bool martian;
+  int numOfIds;
+  List listOfIds;
 
   String _errorMessage = 'Resending Verification Email',
       _errorDetails =
@@ -90,6 +92,11 @@ class _HomePageState extends State<HomePage> {
         dataStatus =
             data == null ? DataStatus.NOT_DETERMINED : DataStatus.DETERMINED;
         if (data.exists) {
+          Firestore.instance.collection('users').document(widget.userId).collection('planetary_ids').getDocuments().then((value) {
+            setState(() {
+              numOfIds = value.documents.length+1;
+            });
+          });
           fetchData(data);
         }
       });
@@ -414,14 +421,15 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _showAddIdCard(double scale) {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Container(
-        padding: EdgeInsets.only(bottom: 20),
-        height: pagerHeight * scale,
-        width: 800,
-        child: InkWell(
-          onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext) => IdForm(userId: widget.userId, auth: widget.auth,))),
+    return InkWell(
+      splashColor: Colors.deepOrangeAccent,
+      onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext) => IdForm(userId: widget.userId, auth: widget.auth,))),
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+          padding: EdgeInsets.only(bottom: 20),
+          height: pagerHeight * scale,
+          width: 800,
           child: Card(
             shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -448,7 +456,7 @@ class _HomePageState extends State<HomePage> {
                       (fullScale - (index - page).abs()) + viewportFraction);
                   return index == 0 ? _showAddIdCard(scale) : _idCards(scale);
                 },
-                itemCount: 4,
+                itemCount: numOfIds,
                 controller: pageController,
                 onPageChanged: (pos) {
                   setState(() {
