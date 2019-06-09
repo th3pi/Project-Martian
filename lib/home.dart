@@ -7,6 +7,8 @@ import 'package:flushbar/flushbar.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'dart:math';
 
+import 'forms/id_form.dart';
+
 class HomePage extends StatefulWidget {
   final BaseAuth auth;
   final VoidCallback onSignedOut;
@@ -418,12 +420,15 @@ class _HomePageState extends State<HomePage> {
         padding: EdgeInsets.only(bottom: 20),
         height: pagerHeight * scale,
         width: 800,
-        child: Card(
-          shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          elevation: 10,
-          clipBehavior: Clip.antiAlias,
-          child: Center(child: Icon(Icons.add_circle_outline, size: 50,),),
+        child: InkWell(
+          onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext) => IdForm(userId: widget.userId, auth: widget.auth,))),
+          child: Card(
+            shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            elevation: 10,
+            clipBehavior: Clip.antiAlias,
+            child: Center(child: Icon(Icons.add_circle_outline, size: 50,),),
+          ),
         ),
       ),
     );
