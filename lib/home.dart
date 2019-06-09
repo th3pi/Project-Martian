@@ -44,6 +44,7 @@ class _HomePageState extends State<HomePage> {
       email,
       gender;
   num gsid;
+  bool martian;
 
   String _errorMessage = 'Resending Verification Email',
       _errorDetails =
@@ -73,8 +74,6 @@ class _HomePageState extends State<HomePage> {
         PageController(initialPage: 1, viewportFraction: viewportFraction);
     widget.auth.isEmailVerified().then((value) {
       setState(() {
-        dataStatus =
-            value == null ? DataStatus.NOT_DETERMINED : DataStatus.DETERMINED;
         if (value != null) {
           _status = value;
         }
@@ -101,11 +100,13 @@ class _HomePageState extends State<HomePage> {
     lastName = data.data['lastName'];
     dateOfBirth = data.data['dateOfBirth'];
     gender = data.data['gender'];
+    gsid = data.data['gsid'];
     mother_planet = data.data['mother_planet'];
     reason = data.data['reason'];
     species = data.data['species'];
     userId = data.data['userId'];
     email = data.data['email'];
+    martian = data.data['martian'];
   }
 
   Widget _showLoadingScreen() {
@@ -248,7 +249,7 @@ class _HomePageState extends State<HomePage> {
       child: Container(
         padding: EdgeInsets.only(bottom: 20),
         height: pagerHeight * scale,
-        width: 1000,
+        width: 800,
         child: Card(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -257,13 +258,151 @@ class _HomePageState extends State<HomePage> {
           child: Container(
             child: Row(
               children: <Widget>[
-                QrImage(
-                  data: userId,
-                  size: 180,
+                Flexible(
+                  flex: 2,
+                  child: Container(
+                    child: QrImage(
+                      data: userId,
+                      size: 180,
+                    ),
+                  ),
                 ),
-                Column(
-                  children: <Widget>[Text(firstName), Text(lastName)],
-                )
+                Flexible(
+                  flex: 2,
+                  child: Container(
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Container(
+                                padding: EdgeInsets.fromLTRB(0, 15, 0, 5),
+                                child: Column(
+                                  children: <Widget>[
+                                    Text(
+                                      'First Name',
+                                      style: TextStyle(fontSize: 10),
+                                    ),
+                                    Container(
+                                      child: Text(
+                                        firstName,
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                            Container(
+                                padding: EdgeInsets.fromLTRB(20, 15, 0, 5),
+                                child: Column(
+                                  children: <Widget>[
+                                    Text(
+                                      'Last Name',
+                                      style: TextStyle(fontSize: 10),
+                                    ),
+                                    Container(
+                                      child: Text(
+                                        lastName,
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                          ],
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Container(
+                                padding: EdgeInsets.fromLTRB(0, 15, 0, 5),
+                                child: Column(
+                                  children: <Widget>[
+                                    Text(
+                                      'Planetary ID',
+                                      style: TextStyle(fontSize: 10),
+                                    ),
+                                    Container(
+                                      child: Text(
+                                        gsid.toString(),
+                                        //TODO: Change this to planetary ID.
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                            Container(
+                                padding: EdgeInsets.fromLTRB(20, 15, 0, 5),
+                                child: Column(
+                                  children: <Widget>[
+                                    Text(
+                                      'Planet Name',
+                                      style: TextStyle(fontSize: 10),
+                                    ),
+                                    Container(
+                                      alignment: Alignment.centerRight,
+                                      padding: EdgeInsets.only(left: 5),
+                                      child: Text(
+                                        mother_planet,
+                                        //TODO: Change this specific planet name
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                          ],
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Container(
+                                padding: EdgeInsets.fromLTRB(0, 15, 0, 5),
+                                child: Column(
+                                  children: <Widget>[
+                                    Text(
+                                      'ID Type',
+                                      style: TextStyle(fontSize: 10),
+                                    ),
+                                    Container(
+                                      child: Text(
+                                        martian ? 'Citizen' : 'Visitor',
+                                        //TODO: Change this to specific planet ID type.
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                            Container(
+                                padding: EdgeInsets.fromLTRB(20, 15, 0, 5),
+                                child: Column(
+                                  children: <Widget>[
+                                    Text(
+                                      'Date of Expiration',
+                                      style: TextStyle(fontSize: 10),
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.only(left: 5),
+                                      child: Text(
+                                        dateOfBirth,
+                                        //TODO: Change this specific planet id expiration date
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
