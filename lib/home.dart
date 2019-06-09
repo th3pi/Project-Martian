@@ -411,6 +411,24 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget _showAddIdCard(double scale) {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        padding: EdgeInsets.only(bottom: 20),
+        height: pagerHeight * scale,
+        width: 800,
+        child: Card(
+          shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          elevation: 10,
+          clipBehavior: Clip.antiAlias,
+          child: Center(child: Icon(Icons.add_circle_outline, size: 50,),),
+        ),
+      ),
+    );
+  }
+
   Widget _showIdCards() {
     return Container(
       height: 400,
@@ -423,7 +441,7 @@ class _HomePageState extends State<HomePage> {
                 itemBuilder: (context, index) {
                   final scale = max(scaleFraction,
                       (fullScale - (index - page).abs()) + viewportFraction);
-                  return _idCards(scale);
+                  return index == 0 ? _showAddIdCard(scale) : _idCards(scale);
                 },
                 itemCount: 4,
                 controller: pageController,
