@@ -13,8 +13,8 @@ class UserData {
     return allData;
   }
 
-  void _setAllData() {
-    Firestore.instance.collection('users').document(userId).get().then((value) {
+  void _setAllData() async  {
+    await Firestore.instance.collection('users').document(userId).get().then((value) {
       if (value != null) {
         allData = {
           'firstName': value.data['firstName'],
@@ -32,16 +32,4 @@ class UserData {
       }
     });
   }
-
-//  String getFirstName() {
-//    document = Firestore.instance.collection('users').document(userId);
-//    document.get().then((data){
-//      if(data.exists){
-//        firstName = data.data['firstName'];
-//        return firstName;
-//      }else{
-//        return firstName = '404';
-//      }
-//    });
-//  }
 }

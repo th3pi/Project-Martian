@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:project_martian/models/user_data.dart';
 import 'package:flushbar/flushbar.dart';
+import 'dart:math';
 
 class HomePage extends StatefulWidget {
   final BaseAuth auth;
@@ -23,6 +24,12 @@ enum DataStatus { NOT_DETERMINED, DETERMINED }
 
 class _HomePageState extends State<HomePage> {
   UserData userData;
+
+  PageController pageController;
+  int currentPage = 1;
+  double page = 2.0;
+  double scaleFraction = 0.7, fullScale = 1.0, pagerHeight = 200, viewportFraction = 0.5;
+
   String userId,
       firstName = '',
       lastName,
@@ -33,6 +40,7 @@ class _HomePageState extends State<HomePage> {
       email,
       gender;
   num gsid;
+
   String _errorMessage = 'Resending Verification Email',
       _errorDetails =
           'Please check your inbox - LOG OUT and LOG BACK IN to activate your account';
@@ -57,6 +65,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    pageController = PageController(initialPage: 1, viewportFraction: viewportFraction);
     widget.auth.isEmailVerified().then((value) {
       setState(() {
         dataStatus =
@@ -81,7 +90,8 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void fetchData(DocumentSnapshot data){
+  void fetchData(DocumentSnapshot data) {
+    userData = UserData(widget.userId);
     firstName = data.data['firstName'];
     lastName = data.data['lastName'];
     dateOfBirth = data.data['dateOfBirth'];
@@ -219,5 +229,57 @@ class _HomePageState extends State<HomePage> {
     } catch (e) {
       print(e);
     }
+  }
+
+  Widget _idCards(double scale) {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        height: pagerHeight * scale,
+        width: pagerHeight * scale,
+        child: Card(
+          elevation: 5,
+          clipBehavior: Clip.antiAlias,
+          child: Text(firstName),
+        ),
+      ),
+    );
+  }
+
+  Widget _showIdCards() {
+    return ListView(
+      children: <Widget>[
+        SizedBox(
+          height: 20,
+        ),
+        Container(
+          height: pagerHeight,
+          child: NotificationListener<ScrollNotification>(
+            onNotification: (ScrollNotification notification) {
+              if (notification is ScrollUpdateNotification) {
+                setState(() {
+                  page = pageController.page;
+                });
+              }
+            },
+            child: PageView.builder(
+              onPageChanged: (pos) {
+                setState(() {
+                  currentPage = pos;
+                });
+              },
+              physics: BouncingScrollPhysics(),
+              controller: pageController,
+              itemCount: 2,
+              itemBuilder: (context, index){
+                final scale = max(scaleFraction, (fullScale - (index - page).abs()) + viewportFraction);
+                return _idCards(scale);
+              },
+            ),
+          ),
+        ),
+        Padding(padding: const EdgeInsets.all(20), child: Text(lastName),)
+      ],
+    );
   }
 }
