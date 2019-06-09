@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_martian/services/auth_service.dart';
 
-import 'root.dart';
+import 'package:project_martian/services/authentication_check.dart';
 import 'auth.dart';
 
 void main() => runApp(MyApp());
@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Project Martian',
       theme: ThemeData(primarySwatch: Colors.deepOrange, accentColor: Colors.deepOrangeAccent, fontFamily: 'SamsungOne'),
-      home: RootPage(auth: Auth(),),
+      home: CheckAuthentication(auth: Auth(),),
       debugShowCheckedModeBanner: false,
     );
   }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'models/new_user.dart';
-import './services/auth_service.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
-import 'root.dart';
+import '../services/auth_service.dart';
+import '../services/authentication_check.dart';
+import '../models/new_user.dart';
 
 class CreateAccountPage extends StatefulWidget {
   final String userId; //Holds userId
@@ -87,7 +87,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           //User is the logged in sent to home page by the RootPage
           context,
           MaterialPageRoute(
-              builder: (BuildContext) => RootPage(
+              builder: (BuildContext) => CheckAuthentication(
                     auth: widget.auth,
                   )));
     }
@@ -427,7 +427,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                  builder: (BuildContext) => RootPage(
+                  builder: (BuildContext) => CheckAuthentication(
                       auth: widget
                           .auth))); //Redirects to root page to figure out authorization status
         });

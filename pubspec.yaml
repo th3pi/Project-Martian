@@ -17,6 +17,7 @@ environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
+  qr_flutter: ^2.0.0
   flushbar: '1.5.3'
   flutter_datetime_picker: ^1.2.1
   flutter_picker: ^1.0.11

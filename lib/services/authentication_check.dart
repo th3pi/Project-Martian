@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:project_martian/services/auth_service.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import  'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:after_layout/after_layout.dart';
 
-import 'auth.dart';
-import 'home.dart';
+import '../auth.dart';
+import '../home.dart';
 
-class RootPage extends StatefulWidget {
+class CheckAuthentication extends StatefulWidget {
   final BaseAuth auth;
   final String userId;
-  RootPage({this.auth, this.userId});
+  CheckAuthentication({this.auth, this.userId});
 
   @override
   State<StatefulWidget> createState() {
-    return _RootPageState();
+    return _CheckAuthenticationState();
   }
 }
 
 enum AuthStatus { NOT_DETERMINED, NOT_LOGGED_IN, LOGGED_IN }
 
-class _RootPageState extends State<RootPage> {
+class _CheckAuthenticationState extends State<CheckAuthentication> {
   AuthStatus authStatus = AuthStatus.NOT_DETERMINED;
   String _userId = '';
   String _email = '';

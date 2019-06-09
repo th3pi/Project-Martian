@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:project_martian/models/user_data.dart';
 import 'package:flushbar/flushbar.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'dart:math';
 
 class HomePage extends StatefulWidget {
@@ -120,7 +121,7 @@ class _HomePageState extends State<HomePage> {
   Widget _showBody() {
     return ListView(children: <Widget>[
       _showUnverifiedEmailNotification(),
-      _showLogo(),
+      _showHeader('Planetary IDs'),
       _showIdCards()
     ]);
   }
@@ -198,25 +199,35 @@ class _HomePageState extends State<HomePage> {
     await widget.auth.sendEmailVerification();
   }
 
-  Widget _showLogo() {
-    return Hero(
-        tag: 'marsLogo',
-        child: Container(
-            alignment: Alignment.topCenter,
-            padding: EdgeInsets.fromLTRB(0, 30, 0, 10),
-            child: Text(
-              firstName,
-              style: TextStyle(
-                  fontSize: 50,
-                  color: Colors.deepOrangeAccent,
-                  fontFamily: 'SamsungOne',
-                  fontWeight: FontWeight.bold),
-            )));
+  Widget _showHeader(String text) {
+    return Column(
+      children: <Widget>[
+        Hero(
+            tag: 'marsLogo',
+            child: Container(
+                alignment: Alignment.topLeft,
+                padding: EdgeInsets.fromLTRB(10, 10, 0, 5),
+                child: Text(
+                  text,
+                  style: TextStyle(
+                      fontSize: 25,
+                      color: Colors.deepOrangeAccent,
+                      fontFamily: 'SamsungOne',
+                      fontWeight: FontWeight.bold),
+                ))),
+        Divider(
+          color: Colors.black54,
+        ),
+      ],
+    );
   }
 
   Widget _showLogOutButton() {
     return FlatButton(
-        child: Text('Logout', style: TextStyle(color: Colors.white),),
+        child: Text(
+          'Logout',
+          style: TextStyle(color: Colors.white),
+        ),
         onPressed: () {
           _signOut();
         });
@@ -238,10 +249,23 @@ class _HomePageState extends State<HomePage> {
         height: pagerHeight * scale,
         width: 1000,
         child: Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           elevation: 5,
           clipBehavior: Clip.antiAlias,
-          child: Container(decoration: BoxDecoration(color: Colors.black87),),
+          child: Container(
+            child: Row(
+              children: <Widget>[
+                QrImage(
+                  data: userId,
+                  size: 180,
+                ),
+                Column(
+                  children: <Widget>[Text(firstName), Text(lastName)],
+                )
+              ],
+            ),
+          ),
         ),
       ),
     );
