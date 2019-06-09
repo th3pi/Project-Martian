@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
   double scaleFraction = 0.7,
       fullScale = 1.0,
       pagerHeight = 200,
-      viewportFraction = 0.5;
+      viewportFraction = 0.8;
 
   String userId,
       firstName = '',
@@ -203,7 +203,7 @@ class _HomePageState extends State<HomePage> {
         tag: 'marsLogo',
         child: Container(
             alignment: Alignment.topCenter,
-            padding: EdgeInsets.fromLTRB(0, 30, 0, 50),
+            padding: EdgeInsets.fromLTRB(0, 30, 0, 10),
             child: Text(
               firstName,
               style: TextStyle(
@@ -215,14 +215,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _showLogOutButton() {
-    print(_status);
-    return IconButton(
-        tooltip: 'Logout',
-        iconSize: 25,
-        icon: Icon(
-          Icons.close,
-          color: Colors.white,
-        ),
+    return FlatButton(
+        child: Text('Logout', style: TextStyle(color: Colors.white),),
         onPressed: () {
           _signOut();
         });
@@ -242,11 +236,12 @@ class _HomePageState extends State<HomePage> {
       alignment: Alignment.bottomCenter,
       child: Container(
         height: pagerHeight * scale,
-        width: pagerHeight * scale,
+        width: 1000,
         child: Card(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           elevation: 5,
           clipBehavior: Clip.antiAlias,
-          child: Text(firstName),
+          child: Container(decoration: BoxDecoration(color: Colors.black87),),
         ),
       ),
     );
@@ -257,9 +252,6 @@ class _HomePageState extends State<HomePage> {
       height: 400,
       child: ListView(
         children: <Widget>[
-          SizedBox(
-            height: 20,
-          ),
           Container(
             height: pagerHeight,
             child: NotificationListener<ScrollNotification>(
@@ -269,14 +261,14 @@ class _HomePageState extends State<HomePage> {
                       (fullScale - (index - page).abs()) + viewportFraction);
                   return _idCards(scale);
                 },
-                itemCount: 3,
+                itemCount: 4,
                 controller: pageController,
                 onPageChanged: (pos) {
                   setState(() {
                     currentPage = pos;
                   });
                 },
-                physics: BouncingScrollPhysics(),
+                physics: AlwaysScrollableScrollPhysics(),
               ),
               onNotification: (ScrollNotification notification) {
                 if (notification is ScrollUpdateNotification) {
@@ -287,42 +279,6 @@ class _HomePageState extends State<HomePage> {
               },
             ),
           ),
-          Padding(
-            padding: EdgeInsets.all(20),
-            child: Text(dateOfBirth),
-          )
-//          Container(
-//            height: 200,
-//            width: 200,
-//            child: Card(
-//              elevation: 4,
-//              clipBehavior: Clip.antiAlias,
-//              shape: RoundedRectangleBorder(
-//                  borderRadius: BorderRadius.circular(20)),
-//              child: Text(firstName),
-//            ),
-//          ),
-//          Container(
-//            height: 200,
-//            width: 200,
-//            child: Card(
-//              elevation: 4,
-//              clipBehavior: Clip.antiAlias,
-//              shape: RoundedRectangleBorder(
-//                  borderRadius: BorderRadius.circular(20)),
-//              child: Text(firstName),
-//            ),
-//          ),
-//          Container(
-//            height: 200,
-//            width: 200,
-//            child: Card(
-//              elevation: 4,
-//              clipBehavior: Clip.antiAlias,
-//              shape: RoundedRectangleBorder(
-//                  borderRadius: BorderRadius.circular(20)),
-//              child: Text(firstName),
-//            ),
         ],
       ),
     );
