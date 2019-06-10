@@ -155,6 +155,7 @@ class _IdFormState extends State<IdForm> {
       ),
     );
   }
+
   Widget _showCancelButton() {
     return FlatButton(
         child: Text(
@@ -173,8 +174,9 @@ class _IdFormState extends State<IdForm> {
               context,
               MaterialPageRoute(
                   builder: (BuildContext) => CheckAuthentication(
-                      auth: widget
-                          .auth, userId: widget.userId,))); //Redirects to root page to figure out authorization status
+                        auth: widget.auth,
+                        userId: widget.userId,
+                      ))); //Redirects to root page to figure out authorization status
         });
   }
 
@@ -193,6 +195,7 @@ class _IdFormState extends State<IdForm> {
         cursorColor: Colors.deepOrangeAccent,
         maxLines: 1,
         decoration: InputDecoration(
+          border: InputBorder.none,
           labelStyle: TextStyle(fontFamily: 'SamsungOne'),
           labelText: 'Planetary First Name',
         ),
@@ -220,6 +223,7 @@ class _IdFormState extends State<IdForm> {
         cursorColor: Colors.deepOrangeAccent,
         maxLines: 1,
         decoration: InputDecoration(
+          border: InputBorder.none,
           labelStyle: TextStyle(fontFamily: 'SamsungOne'),
           labelText: 'Planetary Last Name',
         ),
@@ -243,11 +247,13 @@ class _IdFormState extends State<IdForm> {
       margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
       padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
       child: TextFormField(
+        maxLength: 9,
         keyboardType: TextInputType.number,
         focusNode: tNode,
         cursorColor: Colors.deepOrangeAccent,
-        maxLines: 1,
         decoration: InputDecoration(
+          border: InputBorder.none,
+          counterText: '',
           labelStyle: TextStyle(fontFamily: 'SamsungOne'),
           labelText: 'Planetary ID',
         ),

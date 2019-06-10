@@ -129,7 +129,10 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
         maxLines: 1,
         keyboardType: TextInputType.emailAddress,
         autofocus: false,
-        decoration: InputDecoration(labelText: 'Email'),
+        decoration: InputDecoration(
+          labelText: 'Email',
+          border: InputBorder.none,
+        ),
         validator: (String value) =>
             value.isEmpty ? 'Email can\'t be empty' : null,
         //Doesn't let user submit empty field
@@ -160,6 +163,7 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
         obscureText: true,
         focusNode: secondNode,
         decoration: InputDecoration(
+          border: InputBorder.none,
           labelStyle: TextStyle(fontFamily: 'SamsungOne'),
           labelText: 'Password',
         ),
@@ -353,7 +357,8 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
           _isLoading = false;
           switch (e.toString()) {
             case 'PlatformException(ERROR_USER_NOT_FOUND, There is no user record corresponding to this identifier. The user may have been deleted., null)':
-              _errorMessage = 'No record of visitor pass/citizenship in our databases';
+              _errorMessage =
+                  'No record of visitor pass/citizenship in our databases';
               break;
             case 'PlatformException(ERROR_WRONG_PASSWORD, The password is invalid or the user does not have a password., null)':
               _errorMessage = 'Wrong password';
@@ -367,7 +372,8 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
                   'Could not communicate to Mars Data Center - please check your network connection and try again';
               break;
             case 'PlatformException(ERROR_EMAIL_ALREADY_IN_USE, The email address is already in use by another account., null)':
-              _errorMessage = 'You already have a visitor pass/citizenship - log in instead';
+              _errorMessage =
+                  'You already have a visitor pass/citizenship - log in instead';
               break;
             default:
               _errorMessage =

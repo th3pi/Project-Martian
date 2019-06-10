@@ -63,8 +63,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        centerTitle: true,
-        title: Text(firstName),
+        title: Text('$firstName $lastName', style: TextStyle(fontWeight: FontWeight.bold),),
         actions: <Widget>[_showLogOutButton()],
       ),
       body: dataStatus == DataStatus.NOT_DETERMINED

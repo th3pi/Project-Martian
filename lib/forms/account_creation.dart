@@ -45,17 +45,18 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.deepOrange,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          centerTitle: true,
-          title: Text(
-            'Visitor Pass Application',
-            style: TextStyle(
-                color: Colors.deepOrangeAccent, fontWeight: FontWeight.bold),
-          ),
+      backgroundColor: Colors.deepOrange,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        centerTitle: true,
+        title: Text(
+          'Visitor Pass Application',
+          style: TextStyle(
+              color: Colors.deepOrangeAccent, fontWeight: FontWeight.bold),
         ),
-        body: _showBody(),);
+      ),
+      body: _showBody(),
+    );
   }
 
   bool _validateAndSave() {
@@ -187,6 +188,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         cursorColor: Colors.deepOrangeAccent,
         maxLines: 1,
         decoration: InputDecoration(
+          border: InputBorder.none,
           labelStyle: TextStyle(fontFamily: 'SamsungOne'),
           labelText: 'First Name',
         ),
@@ -214,6 +216,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         cursorColor: Colors.deepOrangeAccent,
         maxLines: 1,
         decoration: InputDecoration(
+          border: InputBorder.none,
           labelStyle: TextStyle(fontFamily: 'SamsungOne'),
           labelText: 'Last Name',
         ),
@@ -242,6 +245,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         cursorColor: Colors.deepOrangeAccent,
         maxLines: 1,
         decoration: InputDecoration(
+          border: InputBorder.none,
           labelStyle: TextStyle(fontFamily: 'SamsungOne'),
           labelText: 'Planet of Origin',
         ),
@@ -297,6 +301,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
             child: TextFormField(
               focusNode: fifthFocus,
               decoration: InputDecoration(
+                border: InputBorder.none,
                 hintText: 'Drom',
                 labelStyle: TextStyle(fontFamily: 'SamsungOne'),
                 labelText: 'Gender',
@@ -314,6 +319,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
               enableInteractiveSelection: true,
               focusNode: sixthFocus,
               decoration: InputDecoration(
+                border: InputBorder.none,
                 hintText: 'Homo sapiens',
                 labelStyle: TextStyle(fontFamily: 'SamsungOne'),
                 labelText: 'Species',
@@ -348,6 +354,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         cursorColor: Colors.deepOrangeAccent,
         maxLines: 1,
         decoration: InputDecoration(
+          border: InputBorder.none,
           labelStyle: TextStyle(fontFamily: 'SamsungOne'),
           labelText: 'Global Security ID',
         ),
