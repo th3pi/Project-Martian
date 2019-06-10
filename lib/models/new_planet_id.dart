@@ -50,4 +50,10 @@ class AddPlanetData {
       });
     });
   }
+
+  void deleteId(String planetName) {
+    Firestore.instance.runTransaction((Transaction tx) async {
+      await Firestore.instance.collection('users').document(userId).collection('planetary_ids').document(planetName).delete();
+    });
+  }
 }
