@@ -56,4 +56,6 @@ class AddPlanetData {
       await Firestore.instance.collection('users').document(userId).collection('planetary_ids').document(planetName).delete();
     });
   }
+
+
 }

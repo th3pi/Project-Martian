@@ -1,12 +1,17 @@
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'dart:convert';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:project_martian/services/auth_service.dart';
 import '../models/new_planet_id.dart';
 import '../services/authentication_check.dart';
+
+enum DbRetrieval { RETRIEVED, NOT_RETRIEVED }
+enum PlanetExists { ALREADY_EXISTS, NO_EXIST }
 
 class IdForm extends StatefulWidget {
   final String userId;
@@ -21,6 +26,8 @@ class IdForm extends StatefulWidget {
 }
 
 class _IdFormState extends State<IdForm> {
+  PlanetExists planetExists = PlanetExists.NO_EXIST;
+  DbRetrieval dbRetrieval = DbRetrieval.NOT_RETRIEVED;
   final _formKey = GlobalKey<FormState>();
   String userId,
       planetFirstName,
@@ -38,6 +45,8 @@ class _IdFormState extends State<IdForm> {
       flyingLicense,
       flyingLicenseValue;
   int issuedMonth, issuedYear, issuedDay;
+  List<Map<String, dynamic>> listOfIds = [];
+  List<String> listOfPlanets = [];
 
   FocusNode oNode = FocusNode(),
       tNode = FocusNode(),
@@ -74,9 +83,32 @@ class _IdFormState extends State<IdForm> {
                 color: Colors.deepOrangeAccent, fontWeight: FontWeight.bold),
           ),
         ),
-        body: _showBody(),
+        body: dbRetrieval == DbRetrieval.RETRIEVED
+            ? _showBody()
+            : _showLoadingScreen(),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Firestore.instance
+        .collection('users')
+        .document(widget.userId)
+        .collection('planetary_ids')
+        .snapshots()
+        .listen((snapshot) {
+      snapshot.documents.forEach((doc) {
+        setState(() {
+          dbRetrieval =
+              doc == null ? DbRetrieval.NOT_RETRIEVED : DbRetrieval.RETRIEVED;
+          if (doc != null) {
+            listOfPlanets.add(doc.documentID);
+          }
+        });
+      });
+    });
   }
 
   bool _validateAndSave() {
@@ -113,7 +145,51 @@ class _IdFormState extends State<IdForm> {
     }
   }
 
+  void _showPlanetAlreadyExistsNotification() {
+    Flushbar(
+      flushbarPosition: FlushbarPosition.TOP,
+      isDismissible: true,
+      reverseAnimationCurve: Curves.decelerate,
+      forwardAnimationCurve: Curves.elasticOut,
+      icon: Icon(
+        Icons.error_outline,
+        color: Colors.white,
+      ),
+      backgroundColor: Colors.red,
+      flushbarStyle: FlushbarStyle.FLOATING,
+      borderRadius: 3,
+      aroundPadding: EdgeInsets.all(15),
+      boxShadows: [
+        BoxShadow(
+          color: Colors.black87,
+          offset: Offset(0.0, 2.0),
+          blurRadius: 3.0,
+        )
+      ],
+      titleText: Text(
+        'ID Already Exists',
+        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      ),
+      messageText: Text(
+        'An ID for this planet already exists. If you wish to edit details please tap on the ID and click the pencil icon',
+        style: TextStyle(color: Colors.white),
+      ),
+      duration: Duration(seconds: 6),
+    ).show(context);
+  }
+
+  Widget _showLoadingScreen() {
+    return Scaffold(
+      body: Center(
+          child: SpinKitThreeBounce(
+        color: Colors.deepOrangeAccent,
+        duration: Duration(seconds: 3),
+      )),
+    );
+  }
+
   Widget _showBody() {
+    print(listOfPlanets);
     return Container(
       child: Form(
         key: _formKey,
@@ -151,7 +227,19 @@ class _IdFormState extends State<IdForm> {
               color: Colors.deepOrangeAccent,
               fontFamily: 'SamsungOne'),
         ),
-        onPressed: _validateAndSubmit,
+        onPressed: () {
+          setState(() {
+            if(listOfPlanets.contains(planetName)){
+              print(listOfPlanets.contains(planetName));
+              planetExists = PlanetExists.ALREADY_EXISTS;
+            }else{
+              planetExists = PlanetExists.NO_EXIST;
+            }
+          });
+          planetExists == PlanetExists.NO_EXIST
+              ? _validateAndSubmit()
+              : _showPlanetAlreadyExistsNotification();
+        },
       ),
     );
   }
