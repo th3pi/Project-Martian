@@ -189,7 +189,6 @@ class _IdFormState extends State<IdForm> {
   }
 
   Widget _showBody() {
-    print(listOfPlanets);
     return Container(
       child: Form(
         key: _formKey,

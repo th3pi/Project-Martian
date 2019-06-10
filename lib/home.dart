@@ -271,189 +271,192 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _cardInfoBottomSheet(index, context) {
-    print(listOfIds[index]['planetName']);
     showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
-          return ListView(physics: ClampingScrollPhysics(),children: <Widget>[
-            Column(
-              children: <Widget>[
-                Card(
-                  child: Image.asset(
-                    _planetImagePicker(listOfIds[index]['planetName']),
-                    height: 150,
-                    width: 1000,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Card(
-                  //Full Name card
-                  elevation: 5,
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                    width: double.infinity,
-                    child: Row(
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.only(left: 5),
-                          child: Text(
-                            'Local Name: ',
-                          ),
-                        ),
-                        Text(
-                          '${listOfIds[index]['planetFirstName']} ${listOfIds[index]['planetLastName']}',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
+          return Container(decoration: BoxDecoration(
+              gradient: LinearGradient(colors: [Colors.black38, Colors.black45])),
+            child: ListView(physics: ClampingScrollPhysics(),children: <Widget>[
+              Column(
+                children: <Widget>[
+                  Card(clipBehavior: Clip.antiAlias,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    elevation: 5,
+                    child: Image.asset(
+                      _planetImagePicker(listOfIds[index]['planetName']),
+                      height: 150,
+                      width: 1000,
+                      fit: BoxFit.cover,
                     ),
                   ),
-                ),
-                Card(
-                  // Planet Name Card
-                  elevation: 5,
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                    width: double.infinity,
-                    child: Row(
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.only(left: 5),
-                          child: Text(
-                            'Planet Name: ',
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Card(
+                    //Full Name card
+                    elevation: 5,
+                    child: Container(
+                      padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                      width: double.infinity,
+                      child: Row(
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.only(left: 5),
+                            child: Text(
+                              'Local Name: ',
+                            ),
                           ),
-                        ),
-                        Text(
-                          listOfIds[index]['planetName'],
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(left: 50),
-                          child: Text(
-                            'ID Type: ',
+                          Text(
+                            '${listOfIds[index]['planetFirstName']} ${listOfIds[index]['planetLastName']}',
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                        ),
-                        Text(
-                          listOfIds[index]['idType'],
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Card(
-                  // Planet Name Card
-                  elevation: 5,
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                    width: double.infinity,
-                    child: Row(
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.only(left: 5),
-                          child: Text(
-                            'ID Issued On: ',
+                  Card(
+                    // Planet Name Card
+                    elevation: 5,
+                    child: Container(
+                      padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                      width: double.infinity,
+                      child: Row(
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.only(left: 5),
+                            child: Text(
+                              'Planet Name: ',
+                            ),
                           ),
-                        ),
-                        Text(
-                          listOfIds[index]['dateIssued'],
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(left: 25),
-                          child: Text(
-                            'Date of Expiration: ',
+                          Text(
+                            listOfIds[index]['planetName'],
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                        ),
-                        Text(
-                          listOfIds[index]['dateOfExpiration'],
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
+                          Container(
+                            padding: EdgeInsets.only(left: 50),
+                            child: Text(
+                              'ID Type: ',
+                            ),
+                          ),
+                          Text(
+                            listOfIds[index]['idType'],
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Card(
-                  // Planet Name Card
-                  elevation: 5,
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                    width: double.infinity,
-                    child: Row(
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.only(left: 5),
-                          child: Text(
-                            'Planetary ID: ',
+                  Card(
+                    // Planet Name Card
+                    elevation: 5,
+                    child: Container(
+                      padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                      width: double.infinity,
+                      child: Row(
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.only(left: 5),
+                            child: Text(
+                              'ID Issued On: ',
+                            ),
                           ),
-                        ),
-                        Text(
-                          listOfIds[index]['planetaryId'],
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
+                          Text(
+                            listOfIds[index]['dateIssued'],
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(left: 25),
+                            child: Text(
+                              'Date of Expiration: ',
+                            ),
+                          ),
+                          Text(
+                            listOfIds[index]['dateOfExpiration'],
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Card(
-                  // Planet Name Card
-                  elevation: 5,
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                    width: double.infinity,
-                    child: Row(
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.only(left: 5),
-                          child: Text(
-                            'Criminal Record: ',
+                  Card(
+                    // Planet Name Card
+                    elevation: 5,
+                    child: Container(
+                      padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                      width: double.infinity,
+                      child: Row(
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.only(left: 5),
+                            child: Text(
+                              'Planetary ID: ',
+                            ),
                           ),
-                        ),
-                        Text(
-                          listOfIds[index]['criminalRecord'],
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(left: 50),
-                          child: Text(
-                            'Flying License: ',
+                          Text(
+                            listOfIds[index]['planetaryId'],
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                        ),
-                        Text(
-                          listOfIds[index]['flyingLicense'],
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                RaisedButton(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                  child: Text(
-                    'Delete ID',
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
+                  Card(
+                    // Planet Name Card
+                    elevation: 5,
+                    child: Container(
+                      padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                      width: double.infinity,
+                      child: Row(
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.only(left: 5),
+                            child: Text(
+                              'Criminal Record: ',
+                            ),
+                          ),
+                          Text(
+                            listOfIds[index]['criminalRecord'],
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(left: 50),
+                            child: Text(
+                              'Flying License: ',
+                            ),
+                          ),
+                          Text(
+                            listOfIds[index]['flyingLicense'],
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                  color: Colors.red,
-                  onPressed: () {
-                    AddPlanetData(
-                            userId: userId,
-                            planetName: listOfIds[index]['planetName'])
-                        .deleteId(listOfIds[index]['planetName']);
-                    Navigator.pop(context);
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext) => CheckAuthentication(
-                                  auth: widget.auth,
-                                  userId: userId,
-                                )));
-                  },
-                )
-              ],
-            ),
-          ]);
+                  RaisedButton(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    child: Text(
+                      'Delete ID',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                    color: Colors.red,
+                    onPressed: listOfIds[index]['planetName'] == 'Mars' ? null : () {
+                      AddPlanetData(
+                              userId: userId,
+                              planetName: listOfIds[index]['planetName'])
+                          .deleteId(listOfIds[index]['planetName']);
+                      Navigator.pop(context);
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext) => CheckAuthentication(
+                                    auth: widget.auth,
+                                    userId: userId,
+                                  )));
+                    },
+                  )
+                ],
+              ),
+            ]),
+          );
         });
   }
 
