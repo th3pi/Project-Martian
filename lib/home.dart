@@ -63,7 +63,10 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('$firstName $lastName', style: TextStyle(fontWeight: FontWeight.bold),),
+        title: Text(
+          '$firstName $lastName',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         actions: <Widget>[_showLogOutButton()],
       ),
       body: dataStatus == DataStatus.NOT_DETERMINED
@@ -150,7 +153,9 @@ class _HomePageState extends State<HomePage> {
     return ListView(children: <Widget>[
       _showUnverifiedEmailNotification(),
       _showHeader('Planetary IDs'),
-      _showIdCards()
+      _showIdCards(),
+      _showHeader('Bank of Mars'),
+      _bankCard(),
     ]);
   }
 
@@ -244,7 +249,7 @@ class _HomePageState extends State<HomePage> {
                       fontWeight: FontWeight.bold),
                 ))),
         Divider(
-          color: Colors.black54,
+          color: Colors.black12,
         ),
       ],
     );
@@ -274,12 +279,18 @@ class _HomePageState extends State<HomePage> {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
-          return Container(decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [Colors.black38, Colors.black45])),
-            child: ListView(physics: ClampingScrollPhysics(),children: <Widget>[
+          return Container(
+            decoration: BoxDecoration(
+                gradient:
+                    LinearGradient(colors: [Colors.white30, Colors.white])),
+            child:
+                ListView(physics: ClampingScrollPhysics(), children: <Widget>[
               Column(
                 children: <Widget>[
-                  Card(clipBehavior: Clip.antiAlias,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  Card(
+                    clipBehavior: Clip.antiAlias,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
                     elevation: 5,
                     child: Image.asset(
                       _planetImagePicker(listOfIds[index]['planetName']),
@@ -431,33 +442,131 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
-                  RaisedButton(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  RaisedButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5)),
                     child: Text(
                       'Delete ID',
                       style: TextStyle(
                           color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                     color: Colors.red,
-                    onPressed: listOfIds[index]['planetName'] == 'Mars' ? null : () {
-                      AddPlanetData(
-                              userId: userId,
-                              planetName: listOfIds[index]['planetName'])
-                          .deleteId(listOfIds[index]['planetName']);
-                      Navigator.pop(context);
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext) => CheckAuthentication(
-                                    auth: widget.auth,
+                    onPressed: listOfIds[index]['planetName'] == 'Mars'
+                        ? null
+                        : () {
+                            AddPlanetData(
                                     userId: userId,
-                                  )));
-                    },
+                                    planetName: listOfIds[index]['planetName'])
+                                .deleteId(listOfIds[index]['planetName']);
+                            Navigator.pop(context);
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext) =>
+                                        CheckAuthentication(
+                                          auth: widget.auth,
+                                          userId: userId,
+                                        )));
+                          },
                   )
                 ],
               ),
             ]),
           );
         });
+  }
+
+  Widget _bankCard() {
+    return Container(
+      height: 250,
+      width: double.infinity,
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        clipBehavior: Clip.antiAlias,
+        child: Container(decoration: BoxDecoration(color: Colors.deepOrange),
+          child: Column(
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Flexible(
+                    fit: FlexFit.tight,
+                    flex: 1,
+                    child: Container(
+                      height: 150,
+                      child: QrImage(
+                        backgroundColor: Colors.black12,
+                        data: userId,
+                        size: 200,
+                      ),
+                    ),
+                  ),
+                  Flexible(
+                    flex: 2,
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Column(
+                              children: <Widget>[
+                                Container(
+                                  padding: EdgeInsets.only(left: 20),
+                                    child: Column(
+                                  children: <Widget>[
+                                    Text('Acc. Number',style: TextStyle(fontSize: 10)),
+                                    Text('9876543214111', style: TextStyle(fontWeight: FontWeight.bold),),
+                                  ],
+                                )),
+                                SizedBox(
+                                  height: 25,
+                                )
+                              ],
+                            ),
+                            Column(
+                              children: <Widget>[
+                                Container(
+                                    padding: EdgeInsets.only(left: 20),
+                                    child: Column(
+                                      children: <Widget>[
+                                        Text('Date of Exp.',style: TextStyle(fontSize: 10),),
+                                        Text('03/17/1199', style: TextStyle(fontWeight: FontWeight.bold),),
+                                      ],
+                                    )),
+                                SizedBox(
+                                  height: 25,
+
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Column(
+                              children: <Widget>[
+                                Container(
+                                    padding: EdgeInsets.only(left: 20),
+                                    child: Column(
+                                      children: <Widget>[
+                                        Text('Name on Card',textAlign: TextAlign.left,style: TextStyle(fontSize: 10)),
+                                        Text('Tanjimul H. Bhuiyan', style: TextStyle(fontWeight: FontWeight.bold),),
+                                      ],
+                                    )),
+                                SizedBox(
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _idCards(int index, double scale) {
@@ -674,7 +783,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _showIdCards() {
     return Container(
-      height: 400,
+      height: 200,
       child: ListView(
         physics: BouncingScrollPhysics(),
         children: <Widget>[
