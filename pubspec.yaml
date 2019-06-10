@@ -67,6 +67,14 @@ flutter:
   # example:
   assets:
     - assets/mars.jpg
+    - assets/jupiter.jpg
+    - assets/mercury.jpg
+    - assets/neptune.jpg
+    - assets/venus.jpg
+    - assets/uranus.jpg
+    - assets/earth.jpg
+    - assets/saturn.jpg
+    - assets/space.jpg
   fonts:
     - family: SamsungOne
       fonts:
