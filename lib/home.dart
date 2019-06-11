@@ -81,8 +81,12 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+
+    //Initializes the ID cards carousel
     pageController =
         PageController(initialPage: 1, viewportFraction: viewportFraction);
+
+    //Shows email notification if email not verified
     widget.auth.isEmailVerified().then((value) {
       setState(() {
         if (value != null) {
@@ -90,6 +94,8 @@ class _HomePageState extends State<HomePage> {
         }
       });
     });
+
+    //Gets ID data from user
     Firestore.instance
         .collection('users')
         .document(widget.userId)
@@ -107,14 +113,16 @@ class _HomePageState extends State<HomePage> {
               dataStatus = data == null || value == null
                   ? DataStatus.NOT_DETERMINED
                   : DataStatus.DETERMINED;
-              numOfIds = value.documents.length + 1;
-              currentPage = numOfIds - 1;
             });
           });
+
+          //Gets user primary data
           fetchData(data);
         }
       });
     });
+
+    //get financial data from User's database
     finance = Finance(userId: widget.userId);
     finance.getBalance().then((value) {
       setState(() {
@@ -125,6 +133,8 @@ class _HomePageState extends State<HomePage> {
         }
       });
     });
+
+    //Gets a list of ids
     Firestore.instance
         .collection('users')
         .document(widget.userId)
@@ -133,6 +143,10 @@ class _HomePageState extends State<HomePage> {
         .listen((snapshot) {
       snapshot.documents.forEach((doc) {
         listOfIds.add(doc.data);
+        setState(() {
+          numOfIds = listOfIds.length+1;
+          currentPage = 0;
+        });
       });
     });
   }
