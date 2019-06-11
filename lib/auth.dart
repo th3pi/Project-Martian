@@ -325,21 +325,18 @@ class _UserOnBoardingState extends State<UserOnBoarding> {
           print('Signed in user: $userId');
         } else {
           userId = await widget.auth.signUp(_email, _password);
-          _showVerificationEmailNotification();
           widget.auth.sendEmailVerification();
-          Future.delayed(Duration(seconds: 4), () {
-            setState(() {
-              Navigator.pushReplacement(
-                  //If user doesn't exist, they are redirected to the account creation page.
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext) => CreateAccountPage(
-                            userId: userId,
-                            auth: widget.auth,
-                            email: _email,
-                            onCancel: widget.onCancel,
-                          )));
-            });
+          setState(() {
+            Navigator.pushReplacement(
+                //If user doesn't exist, they are redirected to the account creation page.
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext) => CreateAccountPage(
+                          userId: userId,
+                          auth: widget.auth,
+                          email: _email,
+                          onCancel: widget.onCancel,
+                        )));
           });
           print('Signed up user: $userId');
         }
