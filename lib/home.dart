@@ -8,7 +8,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'dart:math';
 
 import 'forms/id_form.dart';
-import 'models/new_planet_id.dart';
+import 'models/planet_data.dart';
 import 'services/authentication_check.dart';
 
 class HomePage extends StatefulWidget {
@@ -29,6 +29,7 @@ enum DataStatus { NOT_DETERMINED, DETERMINED }
 
 class _HomePageState extends State<HomePage> {
   UserData userData;
+
 
   PageController pageController;
   int currentPage = 2;
@@ -235,19 +236,17 @@ class _HomePageState extends State<HomePage> {
   Widget _showHeader(String text) {
     return Column(
       children: <Widget>[
-        Hero(
-            tag: 'marsLogo',
-            child: Container(
-                alignment: Alignment.topLeft,
-                padding: EdgeInsets.fromLTRB(10, 10, 0, 5),
-                child: Text(
-                  text,
-                  style: TextStyle(
-                      fontSize: 25,
-                      color: Colors.deepOrangeAccent,
-                      fontFamily: 'SamsungOne',
-                      fontWeight: FontWeight.bold),
-                ))),
+        Container(
+            alignment: Alignment.topLeft,
+            padding: EdgeInsets.fromLTRB(10, 10, 0, 5),
+            child: Text(
+              text,
+              style: TextStyle(
+                  fontSize: 25,
+                  color: Colors.deepOrangeAccent,
+                  fontFamily: 'SamsungOne',
+                  fontWeight: FontWeight.bold),
+            )),
         Divider(
           color: Colors.black12,
         ),
@@ -454,7 +453,7 @@ class _HomePageState extends State<HomePage> {
                     onPressed: listOfIds[index]['planetName'] == 'Mars'
                         ? null
                         : () {
-                            AddPlanetData(
+                            PlanetData(
                                     userId: userId,
                                     planetName: listOfIds[index]['planetName'])
                                 .deleteId(listOfIds[index]['planetName']);
@@ -612,39 +611,42 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ],
                         ),
-                        Row(
+                        Row(mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Column(
-                              children: <Widget>[
-                                Container(
-                                    padding: EdgeInsets.only(left: 20),
-                                    child: Column(
-                                      children: <Widget>[
-                                        Text('Name on Card',
-                                            textAlign: TextAlign.left,
+                            Container(
+                              padding: EdgeInsets.only(right: 10),
+                              child: Column(
+                                children: <Widget>[
+                                  Container(
+                                      padding: EdgeInsets.only(left: 20),
+                                      child: Column(
+                                        children: <Widget>[
+                                          Text('Name on Card',
+                                              textAlign: TextAlign.left,
+                                              style: TextStyle(
+                                                  fontSize: 10,
+                                                  color: Colors.white,
+                                                  shadows: [
+                                                    Shadow(
+                                                        blurRadius: 10,
+                                                        color: Colors.black38)
+                                                  ])),
+                                          Text(
+                                            'Tanjimul H. Bhuiyan',
                                             style: TextStyle(
-                                                fontSize: 10,
+                                                fontWeight: FontWeight.bold,
                                                 color: Colors.white,
                                                 shadows: [
                                                   Shadow(
                                                       blurRadius: 10,
                                                       color: Colors.black38)
-                                                ])),
-                                        Text(
-                                          'Tanjimul H. Bhuiyan',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white,
-                                              shadows: [
-                                                Shadow(
-                                                    blurRadius: 10,
-                                                    color: Colors.black38)
-                                              ]),
-                                        ),
-                                      ],
-                                    )),
-                                SizedBox()
-                              ],
+                                                ]),
+                                          ),
+                                        ],
+                                      )),
+                                  SizedBox()
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -678,11 +680,13 @@ class _HomePageState extends State<HomePage> {
                     ),
                     Container(
                       padding: EdgeInsets.only(left: 5),
-                      child: FlatButton(
+                      child: RaisedButton(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                        elevation: 1,
+                        color: Colors.blueAccent,
                           child: Text('Send',
                               style: TextStyle(
                                   color: Colors.white,
-                                  decoration: TextDecoration.underline,
                                   shadows: [
                                     Shadow(
                                         blurRadius: 10, color: Colors.black38)
@@ -691,15 +695,15 @@ class _HomePageState extends State<HomePage> {
                     ),
                     Container(
                       padding: EdgeInsets.only(left: 5),
-                      child: FlatButton(
+                      child: RaisedButton(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                          elevation: 1,
+                          color: Colors.green,
                           child: Text(
                             ' Deposit ',
                             style: TextStyle(
                                 color: Colors.white,
-                                decoration: TextDecoration.underline,
-                                shadows: [
-                                  Shadow(blurRadius: 10, color: Colors.black38)
-                                ]),
+                                ),
                           ),
                           onPressed: () {}),
                     ),
@@ -1060,7 +1064,7 @@ class _HomePageState extends State<HomePage> {
         return LinearGradient(
             begin: FractionalOffset.topRight,
             end: FractionalOffset.bottomLeft,
-            colors: [Colors.redAccent, Colors.orangeAccent]);
+            colors: [Colors.grey, Colors.brown]);
         break;
       case 'Neptune':
         return LinearGradient(

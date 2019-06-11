@@ -7,7 +7,7 @@ import 'dart:convert';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:project_martian/services/auth_service.dart';
-import '../models/new_planet_id.dart';
+import '../models/planet_data.dart';
 import '../services/authentication_check.dart';
 
 enum DbRetrieval { RETRIEVED, NOT_RETRIEVED }
@@ -26,6 +26,7 @@ class IdForm extends StatefulWidget {
 }
 
 class _IdFormState extends State<IdForm> {
+  PlanetData planetData;
   PlanetExists planetExists = PlanetExists.NO_EXIST;
   DbRetrieval dbRetrieval = DbRetrieval.NOT_RETRIEVED;
   final _formKey = GlobalKey<FormState>();
@@ -122,7 +123,7 @@ class _IdFormState extends State<IdForm> {
 
   void _validateAndSubmit() async {
     if (_validateAndSave()) {
-      AddPlanetData(
+      planetData = PlanetData(
           //Submits all the value to the database
           userId: widget.userId,
           accessLevel: accessLevel,
@@ -135,6 +136,7 @@ class _IdFormState extends State<IdForm> {
           planetFirstName: planetFirstName,
           planetLastName: planetLastName,
           planetName: planetName);
+      planetData.saveInfo();
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
