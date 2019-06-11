@@ -154,8 +154,8 @@ class _HomePageState extends State<HomePage> {
       _showUnverifiedEmailNotification(),
       _showHeader('Planetary IDs'),
       _showIdCards(),
-      _showHeader('Bank of Mars'),
-      _bankCard(),
+      _showHeader('Finance'),
+      _showBankCard(),
     ]);
   }
 
@@ -476,14 +476,23 @@ class _HomePageState extends State<HomePage> {
         });
   }
 
-  Widget _bankCard() {
+  Widget _showBankCard() {
     return Container(
-      height: 250,
+      height: 260,
       width: double.infinity,
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         clipBehavior: Clip.antiAlias,
-        child: Container(decoration: BoxDecoration(color: Colors.deepOrange),
+        child: Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: FractionalOffset.topRight,
+                  end: FractionalOffset.bottomLeft,
+                  colors: [
+                Colors.redAccent,
+                Colors.deepOrangeAccent,
+                Colors.red
+              ])),
           child: Column(
             children: <Widget>[
               Row(
@@ -492,11 +501,38 @@ class _HomePageState extends State<HomePage> {
                     fit: FlexFit.tight,
                     flex: 1,
                     child: Container(
-                      height: 150,
-                      child: QrImage(
-                        backgroundColor: Colors.black12,
-                        data: userId,
-                        size: 200,
+                      margin: EdgeInsets.fromLTRB(10, 10, 0, 0),
+                      padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                      height: 130,
+                      child: Center(
+                        child: Column(
+                          children: <Widget>[
+                            Container(alignment: Alignment.centerLeft,
+                              padding: EdgeInsets.only(top: 20),
+                              child: Text(
+                                'Bank of',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                    shadows: [
+                                      Shadow(
+                                          blurRadius: 10, color: Colors.black87)
+                                    ]),
+                              ),
+                            ),
+                            Text(
+                              'Mars',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  fontSize: 47,
+                                  shadows: [
+                                    Shadow(
+                                        blurRadius: 10, color: Colors.black87)
+                                  ]),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -509,13 +545,31 @@ class _HomePageState extends State<HomePage> {
                             Column(
                               children: <Widget>[
                                 Container(
-                                  padding: EdgeInsets.only(left: 20),
+                                    padding: EdgeInsets.only(left: 20),
                                     child: Column(
-                                  children: <Widget>[
-                                    Text('Acc. Number',style: TextStyle(fontSize: 10)),
-                                    Text('9876543214111', style: TextStyle(fontWeight: FontWeight.bold),),
-                                  ],
-                                )),
+                                      children: <Widget>[
+                                        Text('Acc. Number',
+                                            style: TextStyle(
+                                                fontSize: 10,
+                                                color: Colors.white,
+                                                shadows: [
+                                                  Shadow(
+                                                      blurRadius: 5,
+                                                      color: Colors.black38)
+                                                ])),
+                                        Text(
+                                          '9876543214111',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                              shadows: [
+                                                Shadow(
+                                                    blurRadius: 5,
+                                                    color: Colors.black38)
+                                              ]),
+                                        ),
+                                      ],
+                                    )),
                                 SizedBox(
                                   height: 25,
                                 )
@@ -527,13 +581,32 @@ class _HomePageState extends State<HomePage> {
                                     padding: EdgeInsets.only(left: 20),
                                     child: Column(
                                       children: <Widget>[
-                                        Text('Date of Exp.',style: TextStyle(fontSize: 10),),
-                                        Text('03/17/1199', style: TextStyle(fontWeight: FontWeight.bold),),
+                                        Text(
+                                          'Date of Exp.',
+                                          style: TextStyle(
+                                              fontSize: 10,
+                                              color: Colors.white,
+                                              shadows: [
+                                                Shadow(
+                                                    blurRadius: 10,
+                                                    color: Colors.black38)
+                                              ]),
+                                        ),
+                                        Text(
+                                          '03/17/1199',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                              shadows: [
+                                                Shadow(
+                                                    blurRadius: 10,
+                                                    color: Colors.black38)
+                                              ]),
+                                        ),
                                       ],
                                     )),
                                 SizedBox(
                                   height: 25,
-
                                 )
                               ],
                             ),
@@ -547,12 +620,30 @@ class _HomePageState extends State<HomePage> {
                                     padding: EdgeInsets.only(left: 20),
                                     child: Column(
                                       children: <Widget>[
-                                        Text('Name on Card',textAlign: TextAlign.left,style: TextStyle(fontSize: 10)),
-                                        Text('Tanjimul H. Bhuiyan', style: TextStyle(fontWeight: FontWeight.bold),),
+                                        Text('Name on Card',
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                                fontSize: 10,
+                                                color: Colors.white,
+                                                shadows: [
+                                                  Shadow(
+                                                      blurRadius: 10,
+                                                      color: Colors.black38)
+                                                ])),
+                                        Text(
+                                          'Tanjimul H. Bhuiyan',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                              shadows: [
+                                                Shadow(
+                                                    blurRadius: 10,
+                                                    color: Colors.black38)
+                                              ]),
+                                        ),
                                       ],
                                     )),
-                                SizedBox(
-                                )
+                                SizedBox()
                               ],
                             ),
                           ],
@@ -562,6 +653,88 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
+              Container(
+                padding: EdgeInsets.fromLTRB(10, 0, 0, 5),
+                child: Row(
+                  children: <Widget>[
+                    Text(
+                      'Current Balance: ',
+                      style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.white,
+                          shadows: [
+                            Shadow(blurRadius: 10, color: Colors.black38)
+                          ]),
+                    ),
+                    Text(
+                      '\$3269.89',
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          shadows: [
+                            Shadow(blurRadius: 10, color: Colors.black38)
+                          ]),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(left: 5),
+                      child: FlatButton(
+                          child: Text('Send',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  decoration: TextDecoration.underline,
+                                  shadows: [
+                                    Shadow(
+                                        blurRadius: 10, color: Colors.black38)
+                                  ])),
+                          onPressed: () {}),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(left: 5),
+                      child: FlatButton(
+                          child: Text(
+                            ' Deposit ',
+                            style: TextStyle(
+                                color: Colors.white,
+                                decoration: TextDecoration.underline,
+                                shadows: [
+                                  Shadow(blurRadius: 10, color: Colors.black38)
+                                ]),
+                          ),
+                          onPressed: () {}),
+                    ),
+                  ],
+                ),
+              ),
+              Card(
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.fromLTRB(10, 5, 0, 0),
+                      width: double.infinity,
+                      child: Text(
+                        'Most Recent Transaction',
+                        style: TextStyle(fontSize: 10),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(10, 2, 10, 5),
+                      width: double.infinity,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text('Vivenddi Corp',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          Text(
+                            '\$55.87',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              )
             ],
           ),
         ),
