@@ -10,6 +10,7 @@ import 'dart:math';
 import 'forms/id_form.dart';
 import 'models/planet_data.dart';
 import 'services/authentication_check.dart';
+import 'models/finance_data.dart';
 
 class HomePage extends StatefulWidget {
   final BaseAuth auth;
@@ -29,7 +30,7 @@ enum DataStatus { NOT_DETERMINED, DETERMINED }
 
 class _HomePageState extends State<HomePage> {
   UserData userData;
-
+  Finance finance;
 
   PageController pageController;
   int currentPage = 2;
@@ -126,7 +127,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   void fetchData(DocumentSnapshot data) {
-    userData = UserData(widget.userId);
     firstName = data.data['firstName'];
     lastName = data.data['lastName'];
     dateOfBirth = data.data['dateOfBirth'];
@@ -572,7 +572,7 @@ class _HomePageState extends State<HomePage> {
                                 SizedBox(
                                   height: 25,
                                 )
-                              ],
+                              ], mainAxisAlignment: MainAxisAlignment.end,
                             ),
                             Column(
                               children: <Widget>[
@@ -656,8 +656,8 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
               Container(
-                padding: EdgeInsets.fromLTRB(10, 0, 0, 5),
-                child: Row(
+                padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
+                child: Row(mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     Text(
                       'Current Balance: ',
@@ -669,7 +669,7 @@ class _HomePageState extends State<HomePage> {
                           ]),
                     ),
                     Text(
-                      '\$3269.89',
+                      '\$300',
                       style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -678,35 +678,35 @@ class _HomePageState extends State<HomePage> {
                             Shadow(blurRadius: 10, color: Colors.black38)
                           ]),
                     ),
-                    Container(
-                      padding: EdgeInsets.only(left: 5),
-                      child: RaisedButton(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                        elevation: 1,
-                        color: Colors.blueAccent,
-                          child: Text('Send',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  shadows: [
-                                    Shadow(
-                                        blurRadius: 10, color: Colors.black38)
-                                  ])),
-                          onPressed: () {}),
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(left: 5),
-                      child: RaisedButton(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                          elevation: 1,
-                          color: Colors.green,
-                          child: Text(
-                            ' Deposit ',
-                            style: TextStyle(
-                                color: Colors.white,
-                                ),
-                          ),
-                          onPressed: () {}),
-                    ),
+//                    Container(
+//                      padding: EdgeInsets.only(left: 5),
+//                      child: RaisedButton(
+//                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+//                        elevation: 1,
+//                        color: Colors.blueAccent,
+//                          child: Text('Send',
+//                              style: TextStyle(
+//                                  color: Colors.white,
+//                                  shadows: [
+//                                    Shadow(
+//                                        blurRadius: 10, color: Colors.black38)
+//                                  ])),
+//                          onPressed: () {}),
+//                    ),
+//                    Container(
+//                      padding: EdgeInsets.only(left: 5),
+//                      child: RaisedButton(
+//                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+//                          elevation: 1,
+//                          color: Colors.green,
+//                          child: Text(
+//                            ' Deposit ',
+//                            style: TextStyle(
+//                                color: Colors.white,
+//                                ),
+//                          ),
+//                          onPressed: () {}),
+//                    ),
                   ],
                 ),
               ),

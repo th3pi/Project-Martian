@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:project_martian/models/planet_data.dart';
 
 import '../services/auth_service.dart';
 import '../services/authentication_check.dart';
 import '../models/new_user.dart';
+import '../models/finance_data.dart';
 
 class CreateAccountPage extends StatefulWidget {
   final String userId; //Holds userId
@@ -21,6 +23,9 @@ class CreateAccountPage extends StatefulWidget {
 
 class _CreateAccountPageState extends State<CreateAccountPage> {
   final _formKey = GlobalKey<FormState>();
+  PlanetData planetData;
+  User user;
+  Finance finance;
   String _firstName,
       _lastName,
       _motherPlanet,
@@ -71,7 +76,22 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   void _validateAndSubmit() async {
     if (_validateAndSave()) {
       print(_firstName);
-      User(
+      finance = Finance(userId: widget.userId);
+      finance.setBalance(300.00);
+      planetData = PlanetData(
+          planetName: 'Mars',
+          userId: widget.userId,
+          planetLastName: _lastName,
+          planetFirstName: _firstName,
+          idType: 'Visitor',
+          planetaryId: _gsid.toString(),
+          flyingLicense: 'Yes',
+          dateOfExpiration: '04/05/3010',
+          dateIssued: '05/02/2900',
+          criminalRecord: 'No',
+          accessLevel: '1');
+      planetData.saveInfo();
+      user = User(
           //Submits all the value to the database
           userId: widget.userId,
           firstName: _firstName,
