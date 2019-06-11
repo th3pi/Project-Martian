@@ -50,6 +50,7 @@ class _HomePageState extends State<HomePage> {
       email,
       gender;
   num gsid;
+  String balance;
   bool martian;
   int numOfIds;
   List<Map<String, dynamic>> listOfIds = [];
@@ -111,6 +112,16 @@ class _HomePageState extends State<HomePage> {
             });
           });
           fetchData(data);
+        }
+      });
+    });
+    finance = Finance(userId: widget.userId);
+    finance.getBalance().then((value) {
+      setState(() {
+        dataStatus = value == null ? DataStatus.NOT_DETERMINED : DataStatus.DETERMINED;
+        if(value != null) {
+          balance = value.toStringAsFixed(2);
+          print(balance);
         }
       });
     });
@@ -506,7 +517,8 @@ class _HomePageState extends State<HomePage> {
                       child: Center(
                         child: Column(
                           children: <Widget>[
-                            Container(alignment: Alignment.centerLeft,
+                            Container(
+                              alignment: Alignment.centerLeft,
                               padding: EdgeInsets.only(top: 20),
                               child: Text(
                                 'Bank of',
@@ -572,7 +584,8 @@ class _HomePageState extends State<HomePage> {
                                 SizedBox(
                                   height: 25,
                                 )
-                              ], mainAxisAlignment: MainAxisAlignment.end,
+                              ],
+                              mainAxisAlignment: MainAxisAlignment.end,
                             ),
                             Column(
                               children: <Widget>[
@@ -611,7 +624,8 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ],
                         ),
-                        Row(mainAxisAlignment: MainAxisAlignment.center,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Container(
                               padding: EdgeInsets.only(right: 10),
@@ -657,7 +671,8 @@ class _HomePageState extends State<HomePage> {
               ),
               Container(
                 padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
-                child: Row(mainAxisAlignment: MainAxisAlignment.end,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     Text(
                       'Current Balance: ',
@@ -669,7 +684,7 @@ class _HomePageState extends State<HomePage> {
                           ]),
                     ),
                     Text(
-                      '\$300',
+                      '\$$balance',
                       style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,

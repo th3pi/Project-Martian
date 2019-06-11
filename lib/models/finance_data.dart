@@ -23,18 +23,16 @@ class Finance {
     });
   }
 
-  void setBalance(double amount) {
-    Firestore.instance.runTransaction((Transaction transaction) async {
-      await Firestore.instance
-          .collection('users')
-          .document(userId)
-          .collection('finance')
-          .document('balance')
-          .setData({'balance': amount});
-    });
+  Future<void> setBalance(double amount) async {
+    await Firestore.instance
+        .collection('users')
+        .document(userId)
+        .collection('finance')
+        .document('balance')
+        .setData({'balance': amount});
   }
 
-  void getBalance() async {
+  Future<double> getBalance() async {
     await Firestore.instance
         .collection('users')
         .document(userId)
@@ -43,7 +41,7 @@ class Finance {
         .get()
         .then((value) {
       balance = value.data['balance'];
-      print((balance));
     });
+    return balance;
   }
 }
