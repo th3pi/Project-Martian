@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
-          '$firstName $lastName',
+          dataStatus == DataStatus.NOT_DETERMINED ? 'Loading...' : '$firstName $lastName',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: <Widget>[_showLogOutButton()],
