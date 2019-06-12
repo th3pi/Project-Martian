@@ -36,7 +36,6 @@ class User {
         .get()
         .then((value) {
       userData = value.data;
-      print(userData);
     });
     return userData;
   }
