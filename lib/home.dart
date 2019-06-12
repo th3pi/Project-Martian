@@ -13,6 +13,8 @@ import 'services/authentication_check.dart';
 import 'models/finance_data.dart';
 import 'package:project_martian/widgets/bank_card.dart';
 import 'widgets/id_card.dart';
+import 'widgets/email_verification.dart';
+import 'widgets/header.dart';
 
 class HomePage extends StatefulWidget {
   final BaseAuth auth;
@@ -33,15 +35,6 @@ enum DataStatus { NOT_DETERMINED, DETERMINED }
 class _HomePageState extends State<HomePage> {
   UserData userData;
   Finance finance;
-
-  PageController pageController;
-  int currentPage = 2;
-  double page = 2.0;
-  double scaleFraction = 0.7,
-      fullScale = 1.0,
-      pagerHeight = 200,
-      viewportFraction = 0.95;
-
   String userId,
       firstName = '',
       lastName,
@@ -55,13 +48,7 @@ class _HomePageState extends State<HomePage> {
   String balance;
   bool martian;
   int numOfIds;
-  List<Map<String, dynamic>> listOfIds = [];
-
-  String _errorMessage = 'Resending Verification Email',
-      _errorDetails =
-          'Please check your inbox - LOG OUT and LOG BACK IN to activate your account';
   DataStatus dataStatus = DataStatus.NOT_DETERMINED;
-  bool _status;
 
   @override
   Widget build(BuildContext context) {
@@ -83,20 +70,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-
-    //Initializes the ID cards carousel
-    pageController =
-        PageController(initialPage: currentPage, viewportFraction: viewportFraction);
-
-    //Shows email notification if email not verified
-    widget.auth.isEmailVerified().then((value) {
-      setState(() {
-        if (value != null) {
-          _status = value;
-        }
-      });
-    });
-
     //Gets ID data from user
     Firestore.instance
         .collection('users')
@@ -135,22 +108,6 @@ class _HomePageState extends State<HomePage> {
         }
       });
     });
-
-    //Gets a list of ids
-    Firestore.instance
-        .collection('users')
-        .document(widget.userId)
-        .collection('planetary_ids')
-        .snapshots()
-        .listen((snapshot) {
-      snapshot.documents.forEach((doc) {
-        listOfIds.add(doc.data);
-        setState(() {
-          numOfIds = listOfIds.length+1;
-          currentPage = 0;
-        });
-      });
-    });
   }
 
   void fetchData(DocumentSnapshot data) {
@@ -180,105 +137,15 @@ class _HomePageState extends State<HomePage> {
   Widget _showBody() {
     return ListView(children: <Widget>[
       _showUnverifiedEmailNotification(),
-      _showHeader('Planetary IDs'),
+      Header(text: 'Planetary IDs'),
       _showIdCards(),
-      _showHeader('Finance'),
+      Header(text: 'Finance'),
       _showBankCard(),
     ]);
   }
 
   Widget _showUnverifiedEmailNotification() {
-    return Container(
-      padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-      decoration: BoxDecoration(color: Colors.red),
-      height: !_status ? 85 : 0,
-      child: Column(
-        children: <Widget>[
-          Center(
-            child: Text(
-              'Email not verified - Banking, Comms and Social Feed disabled',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              FlatButton(
-                onPressed: () {
-                  _showVerificationEmailNotification();
-                  _sendEmailVerification();
-                },
-                child: Text(
-                  'Resend Verification',
-                  style: TextStyle(
-                      color: Colors.white,
-                      decoration: TextDecoration.underline),
-                ),
-              )
-            ],
-          )
-        ],
-      ),
-    );
-  }
-
-  void _showVerificationEmailNotification() {
-    Flushbar(
-      flushbarPosition: FlushbarPosition.TOP,
-      isDismissible: true,
-      reverseAnimationCurve: Curves.decelerate,
-      forwardAnimationCurve: Curves.elasticOut,
-      icon: Icon(
-        Icons.info_outline,
-        color: Colors.white,
-      ),
-      backgroundColor: Colors.black87,
-      flushbarStyle: FlushbarStyle.FLOATING,
-      borderRadius: 3,
-      aroundPadding: EdgeInsets.all(15),
-      showProgressIndicator: true,
-      boxShadows: [
-        BoxShadow(
-          color: Colors.black26,
-          offset: Offset(0.0, 2.0),
-          blurRadius: 3.0,
-        )
-      ],
-      titleText: Text(
-        _errorMessage,
-        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-      ),
-      messageText: Text(
-        _errorDetails,
-        style: TextStyle(color: Colors.white),
-      ),
-      duration: Duration(seconds: 6),
-    ).show(context);
-  }
-
-  void _sendEmailVerification() async {
-    await widget.auth.sendEmailVerification();
-  }
-
-  Widget _showHeader(String text) {
-    return Column(
-      children: <Widget>[
-        Container(
-            alignment: Alignment.topLeft,
-            padding: EdgeInsets.fromLTRB(10, 10, 0, 5),
-            child: Text(
-              text,
-              style: TextStyle(
-                  fontSize: 25,
-                  color: Colors.deepOrangeAccent,
-                  fontFamily: 'SamsungOne',
-                  fontWeight: FontWeight.bold),
-            )),
-        Divider(
-          color: Colors.black12,
-        ),
-      ],
-    );
+    return VerifyEmail(auth: widget.auth,);
   }
 
   Widget _showLogOutButton() {
