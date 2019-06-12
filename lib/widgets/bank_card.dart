@@ -7,7 +7,6 @@ class BankCard extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Hero(
       tag: 'bankCard',
       child: Container(

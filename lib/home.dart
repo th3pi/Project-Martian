@@ -15,6 +15,7 @@ import 'package:project_martian/widgets/bank_card.dart';
 import 'widgets/id_card.dart';
 import 'widgets/email_verification.dart';
 import 'widgets/header.dart';
+import 'bank.dart';
 
 class HomePage extends StatefulWidget {
   final BaseAuth auth;
@@ -173,6 +174,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _showBankCard() {
-    return BankCard(balance: balance,);
+    return InkWell(onTap: () {
+      Navigator.push(context, MaterialPageRoute(builder: (BuildContext) => Bank(balance: balance,)));
+    },child: BankCard(balance: balance,));
   }
 }
