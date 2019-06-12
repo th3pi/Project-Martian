@@ -1,35 +1,59 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 
-class UserData {
-  String userId;
-  Map<String, dynamic> allData;
-  DocumentReference document;
+class User {
+  String key;
+  String userId,
+      firstName,
+      lastName,
+      mother_planet,
+      dateOfBirth,
+      species,
+      email,
+      reason,
+      gender;
+  num gsid;
+  bool martian;
+  Map<String, dynamic> userData;
 
-  UserData(this.userId);
+  User(
+      {this.key,
+      this.firstName,
+      this.lastName,
+      this.mother_planet,
+      this.gsid,
+      this.userId,
+      this.species,
+      this.dateOfBirth,
+      this.gender,
+      this.email,
+      this.martian,
+      this.reason});
 
-  Map<String, dynamic> getAllData() {
-    _setAllData();
-    return allData;
+  Future<Map<String, dynamic>> getAllData() async {
+    await Firestore.instance
+        .collection('users')
+        .document(userId)
+        .get()
+        .then((value) {
+      userData = value.data;
+      print(userData);
+    });
+    return userData;
   }
 
-  void _setAllData() async  {
-    await Firestore.instance.collection('users').document(userId).get().then((value) {
-      if (value != null) {
-        allData = {
-          'firstName': value.data['firstName'],
-          'lastName': value.data['lastName'],
-          'email': value.data['email'],
-          'dateOfBirth': value.data['dateOfBirth'],
-          'gender': value.data['gender'],
-          'gsid': value.data['gsid'],
-          'martian': value.data['martian'],
-          'mother_planet': value.data['mother_planet'],
-          'reason': value.data['reason'],
-          'species': value.data['species'],
-          'userId': value.data['userId'],
-        };
-      }
+  Future<void> saveInfo() async {
+    await Firestore.instance.collection('users').document(userId).setData({
+      'userId': userId,
+      'firstName': firstName,
+      'lastName': lastName,
+      'mother_planet': mother_planet,
+      'gsid': gsid,
+      'species': species,
+      'gender': gender,
+      'dateOfBirth': dateOfBirth,
+      'email': email,
+      'reason': reason,
+      'martian': martian
     });
   }
 }

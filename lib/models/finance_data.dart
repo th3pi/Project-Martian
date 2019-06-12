@@ -6,6 +6,7 @@ import 'package:random_string/random_string.dart';
 class Finance {
   String userId, name, transactionType;
   double balance;
+  Map<String, dynamic> financeData;
   var transactionId = Uuid();
 
   Finance({this.userId, this.balance, this.name});
@@ -25,13 +26,31 @@ class Finance {
     });
   }
 
+  Future<Map<String, dynamic>> getData() async {
+    await Firestore.instance
+        .collection('users')
+        .document(userId)
+        .collection('finance')
+        .document('accountDetails')
+        .get()
+        .then((value) {
+      financeData = value.data;
+    });
+    return financeData;
+  }
+
   Future<void> createNewFinanceAccount() async {
     await Firestore.instance
         .collection('users')
         .document(userId)
         .collection('finance')
-        .document('balance')
-        .setData({'balance': 0, 'accNumber': randomString(12), 'name' : name, 'dateOfExpiration' : '03/19/3010'});
+        .document('accountDetails')
+        .setData({
+      'balance': 00.86,
+      'accNumber': randomNumeric(12),
+      'name': name,
+      'dateOfExpiration': '03/19/3010'
+    });
   }
 
   Future<double> getBalance() async {
@@ -39,7 +58,7 @@ class Finance {
         .collection('users')
         .document(userId)
         .collection('finance')
-        .document('balance')
+        .document('accountDetails')
         .get()
         .then((value) {
       balance = value.data['balance'];

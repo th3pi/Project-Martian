@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'widgets/bank_card.dart';
+import 'models/finance_data.dart';
 
 class Bank extends StatefulWidget {
-  final String balance;
+  final String userId;
 
-  Bank({this.balance});
+  Bank({this.userId});
 
   @override
   State<StatefulWidget> createState() {
@@ -14,14 +15,25 @@ class Bank extends StatefulWidget {
 }
 
 class _BankState extends State<Bank> {
+  Finance finance;
+
+  @override
+  void initState() {
+    super.initState();
+    finance = Finance(userId: widget.userId);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Bank of Mars'),
+        title: Text(
+          'Financial Details',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
       body: BankCard(
-        balance: widget.balance,
+        userId: widget.userId,
       ),
     );
   }

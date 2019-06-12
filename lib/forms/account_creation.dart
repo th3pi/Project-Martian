@@ -4,7 +4,7 @@ import 'package:project_martian/models/planet_data.dart';
 
 import '../services/auth_service.dart';
 import '../services/authentication_check.dart';
-import '../models/new_user.dart';
+import '../models/user_data.dart';
 import '../models/finance_data.dart';
 
 class CreateAccountPage extends StatefulWidget {
@@ -104,6 +104,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           email: widget.email,
           reason: _reason,
           martian: false);
+      user.saveInfo();
       Navigator.pushReplacement(
           //User is the logged in sent to home page by the RootPage
           context,
