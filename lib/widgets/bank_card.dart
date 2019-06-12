@@ -1,10 +1,26 @@
 import 'package:flutter/material.dart';
 
-class BankCard extends StatelessWidget{
-  final String balance;
+import 'package:project_martian/models/finance_data.dart';
 
-  BankCard({this.balance});
+class BankCard extends StatefulWidget {
+  final String name, balance, accNumber;
 
+  BankCard({this.name, this.balance, this.accNumber});
+
+  @override
+  State<StatefulWidget> createState() {
+    return _BankCardState();
+  }
+}
+
+class _BankCardState extends State<BankCard>{
+  Finance finance;
+
+  @override
+  void initState() {
+    super.initState();
+    finance = Finance(name: name, balance: balance, userId: userId);
+  }
   @override
   Widget build(BuildContext context) {
     return Hero(

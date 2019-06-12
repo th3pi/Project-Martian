@@ -76,8 +76,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   void _validateAndSubmit() async {
     if (_validateAndSave()) {
       print(_firstName);
-      finance = Finance(userId: widget.userId);
-      finance.setBalance(300.00);
+      finance = Finance(userId: widget.userId, name: '$_firstName $_lastName');
+      finance.createNewFinanceAccount();
       planetData = PlanetData(
           planetName: 'Mars',
           userId: widget.userId,

@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
+import 'dart:math';
+import 'package:random_string/random_string.dart';
 
 class Finance {
-  String userId, transactionType;
+  String userId, name, transactionType;
   double balance;
   var transactionId = Uuid();
 
-  Finance({this.userId, this.balance});
+  Finance({this.userId, this.balance, this.name});
 
   void sendMoney(double amount) {
     Firestore.instance.runTransaction((Transaction transaction) async {
@@ -23,13 +25,13 @@ class Finance {
     });
   }
 
-  Future<void> setBalance(double amount) async {
+  Future<void> createNewFinanceAccount() async {
     await Firestore.instance
         .collection('users')
         .document(userId)
         .collection('finance')
         .document('balance')
-        .setData({'balance': amount});
+        .setData({'balance': 0, 'accNumber': randomString(12), 'name' : name, 'dateOfExpiration' : '03/19/3010'});
   }
 
   Future<double> getBalance() async {
