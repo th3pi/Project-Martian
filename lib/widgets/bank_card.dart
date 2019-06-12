@@ -10,6 +10,7 @@ class BankCard extends StatelessWidget{
     return Hero(
       tag: 'bankCard',
       child: Container(
+        padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
         height: 260,
         width: double.infinity,
         child: Card(
@@ -41,7 +42,7 @@ class BankCard extends StatelessWidget{
                             children: <Widget>[
                               Container(
                                 alignment: Alignment.centerLeft,
-                                padding: EdgeInsets.only(top: 20),
+                                padding: EdgeInsets.fromLTRB(5,35,0,0),
                                 child: Text(
                                   'Bank of',
                                   style: TextStyle(
@@ -58,7 +59,7 @@ class BankCard extends StatelessWidget{
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
-                                    fontSize: 47,
+                                    fontSize: 40,
                                     shadows: [
                                       Shadow(
                                           blurRadius: 10, color: Colors.black87)
