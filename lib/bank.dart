@@ -112,7 +112,13 @@ class _BankState extends State<Bank> {
                   style: TextStyle(
                       color: Colors.white, fontWeight: FontWeight.bold),
                 ),
-                onPressed: () {},
+                onPressed: () { finance.sendMoney(200, balance).then((value){
+                  setState(() {
+                    balance -= 200;
+                    finance.setBalance(balance);
+                  });
+                }
+                );},
               ),
             )
           ],

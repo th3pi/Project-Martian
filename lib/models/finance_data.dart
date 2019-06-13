@@ -1,18 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
-import 'dart:math';
 import 'package:random_string/random_string.dart';
 
 class Finance {
   String userId, name, transactionType;
   double balance;
   Map<String, dynamic> financeData;
+  List<Map<String, dynamic>> sortedTransactions = [];
   CollectionReference reference;
   var transactionId = Uuid();
 
   Finance({this.userId, this.balance, this.name});
 
-  Future<void> sendMoney(double amount) async {
+  Future<void> sendMoney(double amount, double balance) async {
     await Firestore.instance
         .collection('users')
         .document(userId)
@@ -88,11 +88,17 @@ class Finance {
     });
     return balance;
   }
-
+  
   Future<CollectionReference> checkForBalanceChanges() async {
     reference =
         Firestore.instance.collection('users').document(userId).collection(
             'finance');
     return reference;
+  }
+  
+  Future<List<Map<String, dynamic>>> getTransactionsSorted() async {
+    await Firestore.instance.collection('users').document(userId).collection('transactions').orderBy('timeOfTransaction').getDocuments().then((data){
+      sortedTransactions = data.documents;  //TODO: Fix this
+    });
   }
 }
