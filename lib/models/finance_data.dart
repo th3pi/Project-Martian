@@ -21,6 +21,7 @@ class Finance {
         .setData({
       'userId': userId,
       'transactionType': 'send',
+      'timeOfTransaction' : FieldValue.serverTimestamp(),
       'balance': balance - amount
     });
   }
@@ -34,6 +35,7 @@ class Finance {
         .setData({
       'userId': userId,
       'transactionType': 'deposit',
+      'timeOfTransaction' : FieldValue.serverTimestamp(),
       'balance': balance + amount
     });
   }
