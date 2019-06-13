@@ -7,22 +7,34 @@ class Finance {
   String userId, name, transactionType;
   double balance;
   Map<String, dynamic> financeData;
+  CollectionReference reference;
   var transactionId = Uuid();
 
   Finance({this.userId, this.balance, this.name});
 
-  void sendMoney(double amount) {
-    Firestore.instance.runTransaction((Transaction transaction) async {
-      await Firestore.instance
-          .collection('users')
-          .document(userId)
-          .collection('transactions')
-          .document(transactionId.v4())
-          .setData({
-        'userId': userId,
-        'transactionType': 'send',
-        'balance': balance - amount
-      });
+  Future<void> sendMoney(double amount) async {
+    await Firestore.instance
+        .collection('users')
+        .document(userId)
+        .collection('transactions')
+        .document(transactionId.v4())
+        .setData({
+      'userId': userId,
+      'transactionType': 'send',
+      'balance': balance - amount
+    });
+  }
+
+  Future<void> depositMoney(double amount, double balance) async {
+    await Firestore.instance
+        .collection('users')
+        .document(userId)
+        .collection('transactions')
+        .document(transactionId.v4())
+        .setData({
+      'userId': userId,
+      'transactionType': 'deposit',
+      'balance': balance + amount
     });
   }
 
@@ -53,6 +65,15 @@ class Finance {
     });
   }
 
+  Future<void> setBalance(double amount) async {
+    await Firestore.instance
+        .collection('users')
+        .document(userId)
+        .collection('finance')
+        .document('accountDetails')
+        .updateData({'balance': amount});
+  }
+
   Future<double> getBalance() async {
     await Firestore.instance
         .collection('users')
@@ -64,5 +85,12 @@ class Finance {
       balance = value.data['balance'];
     });
     return balance;
+  }
+
+  Future<CollectionReference> checkForBalanceChanges() async {
+    reference =
+        Firestore.instance.collection('users').document(userId).collection(
+            'finance');
+    return reference;
   }
 }

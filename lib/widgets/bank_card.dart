@@ -38,6 +38,16 @@ class _BankCardState extends State<BankCard> {
           dateOfExpiration = financeData['dateOfExpiration'];
           name = financeData['name'];
         }
+        finance.checkForBalanceChanges().then((data) {
+          data.snapshots().listen((value) {
+            value.documentChanges.forEach((change) {
+              setState(() {
+                print(change.document.data['balance']);
+                balance = change.document.data['balance'];
+              });
+            });
+          });
+        });
       });
     });
   }
@@ -51,6 +61,7 @@ class _BankCardState extends State<BankCard> {
         height: 260,
         width: double.infinity,
         child: Card(
+          elevation: 10,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           clipBehavior: Clip.antiAlias,
@@ -300,7 +311,7 @@ class _BankCardState extends State<BankCard> {
                                     ]),
                               ),
                               Text(
-                                '\$$balance',
+                                '\$${balance.toStringAsFixed(2)}',
                                 style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
