@@ -1,17 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:project_martian/models/finance_data.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Transactions extends StatefulWidget {
+  final String userId;
+
+  Transactions({this.userId});
+
   @override
   State<StatefulWidget> createState() {
     return _TransactionState();
   }
 }
 
+enum DataStatus { DETERMINED, NOT_DETERMINED }
+
 class _TransactionState extends State<Transactions> {
+  DataStatus dataStatus = DataStatus.NOT_DETERMINED;
+  Finance finance;
+  List<Map<String, dynamic>> sortedTransactions = [];
+  int numOfTransactions;
+
   @override
   Widget build(BuildContext context) {
     return _showSlideUpPanel();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    print(widget.userId);
+    Firestore.instance
+        .collection('users')
+        .document(widget.userId)
+        .collection('transactions')
+        .orderBy('dateTimeOfTransaction', descending: true)
+        .snapshots()
+        .listen((onData) {
+      dataStatus =
+          onData == null ? DataStatus.NOT_DETERMINED : DataStatus.DETERMINED;
+      setState(() {
+        numOfTransactions = onData.documents.length;
+      });
+      print(numOfTransactions);
+      if (onData != null) {
+        onData.documents.forEach((f) {
+          setState(() {
+            sortedTransactions.add(f.data);
+          });
+        });
+      }
+    });
   }
 
   Widget _showSlideUpPanel() {
@@ -66,13 +106,80 @@ class _TransactionState extends State<Transactions> {
           margin: EdgeInsets.only(top: 35),
           color: Colors.white,
           child: ListView.builder(
+            itemCount: numOfTransactions,
             itemBuilder: (BuildContext context, int i) {
               return Container(
-                padding: const EdgeInsets.all(12.0),
-                child: Text("$i"),
+                child: Container(
+                    child: Card(
+                        elevation: 50,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15)),
+                        child: Container(
+                          padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Text("${getTransactionDay(i)}",
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                      )),
+                                  Text("${getTransactionBalance(i)}",
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                      )),
+                                ],
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  Text("Vivendi Corp",
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold)),
+                                  sortedTransactions[i]['transactionType'] ==
+                                          'send'
+                                      ? Text(
+                                          '-\$200',
+                                          style: TextStyle(
+                                              color: Colors.red,
+                                              fontWeight: FontWeight.bold),
+                                        )
+                                      : Text(
+                                          '+\$200',
+                                          style: TextStyle(
+                                              color: Colors.green,
+                                              fontWeight: FontWeight.bold),
+                                        )
+                                ],
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                              ),
+                            ],
+                          ),
+                        ))),
               );
             },
           )),
     ]);
+  }
+
+  String getTransactionType(int i) {
+    return sortedTransactions[i]['transactionType'];
+  }
+
+  String getTransactionDay(int i) {
+    return sortedTransactions[i]['dateOfTransaction'];
+  }
+
+  String getTransactionAmount(int i) {
+    return sortedTransactions[i]['dayOfTransaction'];
+  }
+
+  String getTransactionBalance(int i) {
+    double bal = sortedTransactions[i]['balance'];
+    return bal.toStringAsFixed(2);
   }
 }

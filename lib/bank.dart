@@ -21,6 +21,7 @@ class _BankState extends State<Bank> {
   Finance finance;
   double balance;
   DataStatus dataStatus = DataStatus.NOT_DETERMINED;
+  List<Map<String, dynamic>> sortedTransactions = [];
 
   @override
   void initState() {
@@ -34,6 +35,7 @@ class _BankState extends State<Bank> {
         }
       });
     });
+
   }
 
   @override
@@ -48,7 +50,7 @@ class _BankState extends State<Bank> {
         body: Stack(
           children: <Widget>[
             _showBody(),
-            Transactions(),
+            Transactions(userId: widget.userId,),
           ],
         ));
   }

@@ -21,7 +21,9 @@ class Finance {
         .setData({
       'userId': userId,
       'transactionType': 'send',
-      'timeOfTransaction' : FieldValue.serverTimestamp(),
+      'dateTimeOfTransaction' : '${DateTime.now()}',
+      'dateOfTransaction' : '${DateTime.now().month}/${DateTime.now().day}/${DateTime.now().year+800}',
+      'timeOfTransaction' :'${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second}',
       'balance': balance - amount
     });
   }
@@ -35,7 +37,9 @@ class Finance {
         .setData({
       'userId': userId,
       'transactionType': 'deposit',
-      'timeOfTransaction' : FieldValue.serverTimestamp(),
+      'dateTimeOfTransaction' : '${DateTime.now()}',
+      'dateOfTransaction' : '${DateTime.now().month}/${DateTime.now().day}/${DateTime.now().year+800}',
+      'timeOfTransaction' :'${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second}',
       'balance': balance + amount
     });
   }
@@ -97,8 +101,11 @@ class Finance {
   }
   
   Future<List<Map<String, dynamic>>> getTransactionsSorted() async {
-    await Firestore.instance.collection('users').document(userId).collection('transactions').orderBy('timeOfTransaction').getDocuments().then((data){
-      sortedTransactions = data.documents;  //TODO: Fix this
+    Firestore.instance.collection('users').document(userId).collection('transactions').orderBy('dateTimeOfTransaction', descending: false).snapshots().listen((onData){
+      onData.documents.forEach((f){
+        sortedTransactions.add(f.data);
+      });
     });
+    return sortedTransactions;
   }
 }
