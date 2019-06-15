@@ -13,34 +13,38 @@ class Finance {
   Finance({this.email, this.balance, this.name});
 
   Future<void> sendMoney(double amount, double balance) async {
+    String txId = Uuid().v4();
     await Firestore.instance
         .collection('users')
         .document(email)
         .collection('transactions')
-        .document(transactionId.v4())
+        .document(txId)
         .setData({
+      'transactionId' : txId,
       'userId': email,
       'transactionType': 'send',
       'dateTimeOfTransaction' : '${DateTime.now()}',
       'dateOfTransaction' : '${DateTime.now().month}/${DateTime.now().day}/${DateTime.now().year+800}',
       'timeOfTransaction' :'${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second}',
-      'balance': balance - amount
+      'balance': num.parse((balance - amount).toStringAsFixed(2))
     });
   }
 
   Future<void> depositMoney(double amount, double balance) async {
+    String txId = Uuid().v4();
     await Firestore.instance
         .collection('users')
         .document(email)
         .collection('transactions')
-        .document(transactionId.v4())
+        .document(txId)
         .setData({
+      'transactionId' : txId,
       'userId': email,
       'transactionType': 'deposit',
       'dateTimeOfTransaction' : '${DateTime.now()}',
       'dateOfTransaction' : '${DateTime.now().month}/${DateTime.now().day}/${DateTime.now().year+800}',
       'timeOfTransaction' :'${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second}',
-      'balance': balance + amount
+      'balance': num.parse((balance + amount).toStringAsFixed(2))
     });
   }
 
