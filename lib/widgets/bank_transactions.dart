@@ -3,6 +3,8 @@ import 'package:project_martian/models/finance_data.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'package:project_martian/widgets/TransactionDetails.dart';
+
 class Transactions extends StatefulWidget {
   final String email;
 
@@ -121,7 +123,6 @@ class _TransactionState extends State<Transactions> {
                       child: Container(
                         padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: <Widget>[
                             Row(
                               children: <Widget>[
@@ -138,7 +139,7 @@ class _TransactionState extends State<Transactions> {
                             ),
                             Row(
                               children: <Widget>[
-                                Text("Vivendi Corp",
+                                Text("Vivendi Red Corp",
                                     style: TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.bold)),
@@ -173,114 +174,7 @@ class _TransactionState extends State<Transactions> {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
-          return Column(
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.only(top: 10),
-                child: Card(
-                    elevation: 0,
-                    borderOnForeground: false,
-                    clipBehavior: Clip.antiAlias,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Container(
-                        decoration:
-                            BoxDecoration(color: Colors.deepOrangeAccent),
-                        padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
-                        child: Center(
-                            child: Column(
-                          children: <Widget>[
-                            Text(
-                              'Transaction ID',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            Text(
-                              sortedTransactions[i]['transactionId'],
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
-                            ),
-                          ],
-                        )))),
-              ),
-              Container(
-                child: Card(
-                  clipBehavior: Clip.antiAlias,
-                  elevation: 1,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30)),
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                        child: Column(
-                          children: <Widget>[
-                            Text('Transaction type', style: TextStyle(fontSize: 12),),
-                            Text(
-                              '${sortedTransactions[i]['transactionType']}',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            )
-                          ],
-                        ),
-                      ),
-                      Divider(),
-                      Container(
-                        padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                        child: Column(
-                          children: <Widget>[
-                            Text('Amount', style: TextStyle(fontSize: 12),),
-                            Text(
-                              '\$200',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            )
-                          ],
-                        ),
-                      ),
-                      Divider(),
-                      Container(
-                        padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                        child: Column(
-                          children: <Widget>[
-                            Text('Date of Transaction', style: TextStyle(fontSize: 12),),
-                            Text(
-                              '${sortedTransactions[i]['dateOfTransaction']}',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            )
-                          ],
-                        ),
-                      ),
-                      Divider(),
-                      Container(
-                        padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                        child: Column(
-                          children: <Widget>[
-                            Text('Time of Transaction', style: TextStyle(fontSize: 12),),
-                            Text(
-                              '${sortedTransactions[i]['timeOfTransaction']}',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            )
-                          ],
-                        ),
-                      ),
-                      Divider(),
-                      Container(
-                        padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                        child: Column(
-                          children: <Widget>[
-                            Text('Current Balance', style: TextStyle(fontSize: 12),),
-                            Text(
-                              '${sortedTransactions[i]['balance']}',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-            ],
-          );
+          return TransactionDetails(i: i, sortedTransactions: sortedTransactions,);
         });
   }
 
