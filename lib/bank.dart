@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:swipedetector/swipedetector.dart';
 import 'widgets/bank_card.dart';
 import 'models/finance_data.dart';
 import 'widgets/bank_transactions.dart';
@@ -58,8 +59,13 @@ class _BankState extends State<Bank> {
   Widget _showBody() {
     return Column(
       children: <Widget>[
-        BankCard(
-          userId: widget.userId,
+        SwipeDetector(
+          onSwipeDown: () {
+            Navigator.pop(context);
+          },
+          child: BankCard(
+            userId: widget.userId,
+          ),
         ),
         _showSendDepositMoney()
       ],

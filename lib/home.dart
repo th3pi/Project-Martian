@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project_martian/services/auth_service.dart';
+import 'package:swipedetector/swipedetector.dart';
 
 import 'models/user_data.dart';
 import 'models/finance_data.dart';
@@ -52,7 +53,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    user = User(userId: widget.userId);
+    user = User(email: widget.email);
     user.getAllData().then((data){
       setState(() {
         if(data != null) {
@@ -113,8 +114,18 @@ class _HomePageState extends State<HomePage> {
                         userId: widget.userId,
                       )));
         },
-        child: BankCard(
-          userId: widget.userId,
+        child: SwipeDetector(
+          onSwipeUp: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext) => Bank(
+                      userId: widget.userId,
+                    )));
+          },
+          child: BankCard(
+            userId: widget.userId,
+          ),
         ));
   }
 }

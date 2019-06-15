@@ -32,7 +32,7 @@ class User {
   Future<Map<String, dynamic>> getAllData() async {
     await Firestore.instance
         .collection('users')
-        .document(userId)
+        .document(email)
         .get()
         .then((value) {
       userData = value.data;
@@ -41,7 +41,7 @@ class User {
   }
 
   Future<void> saveInfo() async {
-    await Firestore.instance.collection('users').document(userId).setData({
+    await Firestore.instance.collection('users').document(email).setData({
       'userId': userId,
       'firstName': firstName,
       'lastName': lastName,
