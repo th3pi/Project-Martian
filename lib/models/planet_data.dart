@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PlanetData {
-  String userId,
+  String email,
       planetFirstName,
       planetLastName,
       planetaryId,
@@ -15,7 +15,7 @@ class PlanetData {
   List<Map<String, dynamic>> listOfIds = [];
 
   PlanetData(
-      {this.userId,
+      {this.email,
       this.planetFirstName,
       this.planetLastName,
       this.planetaryId,
@@ -31,11 +31,11 @@ class PlanetData {
     Firestore.instance.runTransaction((Transaction transaction) async {
       await Firestore.instance
           .collection('users')
-          .document(userId)
+          .document(email)
           .collection('planetary_ids')
           .document(planetName)
           .setData({
-        'userId': userId,
+        'userId': email,
         'planetFirstName': planetFirstName,
         'planetLastName': planetLastName,
         'planetaryId': planetaryId,
@@ -54,7 +54,7 @@ class PlanetData {
     Firestore.instance.runTransaction((Transaction tx) async {
       await Firestore.instance
           .collection('users')
-          .document(userId)
+          .document(email)
           .collection('planetary_ids')
           .document(planetName)
           .delete();
@@ -65,7 +65,7 @@ class PlanetData {
     Firestore.instance.runTransaction((Transaction tx) async {
       await Firestore.instance
           .collection('users')
-          .document(userId)
+          .document(email)
           .collection('planetary_ids')
           .document(planetName)
           .get()
@@ -88,7 +88,7 @@ class PlanetData {
     Firestore.instance.runTransaction((Transaction tx) async {
       Firestore.instance
           .collection('users')
-          .document(userId)
+          .document(email)
           .collection('planetary_ids')
           .snapshots()
           .listen((snapshot) {

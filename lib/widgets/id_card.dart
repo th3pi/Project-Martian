@@ -10,10 +10,10 @@ import '../forms/id_form.dart';
 import '../models/planet_data.dart';
 
 class IdCard extends StatefulWidget {
-  final String userId;
+  final String email;
   final BaseAuth auth;
 
-  IdCard({this.userId, this.auth});
+  IdCard({this.email, this.auth});
 
   @override
   State<StatefulWidget> createState() {
@@ -46,7 +46,7 @@ class _IdCardState extends State<IdCard> {
         initialPage: currentPage, viewportFraction: viewportFraction);
     Firestore.instance
         .collection('users')
-        .document(widget.userId)
+        .document(widget.email)
         .collection('planetary_ids')
         .snapshots()
         .listen((snapshot) {
@@ -91,7 +91,7 @@ class _IdCardState extends State<IdCard> {
                       child: QrImage(
                         gapless: true,
                         backgroundColor: Colors.white,
-                        data: widget.userId,
+                        data: widget.email,
                         size: 250,
                       ),
                     ),
@@ -251,7 +251,7 @@ class _IdCardState extends State<IdCard> {
           context,
           MaterialPageRoute(
               builder: (BuildContext) => IdForm(
-                    userId: widget.userId,
+                    email: widget.email,
                     auth: widget.auth,
                   ))),
       child: Align(
@@ -592,7 +592,7 @@ class _IdCardState extends State<IdCard> {
                         ? null
                         : () {
                             PlanetData(
-                                    userId: widget.userId,
+                                    email: widget.email,
                                     planetName: listOfIds[index]['planetName'])
                                 .deleteId(listOfIds[index]['planetName']);
                             Navigator.pop(context);
@@ -602,7 +602,7 @@ class _IdCardState extends State<IdCard> {
                                     builder: (BuildContext) =>
                                         CheckAuthentication(
                                           auth: widget.auth,
-                                          userId: widget.userId,
+                                          userId: widget.email,
                                         )));
                           },
                   )

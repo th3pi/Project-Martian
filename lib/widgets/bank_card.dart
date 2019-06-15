@@ -5,9 +5,9 @@ import 'package:project_martian/models/finance_data.dart';
 import 'package:toast/toast.dart';
 
 class BankCard extends StatefulWidget {
-  final String userId;
+  final String email;
 
-  BankCard({this.userId});
+  BankCard({this.email});
 
   @override
   State<StatefulWidget> createState() {
@@ -27,7 +27,7 @@ class _BankCardState extends State<BankCard> {
   @override
   void initState() {
     super.initState();
-    finance = Finance(userId: widget.userId);
+    finance = Finance(email: widget.email);
     finance.getData().then((data) {
       setState(() {
         dataStatus =
@@ -42,7 +42,6 @@ class _BankCardState extends State<BankCard> {
           data.snapshots().listen((value) {
             value.documentChanges.forEach((change) {
               setState(() {
-                print(change.document.data['balance']);
                 balance = change.document.data['balance'];
               });
             });

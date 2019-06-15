@@ -3,23 +3,23 @@ import 'package:uuid/uuid.dart';
 import 'package:random_string/random_string.dart';
 
 class Finance {
-  String userId, name, transactionType;
+  String email, name, transactionType;
   double balance;
   Map<String, dynamic> financeData;
   List<Map<String, dynamic>> sortedTransactions = [];
   CollectionReference reference;
   var transactionId = Uuid();
 
-  Finance({this.userId, this.balance, this.name});
+  Finance({this.email, this.balance, this.name});
 
   Future<void> sendMoney(double amount, double balance) async {
     await Firestore.instance
         .collection('users')
-        .document(userId)
+        .document(email)
         .collection('transactions')
         .document(transactionId.v4())
         .setData({
-      'userId': userId,
+      'userId': email,
       'transactionType': 'send',
       'dateTimeOfTransaction' : '${DateTime.now()}',
       'dateOfTransaction' : '${DateTime.now().month}/${DateTime.now().day}/${DateTime.now().year+800}',
@@ -31,11 +31,11 @@ class Finance {
   Future<void> depositMoney(double amount, double balance) async {
     await Firestore.instance
         .collection('users')
-        .document(userId)
+        .document(email)
         .collection('transactions')
         .document(transactionId.v4())
         .setData({
-      'userId': userId,
+      'userId': email,
       'transactionType': 'deposit',
       'dateTimeOfTransaction' : '${DateTime.now()}',
       'dateOfTransaction' : '${DateTime.now().month}/${DateTime.now().day}/${DateTime.now().year+800}',
@@ -47,7 +47,7 @@ class Finance {
   Future<Map<String, dynamic>> getData() async {
     await Firestore.instance
         .collection('users')
-        .document(userId)
+        .document(email)
         .collection('finance')
         .document('accountDetails')
         .get()
@@ -60,7 +60,7 @@ class Finance {
   Future<void> createNewFinanceAccount() async {
     await Firestore.instance
         .collection('users')
-        .document(userId)
+        .document(email)
         .collection('finance')
         .document('accountDetails')
         .setData({
@@ -74,7 +74,7 @@ class Finance {
   Future<void> setBalance(double amount) async {
     await Firestore.instance
         .collection('users')
-        .document(userId)
+        .document(email)
         .collection('finance')
         .document('accountDetails')
         .updateData({'balance': amount});
@@ -83,7 +83,7 @@ class Finance {
   Future<double> getBalance() async {
     await Firestore.instance
         .collection('users')
-        .document(userId)
+        .document(email)
         .collection('finance')
         .document('accountDetails')
         .get()
@@ -95,13 +95,13 @@ class Finance {
   
   Future<CollectionReference> checkForBalanceChanges() async {
     reference =
-        Firestore.instance.collection('users').document(userId).collection(
+        Firestore.instance.collection('users').document(email).collection(
             'finance');
     return reference;
   }
   
   Future<List<Map<String, dynamic>>> getTransactionsSorted() async {
-    Firestore.instance.collection('users').document(userId).collection('transactions').orderBy('dateTimeOfTransaction', descending: false).snapshots().listen((onData){
+    Firestore.instance.collection('users').document(email).collection('transactions').orderBy('dateTimeOfTransaction', descending: false).snapshots().listen((onData){
       onData.documents.forEach((f){
         sortedTransactions.add(f.data);
       });

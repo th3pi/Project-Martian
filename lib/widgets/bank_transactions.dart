@@ -4,9 +4,9 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Transactions extends StatefulWidget {
-  final String userId;
+  final String email;
 
-  Transactions({this.userId});
+  Transactions({this.email});
 
   @override
   State<StatefulWidget> createState() {
@@ -30,10 +30,10 @@ class _TransactionState extends State<Transactions> {
   @override
   void initState() {
     super.initState();
-    print(widget.userId);
+    print(widget.email);
     Firestore.instance
         .collection('users')
-        .document(widget.userId)
+        .document(widget.email)
         .collection('transactions')
         .orderBy('dateTimeOfTransaction', descending: true)
         .snapshots()

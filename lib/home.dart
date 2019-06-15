@@ -101,7 +101,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _showIdCards() {
-    return IdCard(userId: widget.userId, auth: widget.auth);
+    return IdCard(email: widget.email, auth: widget.auth);
   }
 
   Widget _showBankCard() {
@@ -111,7 +111,7 @@ class _HomePageState extends State<HomePage> {
               context,
               MaterialPageRoute(
                   builder: (BuildContext) => Bank(
-                        userId: widget.userId,
+                        email: widget.email,
                       )));
         },
         child: SwipeDetector(
@@ -120,11 +120,11 @@ class _HomePageState extends State<HomePage> {
                 context,
                 MaterialPageRoute(
                     builder: (BuildContext) => Bank(
-                      userId: widget.userId,
+                      email: widget.email,
                     )));
           },
           child: BankCard(
-            userId: widget.userId,
+            email: widget.email,
           ),
         ));
   }

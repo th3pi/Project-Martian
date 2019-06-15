@@ -14,10 +14,10 @@ enum DbRetrieval { RETRIEVED, NOT_RETRIEVED }
 enum PlanetExists { ALREADY_EXISTS, NO_EXIST }
 
 class IdForm extends StatefulWidget {
-  final String userId;
+  final String email;
   final BaseAuth auth;
 
-  IdForm({this.userId, this.auth});
+  IdForm({this.email, this.auth});
 
   @override
   State<StatefulWidget> createState() {
@@ -71,7 +71,7 @@ class _IdFormState extends State<IdForm> {
           MaterialPageRoute(
               builder: (BuildContext) => CheckAuthentication(
                     auth: widget.auth,
-                    userId: widget.userId,
+                    userId: widget.email,
                   ))),
       child: Scaffold(
         backgroundColor: Colors.deepOrange,
@@ -96,7 +96,7 @@ class _IdFormState extends State<IdForm> {
     super.initState();
     Firestore.instance
         .collection('users')
-        .document(widget.userId)
+        .document(widget.email)
         .collection('planetary_ids')
         .snapshots()
         .listen((snapshot) {
@@ -125,7 +125,7 @@ class _IdFormState extends State<IdForm> {
     if (_validateAndSave()) {
       planetData = PlanetData(
           //Submits all the value to the database
-          userId: widget.userId,
+          email: widget.email,
           accessLevel: accessLevel,
           criminalRecord: criminalRecord,
           dateIssued: dateIssued,
@@ -142,7 +142,7 @@ class _IdFormState extends State<IdForm> {
           MaterialPageRoute(
               builder: (BuildContext) => CheckAuthentication(
                     auth: widget.auth,
-                    userId: widget.userId,
+                    userId: widget.email,
                   )));
     }
   }
@@ -264,7 +264,7 @@ class _IdFormState extends State<IdForm> {
               MaterialPageRoute(
                   builder: (BuildContext) => CheckAuthentication(
                         auth: widget.auth,
-                        userId: widget.userId,
+                        userId: widget.email,
                       ))); //Redirects to root page to figure out authorization status
         });
   }

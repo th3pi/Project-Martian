@@ -6,9 +6,9 @@ import 'models/finance_data.dart';
 import 'widgets/bank_transactions.dart';
 
 class Bank extends StatefulWidget {
-  final String userId;
+  final String email;
 
-  Bank({this.userId});
+  Bank({this.email});
 
   @override
   State<StatefulWidget> createState() {
@@ -27,7 +27,7 @@ class _BankState extends State<Bank> {
   @override
   void initState() {
     super.initState();
-    finance = Finance(userId: widget.userId);
+    finance = Finance(email: widget.email);
     finance.getData().then((value) {
       setState(() {
         dataStatus = value == null ? DataStatus.NOT_DETERMINED : DataStatus.DETERMINED;
@@ -51,7 +51,7 @@ class _BankState extends State<Bank> {
         body: Stack(
           children: <Widget>[
             _showBody(),
-            Transactions(userId: widget.userId,),
+            Transactions(email: widget.email,),
           ],
         ));
   }
@@ -64,7 +64,7 @@ class _BankState extends State<Bank> {
             Navigator.pop(context);
           },
           child: BankCard(
-            userId: widget.userId,
+            email: widget.email,
           ),
         ),
         _showSendDepositMoney()
