@@ -42,9 +42,11 @@ class _TransactionState extends State<Transactions> {
         .listen((onData) {
       dataStatus =
           onData == null ? DataStatus.NOT_DETERMINED : DataStatus.DETERMINED;
-      setState(() {
-        numOfTransactions = onData.documents.length;
-      });
+      if (this.mounted) {
+        setState(() {
+          numOfTransactions = onData.documents.length;
+        });
+      }
       print(numOfTransactions);
       if (onData != null) {
         onData.documents.forEach((f) {
@@ -174,7 +176,10 @@ class _TransactionState extends State<Transactions> {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
-          return TransactionDetails(i: i, sortedTransactions: sortedTransactions,);
+          return TransactionDetails(
+            i: i,
+            sortedTransactions: sortedTransactions,
+          );
         });
   }
 

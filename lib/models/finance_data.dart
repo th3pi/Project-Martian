@@ -10,22 +10,19 @@ class Finance {
   CollectionReference reference;
   var transactionId = Uuid();
 
-  Finance({this.email, this.balance, this.name}) {
-    if (balance == null) {
-      Firestore.instance
-          .collection('users')
-          .document(email)
-          .collection('finance')
-          .document('accountDetails')
-          .get()
-          .then((data) {
-        balance = data.data['balance'];
-      });
-    }
-  }
+  Finance({this.email, this.balance, this.name});
 
   Future<void> sendMoney(double amount, String to) async {
     String txId = Uuid().v4();
+    await Firestore.instance
+        .collection('users')
+        .document(email)
+        .collection('finance')
+        .document('accountDetails')
+        .get()
+        .then((data) {
+      balance = data.data['balance'];
+    });
     await Firestore.instance
         .collection('users')
         .document(email)
@@ -42,8 +39,15 @@ class Finance {
           '${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second}',
       'balance': num.parse((balance - amount).toStringAsFixed(2))
     });
-    getBalance(to).then((value) {
-      receiversBalance = value;
+    setBalance(num.parse((balance - amount).toStringAsFixed(2)), email);
+    await Firestore.instance
+        .collection('users')
+        .document(to)
+        .collection('finance')
+        .document('accountDetails')
+        .get()
+        .then((data) {
+      receiversBalance = data.data['balance'];
     });
     await Firestore.instance
         .collection('users')

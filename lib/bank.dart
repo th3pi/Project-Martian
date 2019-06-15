@@ -38,7 +38,9 @@ class _BankState extends State<Bank> {
         dataStatus =
             value == null ? DataStatus.NOT_DETERMINED : DataStatus.DETERMINED;
         if (value != null) {
-          balance = value['balance'];
+          finance.getBalance(null).then((value){
+            balance = value;
+          });
         }
         finance.checkForBalanceChanges().then((data) {
           data.snapshots().listen((value) {
@@ -60,9 +62,11 @@ class _BankState extends State<Bank> {
           onData == null ? DataStatus.NOT_DETERMINED : DataStatus.DETERMINED;
       if (onData != null) {
         onData.documents.forEach((f) {
-          setState(() {
-            sortedTransactions.add(f.data);
-          });
+          if(this.mounted) {
+            setState(() {
+              sortedTransactions.add(f.data);
+            });
+          }
         });
       }
     });
@@ -224,8 +228,9 @@ class _BankState extends State<Bank> {
                     restartPageNotification();
                     finance.sendMoney(200, 'katarina@gmail.com').then((value) {
                       setState(() {
-                        balance -= 200;
-                        finance.setBalance(balance, null);
+                        finance.getBalance(null).then((value){
+                          balance = value;
+                        });
                       });
                     });
                   },

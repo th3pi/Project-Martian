@@ -41,9 +41,11 @@ class _BankCardState extends State<BankCard> {
         finance.checkForBalanceChanges().then((data) {
           data.snapshots().listen((value) {
             value.documentChanges.forEach((change) {
-              setState(() {
-                balance = change.document.data['balance'];
-              });
+              if(this.mounted) {
+                setState(() {
+                  balance = change.document.data['balance'];
+                });
+              }
             });
           });
         });

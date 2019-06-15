@@ -38,9 +38,11 @@ class _RecentTransactionsState extends State<RecentTransactions>{
       onData == null ? DataStatus.NOT_DETERMINED : DataStatus.DETERMINED;
       if (onData != null) {
         onData.documents.forEach((f) {
-          setState(() {
-            sortedTransactions.add(f.data);
-          });
+          if(this.mounted) {
+            setState(() {
+              sortedTransactions.add(f.data);
+            });
+          }
         });
       }
     });
