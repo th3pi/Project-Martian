@@ -82,161 +82,261 @@ class _IdCardState extends State<IdCard> {
             child: Container(
               decoration: BoxDecoration(
                   gradient: _colorPicker(listOfIds[index]['planetName'])),
-              child: dataStatus == DataStatus.NOT_DETERMINED ? SpinKitDualRing(color: Colors.deepOrangeAccent) : Container(
-                child: Row(
-                  children: <Widget>[
-                    Flexible(
-                      fit: FlexFit.tight,
-                      flex: 2,
-                      child: QrImage(
-                        gapless: true,
-                        backgroundColor: Colors.white,
-                        data: widget.email,
-                        size: 250,
+              child: dataStatus == DataStatus.NOT_DETERMINED
+                  ? SpinKitDualRing(color: Colors.deepOrangeAccent)
+                  : Container(
+                      child: Row(
+                        children: <Widget>[
+                          Flexible(
+                            fit: FlexFit.tight,
+                            flex: 2,
+                            child: QrImage(
+                              gapless: true,
+                              backgroundColor: Colors.white,
+                              data: widget.email,
+                              size: 250,
+                            ),
+                          ),
+                          Flexible(
+                            flex: 3,
+                            child: Container(
+                              padding: EdgeInsets.only(left: 10),
+                              child: Column(
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      Container(
+                                          padding:
+                                              EdgeInsets.fromLTRB(0, 15, 0, 5),
+                                          child: Column(
+                                            children: <Widget>[
+                                              Text(
+                                                'First Name',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 10,
+                                                  shadows: [
+                                                    Shadow(
+                                                        blurRadius: 10,
+                                                        color: Colors.black87)
+                                                  ],
+                                                ),
+                                              ),
+                                              Container(
+                                                child: Text(
+                                                  listOfIds[index]
+                                                      ['planetFirstName'],
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold,
+                                                    shadows: [
+                                                      Shadow(
+                                                          blurRadius: 10,
+                                                          color: Colors.black87)
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          )),
+                                      Container(
+                                          padding:
+                                              EdgeInsets.fromLTRB(20, 15, 0, 5),
+                                          child: Column(
+                                            children: <Widget>[
+                                              Text(
+                                                'Last Name',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 10,
+                                                  shadows: [
+                                                    Shadow(
+                                                        blurRadius: 10,
+                                                        color: Colors.black87)
+                                                  ],
+                                                ),
+                                              ),
+                                              Container(
+                                                child: Text(
+                                                  listOfIds[index]
+                                                      ['planetLastName'],
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold,
+                                                    shadows: [
+                                                      Shadow(
+                                                          blurRadius: 10,
+                                                          color: Colors.black87)
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          )),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Container(
+                                          padding:
+                                              EdgeInsets.fromLTRB(0, 15, 0, 5),
+                                          child: Column(
+                                            children: <Widget>[
+                                              Text(
+                                                'Planetary ID',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 10,
+                                                  shadows: [
+                                                    Shadow(
+                                                        blurRadius: 10,
+                                                        color: Colors.black87)
+                                                  ],
+                                                ),
+                                              ),
+                                              Container(
+                                                child: Text(
+                                                  listOfIds[index]
+                                                      ['planetaryId'],
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold,
+                                                    shadows: [
+                                                      Shadow(
+                                                          blurRadius: 10,
+                                                          color: Colors.black87)
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          )),
+                                      Container(
+                                          padding:
+                                              EdgeInsets.fromLTRB(20, 15, 0, 5),
+                                          child: Column(
+                                            children: <Widget>[
+                                              Text(
+                                                'Planet Name',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 10,
+                                                  shadows: [
+                                                    Shadow(
+                                                        blurRadius: 10,
+                                                        color: Colors.black87)
+                                                  ],
+                                                ),
+                                              ),
+                                              Container(
+                                                alignment:
+                                                    Alignment.centerRight,
+                                                padding:
+                                                    EdgeInsets.only(left: 5),
+                                                child: Text(
+                                                  listOfIds[index]
+                                                      ['planetName'],
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold,
+                                                    shadows: [
+                                                      Shadow(
+                                                          blurRadius: 10,
+                                                          color: Colors.black87)
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          )),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Container(
+                                          padding:
+                                              EdgeInsets.fromLTRB(0, 15, 0, 5),
+                                          child: Column(
+                                            children: <Widget>[
+                                              Text(
+                                                'ID Type',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 10,
+                                                  shadows: [
+                                                    Shadow(
+                                                        blurRadius: 10,
+                                                        color: Colors.black87)
+                                                  ],
+                                                ),
+                                              ),
+                                              Container(
+                                                child: Text(
+                                                  listOfIds[index]['idType'],
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold,
+                                                    shadows: [
+                                                      Shadow(
+                                                          blurRadius: 10,
+                                                          color: Colors.black87)
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          )),
+                                      Container(
+                                          padding:
+                                              EdgeInsets.fromLTRB(20, 15, 0, 5),
+                                          child: Column(
+                                            children: <Widget>[
+                                              Text(
+                                                'Date of Expiration',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 10,
+                                                  shadows: [
+                                                    Shadow(
+                                                        blurRadius: 10,
+                                                        color: Colors.black87)
+                                                  ],
+                                                ),
+                                              ),
+                                              Container(
+                                                padding:
+                                                    EdgeInsets.only(left: 5),
+                                                child: Text(
+                                                  listOfIds[index]
+                                                      ['dateOfExpiration'],
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold,
+                                                    shadows: [
+                                                      Shadow(
+                                                          blurRadius: 10,
+                                                          color: Colors.black87)
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          )),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    Flexible(
-                      flex: 3,
-                      child: Container(
-                        padding: EdgeInsets.only(left: 10),
-                        child: Column(
-                          children: <Widget>[
-                            Row(
-                              children: <Widget>[
-                                Container(
-                                    padding: EdgeInsets.fromLTRB(0, 15, 0, 5),
-                                    child: Column(
-                                      children: <Widget>[
-                                        Text(
-                                          'First Name',
-                                          style: TextStyle(fontSize: 10),
-                                        ),
-                                        Container(
-                                          child: Text(
-                                            listOfIds[index]['planetFirstName'],
-                                            style: TextStyle(
-                                                color: Colors.black87,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      ],
-                                    )),
-                                Container(
-                                    padding: EdgeInsets.fromLTRB(20, 15, 0, 5),
-                                    child: Column(
-                                      children: <Widget>[
-                                        Text(
-                                          'Last Name',
-                                          style: TextStyle(fontSize: 10),
-                                        ),
-                                        Container(
-                                          child: Text(
-                                            listOfIds[index]['planetLastName'],
-                                            style: TextStyle(
-                                                color: Colors.black87,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      ],
-                                    )),
-                              ],
-                            ),
-                            Row(
-                              children: <Widget>[
-                                Container(
-                                    padding: EdgeInsets.fromLTRB(0, 15, 0, 5),
-                                    child: Column(
-                                      children: <Widget>[
-                                        Text(
-                                          'Planetary ID',
-                                          style: TextStyle(fontSize: 10),
-                                        ),
-                                        Container(
-                                          child: Text(
-                                            listOfIds[index]['planetaryId'],
-                                            style: TextStyle(
-                                                color: Colors.black87,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      ],
-                                    )),
-                                Container(
-                                    padding: EdgeInsets.fromLTRB(20, 15, 0, 5),
-                                    child: Column(
-                                      children: <Widget>[
-                                        Text(
-                                          'Planet Name',
-                                          style: TextStyle(fontSize: 10),
-                                        ),
-                                        Container(
-                                          alignment: Alignment.centerRight,
-                                          padding: EdgeInsets.only(left: 5),
-                                          child: Text(
-                                            listOfIds[index]['planetName'],
-                                            style: TextStyle(
-                                                color: Colors.black87,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      ],
-                                    )),
-                              ],
-                            ),
-                            Row(
-                              children: <Widget>[
-                                Container(
-                                    padding: EdgeInsets.fromLTRB(0, 15, 0, 5),
-                                    child: Column(
-                                      children: <Widget>[
-                                        Text(
-                                          'ID Type',
-                                          style: TextStyle(fontSize: 10),
-                                        ),
-                                        Container(
-                                          child: Text(
-                                            listOfIds[index]['idType'],
-                                            style: TextStyle(
-                                                color: Colors.black87,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      ],
-                                    )),
-                                Container(
-                                    padding: EdgeInsets.fromLTRB(20, 15, 0, 5),
-                                    child: Column(
-                                      children: <Widget>[
-                                        Text(
-                                          'Date of Expiration',
-                                          style: TextStyle(fontSize: 10),
-                                        ),
-                                        Container(
-                                          padding: EdgeInsets.only(left: 5),
-                                          child: Text(
-                                            listOfIds[index]['dateOfExpiration'],
-                                            style: TextStyle(
-                                                color: Colors.black87,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      ],
-                                    )),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
             ),
           ),
         ),
@@ -280,40 +380,46 @@ class _IdCardState extends State<IdCard> {
   Widget _showIdCards() {
     return Container(
       height: 200,
-      child: dataStatus == DataStatus.NOT_DETERMINED ? SpinKitDualRing(color: Colors.deepOrangeAccent,) : ListView(
-        physics: BouncingScrollPhysics(),
-        children: <Widget>[
-          Container(
-            height: pagerHeight,
-            child: NotificationListener<ScrollNotification>(
-              child: PageView.builder(
-                itemBuilder: (context, index) {
-                  final scale = max(scaleFraction,
-                      (fullScale - (index - page).abs()) + viewportFraction);
-                  return index == numOfIds - 1
-                      ? _showAddIdCard(scale)
-                      : _idCards(index, scale);
-                },
-                itemCount: numOfIds,
-                controller: pageController,
-                onPageChanged: (pos) {
-                  setState(() {
-                    currentPage = pos;
-                  });
-                },
-                physics: AlwaysScrollableScrollPhysics(),
-              ),
-              onNotification: (ScrollNotification notification) {
-                if (notification is ScrollUpdateNotification) {
-                  setState(() {
-                    page = pageController.page;
-                  });
-                }
-              },
+      child: dataStatus == DataStatus.NOT_DETERMINED
+          ? SpinKitDualRing(
+              color: Colors.deepOrangeAccent,
+            )
+          : ListView(
+              physics: BouncingScrollPhysics(),
+              children: <Widget>[
+                Container(
+                  height: pagerHeight,
+                  child: NotificationListener<ScrollNotification>(
+                    child: PageView.builder(
+                      itemBuilder: (context, index) {
+                        final scale = max(
+                            scaleFraction,
+                            (fullScale - (index - page).abs()) +
+                                viewportFraction);
+                        return index == numOfIds - 1
+                            ? _showAddIdCard(scale)
+                            : _idCards(index, scale);
+                      },
+                      itemCount: numOfIds,
+                      controller: pageController,
+                      onPageChanged: (pos) {
+                        setState(() {
+                          currentPage = pos;
+                        });
+                      },
+                      physics: AlwaysScrollableScrollPhysics(),
+                    ),
+                    onNotification: (ScrollNotification notification) {
+                      if (notification is ScrollUpdateNotification) {
+                        setState(() {
+                          page = pageController.page;
+                        });
+                      }
+                    },
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 
