@@ -40,6 +40,13 @@ class _BankState extends State<Bank> {
         if (value != null) {
           balance = value['balance'];
         }
+        finance.checkForBalanceChanges().then((data) {
+          data.snapshots().listen((value) {
+            value.documentChanges.forEach((change) {
+//              finance = Finance(email: widget.email);
+            });
+          });
+        });
       });
     });
     Firestore.instance
@@ -59,6 +66,7 @@ class _BankState extends State<Bank> {
         });
       }
     });
+
   }
 
   @override
@@ -179,10 +187,11 @@ class _BankState extends State<Bank> {
                   ),
                   onPressed: () {
                     restartPageNotification();
-                    finance.depositMoney(200, balance).then((value) {
+                    finance.depositMoney(200).then((value) {
                       setState(() {
-                        balance += 200;
-                        finance.setBalance(balance);
+                        finance.getBalance(null).then((value) {
+                          balance = value;
+                        });
                       });
                     });
                   },
@@ -213,10 +222,10 @@ class _BankState extends State<Bank> {
                   ),
                   onPressed: () {
                     restartPageNotification();
-                    finance.sendMoney(200, balance).then((value) {
+                    finance.sendMoney(200, 'katarina@gmail.com').then((value) {
                       setState(() {
                         balance -= 200;
-                        finance.setBalance(balance);
+                        finance.setBalance(balance, null);
                       });
                     });
                   },

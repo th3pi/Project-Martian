@@ -4,15 +4,27 @@ import 'package:random_string/random_string.dart';
 
 class Finance {
   String email, name, transactionType;
-  double balance;
+  double balance, receiversBalance;
   Map<String, dynamic> financeData;
   List<Map<String, dynamic>> sortedTransactions = [];
   CollectionReference reference;
   var transactionId = Uuid();
 
-  Finance({this.email, this.balance, this.name});
+  Finance({this.email, this.balance, this.name}) {
+    if (balance == null) {
+      Firestore.instance
+          .collection('users')
+          .document(email)
+          .collection('finance')
+          .document('accountDetails')
+          .get()
+          .then((data) {
+        balance = data.data['balance'];
+      });
+    }
+  }
 
-  Future<void> sendMoney(double amount, double balance) async {
+  Future<void> sendMoney(double amount, String to) async {
     String txId = Uuid().v4();
     await Firestore.instance
         .collection('users')
@@ -30,10 +42,33 @@ class Finance {
           '${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second}',
       'balance': num.parse((balance - amount).toStringAsFixed(2))
     });
+    getBalance(to).then((value) {
+      receiversBalance = value;
+    });
+    await Firestore.instance
+        .collection('users')
+        .document(to)
+        .collection('transactions')
+        .document(txId)
+        .setData({
+      'transactionId': txId,
+      'userId': to,
+      'transactionType': 'Received',
+      'dateTimeOfTransaction': '${DateTime.now()}',
+      'dateOfTransaction':
+          '${DateTime.now().month}/${DateTime.now().day}/${DateTime.now().year + 800}',
+      'timeOfTransaction':
+          '${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second}',
+      'balance': num.parse((receiversBalance + amount).toStringAsFixed(2))
+    });
+    setBalance(num.parse((receiversBalance + amount).toStringAsFixed(2)), to);
   }
 
-  Future<void> depositMoney(double amount, double balance) async {
+  Future<void> depositMoney(double amount) async {
     String txId = Uuid().v4();
+    getBalance(email).then((value) {
+      balance = value;
+    });
     await Firestore.instance
         .collection('users')
         .document(email)
@@ -50,6 +85,7 @@ class Finance {
           '${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second}',
       'balance': num.parse((balance + amount).toStringAsFixed(2))
     });
+    setBalance(num.parse((balance + amount).toStringAsFixed(2)), null);
   }
 
   Future<Map<String, dynamic>> getData() async {
@@ -79,19 +115,19 @@ class Finance {
     });
   }
 
-  Future<void> setBalance(double amount) async {
+  Future<void> setBalance(double amount, String email) async {
     await Firestore.instance
         .collection('users')
-        .document(email)
+        .document(email == null ? this.email : email)
         .collection('finance')
         .document('accountDetails')
         .updateData({'balance': amount});
   }
 
-  Future<double> getBalance() async {
+  Future<double> getBalance(String email) async {
     await Firestore.instance
         .collection('users')
-        .document(email)
+        .document(email == null ? this.email : email)
         .collection('finance')
         .document('accountDetails')
         .get()
