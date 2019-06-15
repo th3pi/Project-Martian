@@ -3,7 +3,7 @@ import 'package:project_martian/models/finance_data.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:project_martian/widgets/TransactionDetails.dart';
+import 'package:project_martian/widgets/bank_page/TransactionDetails.dart';
 
 class Transactions extends StatefulWidget {
   final String email;

@@ -1,12 +1,14 @@
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:swipedetector/swipedetector.dart';
 
-import 'widgets/bank_card.dart';
+import 'package:project_martian/widgets/bank_page/bank_card.dart';
 import 'models/finance_data.dart';
-import 'widgets/bank_transactions.dart';
-import 'widgets/TransactionDetails.dart';
+import 'package:project_martian/widgets/bank_page/bank_transactions.dart';
+import 'package:project_martian/widgets/bank_page/TransactionDetails.dart';
+import 'widgets/bank_page/recent_transactions.dart';
 
 class Bank extends StatefulWidget {
   final String email;
@@ -78,6 +80,12 @@ class _BankState extends State<Bank> {
         ));
   }
 
+  Widget _recentTransactions() {
+    return RecentTransactions(
+      email: widget.email,
+    );
+  }
+
   Widget _showBody() {
     return Column(
       children: <Widget>[
@@ -90,9 +98,57 @@ class _BankState extends State<Bank> {
           ),
         ),
         _showSendDepositMoney(),
-        _showRecentNotifications(),
+        _recentTransactions(),
       ],
     );
+  }
+
+  void restartPageNotification() {
+    Flushbar(
+      flushbarPosition: FlushbarPosition.TOP,
+      isDismissible: true,
+      reverseAnimationCurve: Curves.decelerate,
+      forwardAnimationCurve: Curves.elasticOut,
+      icon: Icon(
+        Icons.check_circle_outline,
+        color: Colors.white,
+      ),
+      shouldIconPulse: true,
+      backgroundColor: Colors.green,
+      flushbarStyle: FlushbarStyle.FLOATING,
+      borderRadius: 3,
+      aroundPadding: EdgeInsets.all(15),
+      boxShadows: [
+        BoxShadow(
+          color: Colors.black26,
+          offset: Offset(0.0, 2.0),
+          blurRadius: 3.0,
+        )
+      ],
+      mainButton: FlatButton(
+          onPressed: () {
+            Navigator.pop(context);
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext) => Bank(
+                          email: widget.email,
+                        )));
+          },
+          child: Text(
+            'Refresh',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          )),
+      titleText: Text(
+        'Transaction completed',
+        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      ),
+      messageText: Text(
+        'Click refresh to see new transactions and their details',
+        style: TextStyle(color: Colors.white),
+      ),
+      duration: Duration(seconds: 6),
+    ).show(context);
   }
 
   Widget _showSendDepositMoney() {
@@ -122,6 +178,7 @@ class _BankState extends State<Bank> {
                     ],
                   ),
                   onPressed: () {
+                    restartPageNotification();
                     finance.depositMoney(200, balance).then((value) {
                       setState(() {
                         balance += 200;
@@ -155,6 +212,7 @@ class _BankState extends State<Bank> {
                     ],
                   ),
                   onPressed: () {
+                    restartPageNotification();
                     finance.sendMoney(200, balance).then((value) {
                       setState(() {
                         balance -= 200;
@@ -169,169 +227,5 @@ class _BankState extends State<Bank> {
         ),
       ),
     );
-  }
-
-  Widget _showRecentNotifications() {
-    return Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        child: Container(
-          padding: EdgeInsets.only(left: 10),
-          child: Column(
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.fromLTRB(5, 15, 10, 10),
-                child: Row(
-                  children: <Widget>[
-                    InkWell(
-                      onTap: () {
-                        showModalBottomSheet(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return TransactionDetails(
-                                i: 0,
-                                sortedTransactions: sortedTransactions,
-                              );
-                            });
-                      },
-                      child: sortedTransactions[0]['transactionType'] == 'send'
-                          ? Text(
-                              'You have sent \$200 to some@gmail.com',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            )
-                          : Text(
-                              '\$200 was added to your account',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                    ),
-                    Tooltip(
-                      message: sortedTransactions[0]['timeOfTransaction'],
-                      child: Text(sortedTransactions[0]['dateOfTransaction'],
-                          style: TextStyle(fontSize: 10, color: Colors.grey)),
-                    ),
-                  ],
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                ),
-              ),
-              Divider(),
-              Container(
-                padding: EdgeInsets.fromLTRB(5, 15, 10, 10),
-                child: Row(
-                  children: <Widget>[
-                    InkWell(
-                      onTap: () {
-                        showModalBottomSheet(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return TransactionDetails(
-                                i: 1,
-                                sortedTransactions: sortedTransactions,
-                              );
-                            });
-                      },
-                      child: sortedTransactions[1]['transactionType'] == 'send'
-                          ? Text(
-                              'You have sent \$200 to some@gmail.com',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            )
-                          : Text(
-                              '\$200 was added to your account',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                    ),
-                    Tooltip(
-                      message: sortedTransactions[1]['timeOfTransaction'],
-                      child: Text(sortedTransactions[1]['dateOfTransaction'],
-                          style: TextStyle(fontSize: 10, color: Colors.grey)),
-                    ),
-                  ],
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                ),
-              ),
-              Divider(),
-              Container(
-                padding: EdgeInsets.fromLTRB(5, 15, 10, 10),
-                child: Row(
-                  children: <Widget>[
-                    InkWell(
-                      onTap: () {
-                        showModalBottomSheet(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return TransactionDetails(
-                                i: 2,
-                                sortedTransactions: sortedTransactions,
-                              );
-                            });
-                      },
-                      child: sortedTransactions[2]['transactionType'] == 'send'
-                          ? Text(
-                              'You have sent \$200 to some@gmail.com',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            )
-                          : Text(
-                              '\$200 was added to your account',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                    ),
-                    Tooltip(
-                      message: sortedTransactions[2]['timeOfTransaction'],
-                      child: Text(sortedTransactions[2]['dateOfTransaction'],
-                          style: TextStyle(fontSize: 10, color: Colors.grey)),
-                    ),
-                  ],
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                ),
-              ),
-              Divider(),
-              Container(
-                padding: EdgeInsets.fromLTRB(5, 15, 10, 10),
-                child: Row(
-                  children: <Widget>[
-                    InkWell(
-                      onTap: () {
-                        showModalBottomSheet(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return TransactionDetails(
-                                i: 3,
-                                sortedTransactions: sortedTransactions,
-                              );
-                            });
-                      },
-                      child: InkWell(
-                        onTap: () {
-                          showModalBottomSheet(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return TransactionDetails(
-                                  i: 3,
-                                  sortedTransactions: sortedTransactions,
-                                );
-                              });
-                        },
-                        child: sortedTransactions[3]['transactionType'] ==
-                                'send'
-                            ? Text(
-                                'You have sent \$200 to some@gmail.com',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              )
-                            : Text(
-                                '\$200 was added to your account',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                      ),
-                    ),
-                    Tooltip(
-                      message: sortedTransactions[3]['timeOfTransaction'],
-                      child: Text(sortedTransactions[3]['dateOfTransaction'],
-                          style: TextStyle(fontSize: 10, color: Colors.grey)),
-                    ),
-                  ],
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                ),
-              ),
-            ],
-          ),
-        ));
   }
 }

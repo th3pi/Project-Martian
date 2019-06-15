@@ -20,12 +20,14 @@ class Finance {
         .collection('transactions')
         .document(txId)
         .setData({
-      'transactionId' : txId,
+      'transactionId': txId,
       'userId': email,
       'transactionType': 'send',
-      'dateTimeOfTransaction' : '${DateTime.now()}',
-      'dateOfTransaction' : '${DateTime.now().month}/${DateTime.now().day}/${DateTime.now().year+800}',
-      'timeOfTransaction' :'${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second}',
+      'dateTimeOfTransaction': '${DateTime.now()}',
+      'dateOfTransaction':
+          '${DateTime.now().month}/${DateTime.now().day}/${DateTime.now().year + 800}',
+      'timeOfTransaction':
+          '${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second}',
       'balance': num.parse((balance - amount).toStringAsFixed(2))
     });
   }
@@ -38,12 +40,14 @@ class Finance {
         .collection('transactions')
         .document(txId)
         .setData({
-      'transactionId' : txId,
+      'transactionId': txId,
       'userId': email,
       'transactionType': 'deposit',
-      'dateTimeOfTransaction' : '${DateTime.now()}',
-      'dateOfTransaction' : '${DateTime.now().month}/${DateTime.now().day}/${DateTime.now().year+800}',
-      'timeOfTransaction' :'${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second}',
+      'dateTimeOfTransaction': '${DateTime.now()}',
+      'dateOfTransaction':
+          '${DateTime.now().month}/${DateTime.now().day}/${DateTime.now().year + 800}',
+      'timeOfTransaction':
+          '${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second}',
       'balance': num.parse((balance + amount).toStringAsFixed(2))
     });
   }
@@ -96,17 +100,24 @@ class Finance {
     });
     return balance;
   }
-  
+
   Future<CollectionReference> checkForBalanceChanges() async {
-    reference =
-        Firestore.instance.collection('users').document(email).collection(
-            'finance');
+    reference = Firestore.instance
+        .collection('users')
+        .document(email)
+        .collection('finance');
     return reference;
   }
-  
+
   Future<List<Map<String, dynamic>>> getTransactionsSorted() async {
-    Firestore.instance.collection('users').document(email).collection('transactions').orderBy('dateTimeOfTransaction', descending: false).snapshots().listen((onData){
-      onData.documents.forEach((f){
+    Firestore.instance
+        .collection('users')
+        .document(email)
+        .collection('transactions')
+        .orderBy('dateTimeOfTransaction', descending: false)
+        .snapshots()
+        .listen((onData) {
+      onData.documents.forEach((f) {
         sortedTransactions.add(f.data);
       });
     });

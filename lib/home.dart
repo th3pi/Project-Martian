@@ -4,7 +4,7 @@ import 'package:swipedetector/swipedetector.dart';
 
 import 'models/user_data.dart';
 import 'models/finance_data.dart';
-import 'package:project_martian/widgets/bank_card.dart';
+import 'package:project_martian/widgets/bank_page/bank_card.dart';
 import 'widgets/id_card.dart';
 import 'widgets/email_verification.dart';
 import 'widgets/header.dart';
