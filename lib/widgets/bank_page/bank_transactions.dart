@@ -6,9 +6,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:project_martian/widgets/bank_page/transaction_details.dart';
 
 class Transactions extends StatefulWidget {
-  final String email;
+  final String email, appBarTitle;
 
-  Transactions({this.email});
+  Transactions({this.email, this.appBarTitle});
 
   @override
   State<StatefulWidget> createState() {
@@ -19,9 +19,12 @@ class Transactions extends StatefulWidget {
 enum DataStatus { DETERMINED, NOT_DETERMINED }
 
 class _TransactionState extends State<Transactions> {
+  int perPage = 10;
+  int present = 0;
   DataStatus dataStatus = DataStatus.NOT_DETERMINED;
   Finance finance;
   List<Map<String, dynamic>> sortedTransactions = [];
+  List<Map<String, dynamic>> limitedTransactions = [];
   int numOfTransactions;
 
   @override
@@ -50,11 +53,16 @@ class _TransactionState extends State<Transactions> {
       print(numOfTransactions);
       if (onData != null) {
         onData.documents.forEach((f) {
-          if(this.mounted) {
+          if (this.mounted) {
             setState(() {
               sortedTransactions.add(f.data);
             });
           }
+        });
+        setState(() {
+          limitedTransactions
+              .addAll(sortedTransactions.getRange(present, perPage));
+          present += perPage;
         });
       }
     });
@@ -112,63 +120,98 @@ class _TransactionState extends State<Transactions> {
           margin: EdgeInsets.only(top: 35),
           color: Colors.white,
           child: ListView.builder(
-            itemCount: numOfTransactions,
+            itemCount: present <= sortedTransactions.length
+                ? limitedTransactions.length + 1
+                : limitedTransactions.length,
             itemBuilder: (BuildContext context, int i) {
-              return Container(
-                child: Container(
-                    child: InkWell(
-                  onTap: () {
-                    _showTransactionDetails(i);
-                  },
-                  child: Card(
-                      elevation: 50,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15)),
+              return i != limitedTransactions.length
+                  ? Container(
                       child: Container(
-                        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                        child: Column(
-                          children: <Widget>[
-                            Row(
-                              children: <Widget>[
-                                Text("${getTransactionDay(i)}",
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                    )),
-                                Text("${getTransactionBalance(i)}",
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                    )),
-                              ],
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            ),
-                            Row(
-                              children: <Widget>[
-                                Text(sortedTransactions[i]['transactionType'] == 'Sent' ? 'Sent to: ${sortedTransactions[i]['receiver']}' : (sortedTransactions[i]['transactionType'] == 'Received' ? 'From: ${sortedTransactions[i]['sender']}' : 'Deposit'),
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        )),
-                                sortedTransactions[i]['transactionType'] ==
-                                        'Sent'
-                                    ? Text(
-                                        '-\$${sortedTransactions[i]['amount']}',
-                                        style: TextStyle(
-                                            color: Colors.red,
-                                            fontWeight: FontWeight.bold),
-                                      )
-                                    : Text(
-                                        '+\$${sortedTransactions[i]['amount']}',
-                                        style: TextStyle(
-                                            color: Colors.green,
-                                            fontWeight: FontWeight.bold),
-                                      )
-                              ],
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            ),
-                          ],
-                        ),
+                          child: InkWell(
+                        onTap: () {
+                          _showTransactionDetails(i);
+                        },
+                        child: Card(
+                            elevation: 50,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15)),
+                            child: Container(
+                              padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                              child: Column(
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      Text("${getTransactionDay(i)}",
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                          )),
+                                      Text("${getTransactionBalance(i)}",
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                          )),
+                                    ],
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Text(
+                                          sortedTransactions[i]
+                                                      ['transactionType'] ==
+                                                  'Sent'
+                                              ? 'Sent to: ${sortedTransactions[i]['receiver']}'
+                                              : (sortedTransactions[i]
+                                                          ['transactionType'] ==
+                                                      'Received'
+                                                  ? 'From: ${sortedTransactions[i]['sender']}'
+                                                  : 'Deposit'),
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                          )),
+                                      sortedTransactions[i]
+                                                  ['transactionType'] ==
+                                              'Sent'
+                                          ? Text(
+                                              '-\$${sortedTransactions[i]['amount']}',
+                                              style: TextStyle(
+                                                  color: Colors.red,
+                                                  fontWeight: FontWeight.bold),
+                                            )
+                                          : Text(
+                                              '+\$${sortedTransactions[i]['amount']}',
+                                              style: TextStyle(
+                                                  color: Colors.green,
+                                                  fontWeight: FontWeight.bold),
+                                            )
+                                    ],
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                  ),
+                                ],
+                              ),
+                            )),
                       )),
-                )),
-              );
+                    )
+                  : Container(
+                      color: Colors.deepOrangeAccent,
+                      child: FlatButton(
+                        child: Text('Load More', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                        onPressed: () {
+                          setState(() {
+                            if ((present + perPage) >
+                                sortedTransactions.length) {
+                              limitedTransactions.addAll(
+                                  sortedTransactions.getRange(
+                                      present, sortedTransactions.length));
+                            } else {
+                              limitedTransactions.addAll(sortedTransactions
+                                  .getRange(present, present + perPage));
+                            }
+                          });
+                          present += perPage;
+                        },
+                      ),
+                    );
             },
           )),
     ]);

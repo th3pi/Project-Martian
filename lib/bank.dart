@@ -26,7 +26,7 @@ enum DataStatus { DETERMINED, NOT_DETERMINED }
 
 class _BankState extends State<Bank> {
   var controller = MoneyMaskedTextController(leftSymbol: '\$', decimalSeparator: '.', thousandSeparator: ',');
-  String receiverEmail;
+  String receiverEmail, appBarTitle = 'Financial Details';
   Finance finance;
   double balance, amount;
   DataStatus dataStatus = DataStatus.NOT_DETERMINED;
@@ -80,7 +80,7 @@ class _BankState extends State<Bank> {
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            'Financial Details',
+            appBarTitle,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
@@ -88,7 +88,7 @@ class _BankState extends State<Bank> {
           children: <Widget>[
             _showBody(),
             Transactions(
-              email: widget.email,
+              email: widget.email, appBarTitle: appBarTitle,
             ),
           ],
         ));

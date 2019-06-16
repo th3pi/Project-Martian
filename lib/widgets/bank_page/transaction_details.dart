@@ -72,7 +72,7 @@ class TransactionDetails extends StatelessWidget {
                             style: TextStyle(fontSize: 12),
                           ),
                           Text(
-                            '\$200',
+                            '\$${sortedTransactions[i]['amount']}',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           )
                         ],
