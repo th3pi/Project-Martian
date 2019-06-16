@@ -30,6 +30,7 @@ class Finance {
         .document(txId)
         .setData({
       'transactionId': txId,
+      'amount' : amount,
       'userId': email,
       'transactionType': 'send',
       'dateTimeOfTransaction': '${DateTime.now()}',
@@ -56,6 +57,7 @@ class Finance {
         .document(txId)
         .setData({
       'transactionId': txId,
+      'amount' : amount,
       'userId': to,
       'transactionType': 'Received',
       'dateTimeOfTransaction': '${DateTime.now()}',

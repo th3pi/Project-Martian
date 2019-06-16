@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:swipedetector/swipedetector.dart';
+import 'package:flutter_masked_text/flutter_masked_text.dart';
 
 import 'package:project_martian/widgets/bank_page/bank_card.dart';
 import 'models/finance_data.dart';
@@ -24,6 +25,7 @@ class Bank extends StatefulWidget {
 enum DataStatus { DETERMINED, NOT_DETERMINED }
 
 class _BankState extends State<Bank> {
+  var controller = MoneyMaskedTextController(leftSymbol: '\$', decimalSeparator: '.', thousandSeparator: ',');
   String receiverEmail;
   Finance finance;
   double balance, amount;
@@ -261,8 +263,7 @@ class _BankState extends State<Bank> {
                                       child: Card(
                                         child: Container(
                                           padding: EdgeInsets.only(left: 15),
-                                          child: TextField(
-                                            textAlign: TextAlign.center,
+                                          child: TextField(keyboardType: TextInputType.emailAddress,
                                             onChanged: (value) {
                                               receiverEmail = value;
                                             },
@@ -282,10 +283,9 @@ class _BankState extends State<Bank> {
                                       child: Card(
                                         child: Container(
                                           padding: EdgeInsets.only(left: 15),
-                                          child: TextField(
-                                            textAlign: TextAlign.center,
+                                          child: TextField(keyboardType: TextInputType.number, controller: controller,
                                             onChanged: (value) {
-                                              amount = double.parse(value);
+                                              amount = controller.numberValue;
                                             },
                                             decoration: InputDecoration(
                                               border: InputBorder.none,
@@ -307,7 +307,7 @@ class _BankState extends State<Bank> {
                                   child: Text('Cancel',
                                       style: TextStyle(
                                           color: Colors.deepOrangeAccent))),
-                              RaisedButton(
+                              RaisedButton(padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15)),
@@ -344,43 +344,3 @@ class _BankState extends State<Bank> {
     );
   }
 }
-//Container(width: 250,
-//child: Card(
-//child: Container(
-//padding: EdgeInsets.only(left: 15),
-//child: TextField(
-//textAlign: TextAlign.center,
-//onChanged: (value) {
-//receiverEmail = value;
-//},
-//decoration: InputDecoration(
-//border: InputBorder.none,
-//labelText: 'Receiver\'s Email',
-//),
-//),
-//),
-//elevation: 20,
-//shape: RoundedRectangleBorder(
-//borderRadius: BorderRadius.circular(
-//15)),
-//)),
-//Container(width: 250,
-//child: Card(
-//child: Container(
-//padding: EdgeInsets.only(left: 15),
-//child: TextField(
-//textAlign: TextAlign.center,
-//onChanged: (value) {
-//amount = double.parse(value);
-//},
-//decoration: InputDecoration(
-//border: InputBorder.none,
-//labelText: 'Amount',
-//),
-//),
-//),
-//elevation: 20,
-//shape: RoundedRectangleBorder(
-//borderRadius: BorderRadius.circular(
-//15)),
-//)),
