@@ -4,12 +4,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:swipedetector/swipedetector.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:project_martian/widgets/bank_page/bank_card.dart';
 import 'models/finance_data.dart';
 import 'package:project_martian/widgets/bank_page/bank_transactions.dart';
 import 'package:project_martian/widgets/bank_page/transaction_details.dart';
 import 'widgets/bank_page/recent_transactions.dart';
+import 'widgets/flushbar.dart';
 
 class Bank extends StatefulWidget {
   final String email;
@@ -25,12 +27,14 @@ class Bank extends StatefulWidget {
 enum DataStatus { DETERMINED, NOT_DETERMINED }
 
 class _BankState extends State<Bank> {
-  var controller = MoneyMaskedTextController(leftSymbol: '\$', decimalSeparator: '.', thousandSeparator: ',');
+  var controller = MoneyMaskedTextController(
+      leftSymbol: '\$', decimalSeparator: '.', thousandSeparator: ',');
   String receiverEmail, appBarTitle = 'Financial Details';
   Finance finance;
   double balance, amount;
   DataStatus dataStatus = DataStatus.NOT_DETERMINED;
   List<Map<String, dynamic>> sortedTransactions = [];
+  bool userExists;
 
   @override
   void initState() {
@@ -88,7 +92,8 @@ class _BankState extends State<Bank> {
           children: <Widget>[
             _showBody(),
             Transactions(
-              email: widget.email, appBarTitle: appBarTitle,
+              email: widget.email,
+              appBarTitle: appBarTitle,
             ),
           ],
         ));
@@ -111,7 +116,9 @@ class _BankState extends State<Bank> {
             email: widget.email,
           ),
         ),
-        _showSendDepositMoney(),
+        dataStatus == DataStatus.NOT_DETERMINED
+            ? SpinKitDualRing(color: Colors.deepOrangeAccent)
+            : _showSendDepositMoney(),
         _recentTransactions(),
       ],
     );
@@ -263,9 +270,21 @@ class _BankState extends State<Bank> {
                                       child: Card(
                                         child: Container(
                                           padding: EdgeInsets.only(left: 15),
-                                          child: TextField(keyboardType: TextInputType.emailAddress,
+                                          child: TextField(
+                                            keyboardType:
+                                                TextInputType.emailAddress,
                                             onChanged: (value) {
                                               receiverEmail = value;
+                                              finance
+                                                  .checkIfUserExists(receiverEmail)
+                                                  .then((value) {
+                                                setState(() {
+                                                  if (value != null) {
+                                                    userExists = value;
+                                                    print(value);
+                                                  }
+                                                });
+                                              });
                                             },
                                             decoration: InputDecoration(
                                               border: InputBorder.none,
@@ -283,7 +302,9 @@ class _BankState extends State<Bank> {
                                       child: Card(
                                         child: Container(
                                           padding: EdgeInsets.only(left: 15),
-                                          child: TextField(keyboardType: TextInputType.number, controller: controller,
+                                          child: TextField(
+                                            keyboardType: TextInputType.number,
+                                            controller: controller,
                                             onChanged: (value) {
                                               amount = controller.numberValue;
                                             },
@@ -307,7 +328,8 @@ class _BankState extends State<Bank> {
                                   child: Text('Cancel',
                                       style: TextStyle(
                                           color: Colors.deepOrangeAccent))),
-                              RaisedButton(padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                              RaisedButton(
+                                padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15)),
@@ -319,16 +341,30 @@ class _BankState extends State<Bank> {
                                 ),
                                 onPressed: () {
                                   Navigator.pop(context);
-                                  restartPageNotification();
-                                  finance
-                                      .sendMoney(amount, receiverEmail)
-                                      .then((value) {
-                                    setState(() {
-                                      finance.getBalance(null).then((value) {
-                                        balance = value;
-                                      });
-                                    });
-                                  });
+                                  if (dataStatus == DataStatus.DETERMINED) {
+                                    if (balance >= amount) {
+                                      if (userExists) {
+                                        restartPageNotification();
+                                        finance
+                                            .sendMoney(amount, receiverEmail)
+                                            .then((value) {
+                                          setState(() {
+                                            finance
+                                                .getBalance(null)
+                                                .then((value) {
+                                              balance = value;
+                                            });
+                                          });
+                                        });
+                                      } else {
+                                        CustomFlushbar(context: context)
+                                            .userDoesntExistNotification();
+                                      }
+                                    } else if (balance < amount) {
+                                      CustomFlushbar(context: context)
+                                          .lowBalanceNotification();
+                                    }
+                                  }
                                 },
                               )
                             ],

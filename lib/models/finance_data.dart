@@ -8,6 +8,7 @@ class Finance {
   Map<String, dynamic> financeData;
   List<Map<String, dynamic>> sortedTransactions = [];
   CollectionReference reference;
+  bool userExists;
   var transactionId = Uuid();
 
   Finance({this.email, this.balance, this.name});
@@ -159,7 +160,7 @@ class Finance {
         .collection('users')
         .document(email)
         .collection('transactions')
-        .orderBy('dateTimeOfTransaction', descending: false)
+        .orderBy('dateTimeOfTransaction', descending: true)
         .snapshots()
         .listen((onData) {
       onData.documents.forEach((f) {
@@ -167,5 +168,16 @@ class Finance {
       });
     });
     return sortedTransactions;
+  }
+
+  Future<bool> checkIfUserExists(String email) async {
+    await Firestore.instance.collection('users').where('email', isEqualTo: email.toLowerCase()).limit(1).getDocuments().then((value){
+      if(value.documents.length == 1){
+        userExists = true;
+      }else{
+        userExists = false;
+      }
+    });
+    return userExists;
   }
 }
