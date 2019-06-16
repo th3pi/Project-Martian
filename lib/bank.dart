@@ -5,6 +5,7 @@ import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:swipedetector/swipedetector.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:camera/camera.dart';
 
 import 'package:project_martian/widgets/bank_page/bank_card.dart';
 import 'models/finance_data.dart';
