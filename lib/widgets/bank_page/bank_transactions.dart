@@ -143,20 +143,20 @@ class _TransactionState extends State<Transactions> {
                             ),
                             Row(
                               children: <Widget>[
-                                Text("Vivendi Red Corp",
+                                Text(sortedTransactions[i]['transactionType'] == 'Sent' ? 'Sent to: ${sortedTransactions[i]['receiver']}' : (sortedTransactions[i]['transactionType'] == 'Received' ? 'From: ${sortedTransactions[i]['sender']}' : 'Deposit'),
                                     style: TextStyle(
                                         fontSize: 15,
-                                        fontWeight: FontWeight.bold)),
+                                        )),
                                 sortedTransactions[i]['transactionType'] ==
-                                        'send'
+                                        'Sent'
                                     ? Text(
-                                        '-\$200',
+                                        '-\$${sortedTransactions[i]['amount']}',
                                         style: TextStyle(
                                             color: Colors.red,
                                             fontWeight: FontWeight.bold),
                                       )
                                     : Text(
-                                        '+\$200',
+                                        '+\$${sortedTransactions[i]['amount']}',
                                         style: TextStyle(
                                             color: Colors.green,
                                             fontWeight: FontWeight.bold),

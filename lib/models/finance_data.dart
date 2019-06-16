@@ -84,6 +84,7 @@ class Finance {
         .document(txId)
         .setData({
       'transactionId': txId,
+      'amount' : amount,
       'userId': email,
       'transactionType': 'deposit',
       'dateTimeOfTransaction': '${DateTime.now()}',
