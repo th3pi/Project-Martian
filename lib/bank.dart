@@ -8,7 +8,7 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:project_martian/widgets/bank_page/bank_card.dart';
 import 'models/finance_data.dart';
 import 'package:project_martian/widgets/bank_page/bank_transactions.dart';
-import 'package:project_martian/widgets/bank_page/TransactionDetails.dart';
+import 'package:project_martian/widgets/bank_page/transaction_details.dart';
 import 'widgets/bank_page/recent_transactions.dart';
 
 class Bank extends StatefulWidget {

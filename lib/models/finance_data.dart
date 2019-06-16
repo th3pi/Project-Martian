@@ -31,8 +31,9 @@ class Finance {
         .setData({
       'transactionId': txId,
       'amount' : amount,
+      'receiver' : to,
       'userId': email,
-      'transactionType': 'send',
+      'transactionType': 'Sent',
       'dateTimeOfTransaction': '${DateTime.now()}',
       'dateOfTransaction':
           '${DateTime.now().month}/${DateTime.now().day}/${DateTime.now().year + 800}',
@@ -58,6 +59,7 @@ class Finance {
         .setData({
       'transactionId': txId,
       'amount' : amount,
+      'sender' : email,
       'userId': to,
       'transactionType': 'Received',
       'dateTimeOfTransaction': '${DateTime.now()}',

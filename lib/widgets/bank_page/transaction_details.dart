@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class TransactionDetails extends StatelessWidget{
+class TransactionDetails extends StatelessWidget {
   final int i;
   final List<Map<String, dynamic>> sortedTransactions;
 
@@ -21,24 +21,23 @@ class TransactionDetails extends StatelessWidget{
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
                   child: Container(
-                      decoration:
-                      BoxDecoration(color: Colors.deepOrangeAccent),
+                      decoration: BoxDecoration(color: Colors.deepOrangeAccent),
                       padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
                       child: Center(
                           child: Column(
-                            children: <Widget>[
-                              Text(
-                                'Transaction ID',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              Text(
-                                sortedTransactions[i]['transactionId'],
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
-                              ),
-                            ],
-                          )))),
+                        children: <Widget>[
+                          Text(
+                            'Transaction ID',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          Text(
+                            sortedTransactions[i]['transactionId'],
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
+                        ],
+                      )))),
             ),
             Container(
               child: Card(
@@ -52,7 +51,10 @@ class TransactionDetails extends StatelessWidget{
                       padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                       child: Column(
                         children: <Widget>[
-                          Text('Transaction type', style: TextStyle(fontSize: 12),),
+                          Text(
+                            'Transaction type',
+                            style: TextStyle(fontSize: 12),
+                          ),
                           Text(
                             '${sortedTransactions[i]['transactionType']}',
                             style: TextStyle(fontWeight: FontWeight.bold),
@@ -65,7 +67,10 @@ class TransactionDetails extends StatelessWidget{
                       padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                       child: Column(
                         children: <Widget>[
-                          Text('Amount', style: TextStyle(fontSize: 12),),
+                          Text(
+                            'Amount',
+                            style: TextStyle(fontSize: 12),
+                          ),
                           Text(
                             '\$200',
                             style: TextStyle(fontWeight: FontWeight.bold),
@@ -73,12 +78,50 @@ class TransactionDetails extends StatelessWidget{
                         ],
                       ),
                     ),
+                    sortedTransactions[i]['transactionType'] == 'Sent'
+                        ? Container(
+                            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                            child: Column(
+                              children: <Widget>[
+                                Text(
+                                  'Sent to',
+                                  style: TextStyle(fontSize: 12),
+                                ),
+                                Text(
+                                  sortedTransactions[i]['receiver'],
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                )
+                              ],
+                            ),
+                          )
+                        : (sortedTransactions[i]['transactionType'] ==
+                                'Received'
+                            ? Container(
+                                padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                child: Column(
+                                  children: <Widget>[
+                                    Text(
+                                      'From',
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                    Text(
+                                      sortedTransactions[i]['sender'],
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    )
+                                  ],
+                                ),
+                              )
+                            : SizedBox()),
                     Divider(),
                     Container(
                       padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                       child: Column(
                         children: <Widget>[
-                          Text('Date of Transaction', style: TextStyle(fontSize: 12),),
+                          Text(
+                            'Date of Transaction',
+                            style: TextStyle(fontSize: 12),
+                          ),
                           Text(
                             '${sortedTransactions[i]['dateOfTransaction']}',
                             style: TextStyle(fontWeight: FontWeight.bold),
@@ -91,7 +134,10 @@ class TransactionDetails extends StatelessWidget{
                       padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                       child: Column(
                         children: <Widget>[
-                          Text('Time of Transaction', style: TextStyle(fontSize: 12),),
+                          Text(
+                            'Time of Transaction',
+                            style: TextStyle(fontSize: 12),
+                          ),
                           Text(
                             '${sortedTransactions[i]['timeOfTransaction']}',
                             style: TextStyle(fontWeight: FontWeight.bold),
@@ -104,7 +150,10 @@ class TransactionDetails extends StatelessWidget{
                       padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                       child: Column(
                         children: <Widget>[
-                          Text('Current Balance', style: TextStyle(fontSize: 12),),
+                          Text(
+                            'Balance at the Time',
+                            style: TextStyle(fontSize: 12),
+                          ),
                           Text(
                             '${sortedTransactions[i]['balance']}',
                             style: TextStyle(fontWeight: FontWeight.bold),
