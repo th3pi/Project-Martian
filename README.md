@@ -21,9 +21,23 @@ An app available on all devices running MarsOS issued by the Martian Corps. This
 
 # 
 
-**Glimpse Into the app**
+**Progress**
 
+***Login Screen***
 ![](https://i.imgur.com/P8tOhic.png)
+
+***Home Screen***
+![](https://i.imgur.com/jFFu5q2.png)
+
+***Send Money Screen***
+![](https://i.imgur.com/Pl7Uoh6.png)
+
+***Transaction Details***
+![](https://i.imgur.com/VELdicx.png)
+
+***Transaction History***
+![](https://i.imgur.com/AWuHGJy.png)
+
 
 
 ### Credits
