@@ -24,8 +24,9 @@ class Bank extends StatefulWidget {
 enum DataStatus { DETERMINED, NOT_DETERMINED }
 
 class _BankState extends State<Bank> {
+  String receiverEmail;
   Finance finance;
-  double balance;
+  double balance, amount;
   DataStatus dataStatus = DataStatus.NOT_DETERMINED;
   List<Map<String, dynamic>> sortedTransactions = [];
 
@@ -38,7 +39,7 @@ class _BankState extends State<Bank> {
         dataStatus =
             value == null ? DataStatus.NOT_DETERMINED : DataStatus.DETERMINED;
         if (value != null) {
-          finance.getBalance(null).then((value){
+          finance.getBalance(null).then((value) {
             balance = value;
           });
         }
@@ -62,7 +63,7 @@ class _BankState extends State<Bank> {
           onData == null ? DataStatus.NOT_DETERMINED : DataStatus.DETERMINED;
       if (onData != null) {
         onData.documents.forEach((f) {
-          if(this.mounted) {
+          if (this.mounted) {
             setState(() {
               sortedTransactions.add(f.data);
             });
@@ -70,7 +71,6 @@ class _BankState extends State<Bank> {
         });
       }
     });
-
   }
 
   @override
@@ -225,14 +225,115 @@ class _BankState extends State<Bank> {
                     ],
                   ),
                   onPressed: () {
-                    restartPageNotification();
-                    finance.sendMoney(200, 'katarina@gmail.com').then((value) {
-                      setState(() {
-                        finance.getBalance(null).then((value){
-                          balance = value;
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15)),
+                            content: Container(
+                              height: 220,
+                              child: Column(
+                                children: <Widget>[
+                                  Card(
+                                      elevation: 0,
+                                      borderOnForeground: false,
+                                      clipBehavior: Clip.antiAlias,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: Container(
+                                          decoration: BoxDecoration(
+                                              color: Colors.deepOrangeAccent),
+                                          padding:
+                                              EdgeInsets.fromLTRB(0, 20, 0, 20),
+                                          child: Center(
+                                            child: Text(
+                                              'Send Money',
+                                              style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white),
+                                            ),
+                                          ))),
+                                  Container(
+                                      width: 250,
+                                      child: Card(
+                                        child: Container(
+                                          padding: EdgeInsets.only(left: 15),
+                                          child: TextField(
+                                            textAlign: TextAlign.center,
+                                            onChanged: (value) {
+                                              receiverEmail = value;
+                                            },
+                                            decoration: InputDecoration(
+                                              border: InputBorder.none,
+                                              labelText: 'Receiver\'s Email',
+                                            ),
+                                          ),
+                                        ),
+                                        elevation: 20,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15)),
+                                      )),
+                                  Container(
+                                      width: 250,
+                                      child: Card(
+                                        child: Container(
+                                          padding: EdgeInsets.only(left: 15),
+                                          child: TextField(
+                                            textAlign: TextAlign.center,
+                                            onChanged: (value) {
+                                              amount = double.parse(value);
+                                            },
+                                            decoration: InputDecoration(
+                                              border: InputBorder.none,
+                                              labelText: 'Amount',
+                                            ),
+                                          ),
+                                        ),
+                                        elevation: 20,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15)),
+                                      )),
+                                ],
+                              ),
+                            ),
+                            actions: <Widget>[
+                              FlatButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Text('Cancel',
+                                      style: TextStyle(
+                                          color: Colors.deepOrangeAccent))),
+                              RaisedButton(
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15)),
+                                child: Text(
+                                  'Confirm & Send',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                ),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  restartPageNotification();
+                                  finance
+                                      .sendMoney(amount, receiverEmail)
+                                      .then((value) {
+                                    setState(() {
+                                      finance.getBalance(null).then((value) {
+                                        balance = value;
+                                      });
+                                    });
+                                  });
+                                },
+                              )
+                            ],
+                          );
                         });
-                      });
-                    });
                   },
                 ),
               )
@@ -243,3 +344,43 @@ class _BankState extends State<Bank> {
     );
   }
 }
+//Container(width: 250,
+//child: Card(
+//child: Container(
+//padding: EdgeInsets.only(left: 15),
+//child: TextField(
+//textAlign: TextAlign.center,
+//onChanged: (value) {
+//receiverEmail = value;
+//},
+//decoration: InputDecoration(
+//border: InputBorder.none,
+//labelText: 'Receiver\'s Email',
+//),
+//),
+//),
+//elevation: 20,
+//shape: RoundedRectangleBorder(
+//borderRadius: BorderRadius.circular(
+//15)),
+//)),
+//Container(width: 250,
+//child: Card(
+//child: Container(
+//padding: EdgeInsets.only(left: 15),
+//child: TextField(
+//textAlign: TextAlign.center,
+//onChanged: (value) {
+//amount = double.parse(value);
+//},
+//decoration: InputDecoration(
+//border: InputBorder.none,
+//labelText: 'Amount',
+//),
+//),
+//),
+//elevation: 20,
+//shape: RoundedRectangleBorder(
+//borderRadius: BorderRadius.circular(
+//15)),
+//)),

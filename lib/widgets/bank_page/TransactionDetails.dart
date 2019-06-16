@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class TransactionDetails extends StatelessWidget{
   final int i;
-  List<Map<String, dynamic>> sortedTransactions = [];
+  final List<Map<String, dynamic>> sortedTransactions;
 
   TransactionDetails({this.i, this.sortedTransactions});
 

@@ -50,9 +50,11 @@ class _TransactionState extends State<Transactions> {
       print(numOfTransactions);
       if (onData != null) {
         onData.documents.forEach((f) {
-          setState(() {
-            sortedTransactions.add(f.data);
-          });
+          if(this.mounted) {
+            setState(() {
+              sortedTransactions.add(f.data);
+            });
+          }
         });
       }
     });
