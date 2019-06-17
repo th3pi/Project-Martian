@@ -207,7 +207,7 @@ class _BankState extends State<Bank> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15)),
                             content: Container(
-                              height: 220,
+                              height: 200,
                               child: Column(
                                 children: <Widget>[
                                   Card(
@@ -216,15 +216,15 @@ class _BankState extends State<Bank> {
                                       clipBehavior: Clip.antiAlias,
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
-                                          BorderRadius.circular(10)),
+                                              BorderRadius.circular(10)),
                                       child: Container(
                                           decoration: BoxDecoration(
                                               color: Colors.deepOrangeAccent),
                                           padding:
-                                          EdgeInsets.fromLTRB(0, 20, 0, 20),
+                                              EdgeInsets.fromLTRB(0, 20, 0, 20),
                                           child: Center(
                                             child: Text(
-                                              'Deposit Money',
+                                              'Pick an Option',
                                               style: TextStyle(
                                                   fontSize: 20,
                                                   fontWeight: FontWeight.bold,
@@ -233,53 +233,170 @@ class _BankState extends State<Bank> {
                                           ))),
                                   Container(
                                       width: 250,
-                                      child: Card(
-                                        child: Container(
-                                          padding: EdgeInsets.only(left: 15),
-                                          child: TextField(
-                                            keyboardType: TextInputType.number,
-                                            controller: controller,
-                                            onChanged: (value) {
-                                              amount = controller.numberValue;
-                                            },
-                                            decoration: InputDecoration(
-                                              border: InputBorder.none,
-                                              labelText: 'Amount',
-                                            ),
-                                          ),
+                                      child: RaisedButton(
+                                        onPressed: () {},
+                                        color: Colors.green,
+                                        padding:
+                                            EdgeInsets.fromLTRB(0, 15, 0, 15),
+                                        child: Text(
+                                          'Submit Check',
+                                          style: TextStyle(color: Colors.white, fontSize: 20),
                                         ),
                                         elevation: 20,
                                         shape: RoundedRectangleBorder(
                                             borderRadius:
-                                            BorderRadius.circular(15)),
+                                                BorderRadius.circular(15)),
+                                      )),
+                                  SizedBox(
+                                    height: 6,
+                                  ),
+                                  Container(
+                                      width: 250,
+                                      child: RaisedButton(
+                                        child: Text(
+                                          'Direct Deposit',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                        elevation: 20,
+                                        color: Colors.deepOrangeAccent,
+                                        padding:
+                                            EdgeInsets.fromLTRB(0, 15, 0, 15),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15)),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              15)),
+                                                  content: Container(
+                                                    height: 150,
+                                                    child: Column(
+                                                      children: <Widget>[
+                                                        Card(
+                                                            elevation: 0,
+                                                            borderOnForeground:
+                                                                false,
+                                                            clipBehavior:
+                                                                Clip.antiAlias,
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10)),
+                                                            child: Container(
+                                                                decoration: BoxDecoration(
+                                                                    color: Colors
+                                                                        .deepOrangeAccent),
+                                                                padding:
+                                                                    EdgeInsets
+                                                                        .fromLTRB(
+                                                                            0,
+                                                                            20,
+                                                                            0,
+                                                                            20),
+                                                                child: Center(
+                                                                  child: Text(
+                                                                    'Deposit Money',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            20,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        color: Colors
+                                                                            .white),
+                                                                  ),
+                                                                ))),
+                                                        Container(
+                                                            width: 250,
+                                                            child: Card(
+                                                              child: Container(
+                                                                padding: EdgeInsets
+                                                                    .only(
+                                                                        left:
+                                                                            15),
+                                                                child:
+                                                                    TextField(
+                                                                  keyboardType:
+                                                                      TextInputType
+                                                                          .number,
+                                                                  controller:
+                                                                      controller,
+                                                                  onChanged:
+                                                                      (value) {
+                                                                    amount =
+                                                                        controller
+                                                                            .numberValue;
+                                                                  },
+                                                                  decoration:
+                                                                      InputDecoration(
+                                                                    border:
+                                                                        InputBorder
+                                                                            .none,
+                                                                    labelText:
+                                                                        'Amount',
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              elevation: 20,
+                                                              shape: RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              15)),
+                                                            )),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  actions: <Widget>[
+                                                    FlatButton(
+                                                        onPressed: () =>
+                                                            Navigator.pop(
+                                                                context),
+                                                        child: Text('Cancel',
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .deepOrangeAccent))),
+                                                    RaisedButton(
+                                                      padding:
+                                                          EdgeInsets.fromLTRB(
+                                                              20, 0, 20, 0),
+                                                      elevation: 0,
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          15)),
+                                                      child: Text(
+                                                        'Confirm & Deposit',
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color:
+                                                                Colors.white),
+                                                      ),
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                        restartPageNotification();
+                                                        finance.depositMoney(
+                                                            amount);
+                                                      },
+                                                    )
+                                                  ],
+                                                );
+                                              });
+                                        },
                                       )),
                                 ],
                               ),
                             ),
-                            actions: <Widget>[
-                              FlatButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: Text('Cancel',
-                                      style: TextStyle(
-                                          color: Colors.deepOrangeAccent))),
-                              RaisedButton(
-                                padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                                elevation: 0,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15)),
-                                child: Text(
-                                  'Confirm & Deposit',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white),
-                                ),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  restartPageNotification();
-                                  finance.depositMoney(amount);
-                                },
-                              )
-                            ],
                           );
                         });
                   },
@@ -351,7 +468,8 @@ class _BankState extends State<Bank> {
                                             onChanged: (value) {
                                               receiverEmail = value;
                                               finance
-                                                  .checkIfUserExists(receiverEmail)
+                                                  .checkIfUserExists(
+                                                      receiverEmail)
                                                   .then((value) {
                                                 setState(() {
                                                   if (value != null) {
