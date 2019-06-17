@@ -149,6 +149,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
               onTap: () {
+                Navigator.pop(context);
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -160,7 +161,7 @@ class _HomePageState extends State<HomePage> {
             ListTile(
               title: Row(
                 children: <Widget>[
-                  Icon(Icons.close),
+                  Icon(Icons.power_settings_new),
                   SizedBox(width: 20,),
                   Text('Logout'),
                 ],
@@ -220,7 +221,7 @@ class _HomePageState extends State<HomePage> {
     return FlatButton(
         child: Text(
           'Logout',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         onPressed: () {
           _signOut();
