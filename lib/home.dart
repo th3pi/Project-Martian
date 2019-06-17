@@ -132,21 +132,39 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             ListTile(
-              title: Row(
-                children: <Widget>[
-                  Icon(Icons.person),
-                  SizedBox(width: 20,),
-                  Text('My Martian Account'),
-                ],
+              title: Card(
+                elevation: 20,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                child: Container(
+                  padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+                  child: Row(
+                    children: <Widget>[
+                      Icon(Icons.person),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Text('My Martian Account'),
+                    ],
+                  ),
+                ),
               ),
             ),
             ListTile(
-              title: Row(
-                children: <Widget>[
-                  Icon(Icons.attach_money),
-                  SizedBox(width: 20,),
-                  Text('Bank'),
-                ],
+              title: Card(                elevation: 20,
+
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                child: Container(
+                  padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+                  child: Row(
+                    children: <Widget>[
+                      Icon(Icons.attach_money),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Text('Bank'),
+                    ],
+                  ),
+                ),
               ),
               onTap: () {
                 Navigator.pop(context);
@@ -154,17 +172,27 @@ class _HomePageState extends State<HomePage> {
                     context,
                     MaterialPageRoute(
                         builder: (BuildContext) => Bank(
-                          email: widget.email,
-                        )));
+                              email: widget.email,
+                            )));
               },
             ),
             ListTile(
-              title: Row(
-                children: <Widget>[
-                  Icon(Icons.power_settings_new),
-                  SizedBox(width: 20,),
-                  Text('Logout'),
-                ],
+              title: Card(                elevation: 20,
+
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15)),
+                child: Container(
+                  padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+                  child: Row(
+                    children: <Widget>[
+                      Icon(Icons.power_settings_new),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Text('Logout'),
+                    ],
+                  ),
+                ),
               ),
               onTap: () {
                 _signOut();
