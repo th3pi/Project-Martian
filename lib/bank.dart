@@ -175,7 +175,8 @@ class _BankState extends State<Bank> {
   Widget _showSendDepositMoney() {
     return Container(
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        elevation: 20,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Container(
           padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
           child: Row(
@@ -199,14 +200,88 @@ class _BankState extends State<Bank> {
                     ],
                   ),
                   onPressed: () {
-                    restartPageNotification();
-                    finance.depositMoney(200).then((value) {
-                      setState(() {
-                        finance.getBalance(null).then((value) {
-                          balance = value;
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15)),
+                            content: Container(
+                              height: 220,
+                              child: Column(
+                                children: <Widget>[
+                                  Card(
+                                      elevation: 0,
+                                      borderOnForeground: false,
+                                      clipBehavior: Clip.antiAlias,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.circular(10)),
+                                      child: Container(
+                                          decoration: BoxDecoration(
+                                              color: Colors.deepOrangeAccent),
+                                          padding:
+                                          EdgeInsets.fromLTRB(0, 20, 0, 20),
+                                          child: Center(
+                                            child: Text(
+                                              'Deposit Money',
+                                              style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white),
+                                            ),
+                                          ))),
+                                  Container(
+                                      width: 250,
+                                      child: Card(
+                                        child: Container(
+                                          padding: EdgeInsets.only(left: 15),
+                                          child: TextField(
+                                            keyboardType: TextInputType.number,
+                                            controller: controller,
+                                            onChanged: (value) {
+                                              amount = controller.numberValue;
+                                            },
+                                            decoration: InputDecoration(
+                                              border: InputBorder.none,
+                                              labelText: 'Amount',
+                                            ),
+                                          ),
+                                        ),
+                                        elevation: 20,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                            BorderRadius.circular(15)),
+                                      )),
+                                ],
+                              ),
+                            ),
+                            actions: <Widget>[
+                              FlatButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Text('Cancel',
+                                      style: TextStyle(
+                                          color: Colors.deepOrangeAccent))),
+                              RaisedButton(
+                                padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15)),
+                                child: Text(
+                                  'Confirm & Deposit',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                ),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  restartPageNotification();
+                                  finance.depositMoney(amount);
+                                },
+                              )
+                            ],
+                          );
                         });
-                      });
-                    });
                   },
                 ),
               ),
