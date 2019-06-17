@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_martian/services/auth_service.dart';
 import 'package:swipedetector/swipedetector.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'models/user_data.dart';
 import 'models/finance_data.dart';
@@ -27,8 +28,10 @@ class HomePage extends StatefulWidget {
 enum DataStatus { NOT_DETERMINED, DETERMINED }
 
 class _HomePageState extends State<HomePage> {
+  final FirebaseMessaging _messaging = FirebaseMessaging();
   User user;
   Finance finance;
+  String token;
   int numOfIds;
   Map<String, dynamic> userData;
   DataStatus dataStatus = DataStatus.NOT_DETERMINED;
@@ -218,12 +221,18 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    _messaging.getToken().then((token){
+      setState(() {
+        this.token = token;
+      });
+    });
     user = User(email: widget.email);
     user.getAllData().then((data) {
       setState(() {
         if (data != null) {
           dataStatus = DataStatus.DETERMINED;
           userData = data;
+          user.addField('tokenId', token);
         }
       });
     });

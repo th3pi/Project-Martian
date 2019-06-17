@@ -1,14 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
 import 'package:random_string/random_string.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class Finance {
-  String email, name, transactionType;
+  String email, name, transactionType, token, senderName;
   double balance, receiversBalance;
   Map<String, dynamic> financeData;
   List<Map<String, dynamic>> sortedTransactions = [];
   CollectionReference reference;
   bool userExists;
+  FirebaseMessaging messaging;
   var transactionId = Uuid();
 
   Finance({this.email, this.balance, this.name});
@@ -23,6 +25,13 @@ class Finance {
         .get()
         .then((data) {
       balance = data.data['balance'];
+    });
+    await Firestore.instance
+        .collection('users')
+        .document(email)
+        .get()
+        .then((value) {
+      senderName = '${value.data['firstName']} ${value.data['lastName']}';
     });
     await Firestore.instance
         .collection('users')
@@ -55,13 +64,21 @@ class Finance {
     await Firestore.instance
         .collection('users')
         .document(to)
+        .get().then((value){
+         token = value.data['tokenId'];
+    });
+    await Firestore.instance
+        .collection('users')
+        .document(to)
         .collection('transactions')
         .document(txId)
         .setData({
+      'senderName' : senderName,
       'transactionId': txId,
       'amount' : amount,
       'sender' : email,
       'userId': to,
+      'tokenId' : token,
       'transactionType': 'Received',
       'dateTimeOfTransaction': '${DateTime.now()}',
       'dateOfTransaction':

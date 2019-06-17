@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class User {
   String key;
@@ -52,7 +53,14 @@ class User {
       'dateOfBirth': dateOfBirth,
       'email': email,
       'reason': reason,
-      'martian': martian
+      'martian': martian,
     });
+  }
+
+  Future<void> addField(String fieldName, String data) async {
+    await Firestore.instance
+        .collection('users')
+        .document(email)
+        .updateData({fieldName: data});
   }
 }
