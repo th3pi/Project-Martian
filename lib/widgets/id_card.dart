@@ -483,7 +483,7 @@ class _IdCardState extends State<IdCard> {
         return LinearGradient(
             begin: FractionalOffset.topRight,
             end: FractionalOffset.bottomLeft,
-            colors: [Colors.greenAccent, Colors.blue]);
+            colors: [Colors.blueGrey, Colors.green]);
         break;
       case 'Jupiter':
         return LinearGradient(

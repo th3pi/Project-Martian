@@ -87,7 +87,7 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       )
-                                    : Text('\$200 was added to account',
+                                    : Text('\$${sortedTransactions[0]['amount']} was Deposited to your account',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold))),
                           ),
@@ -133,7 +133,7 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                                             fontWeight: FontWeight.bold),
                                       )
                                     : Text(
-                                        '\$200 was added to account',
+                                        '\$${sortedTransactions[1]['amount']} was Deposited to your account',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold),
                                       )),
@@ -180,7 +180,7 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                                             fontWeight: FontWeight.bold),
                                       )
                                     : Text(
-                                        '\$200 was added to account',
+                                        '\$${sortedTransactions[2]['amount']} was Deposited to your account',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold),
                                       )),
@@ -238,7 +238,7 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                                               fontWeight: FontWeight.bold),
                                         )
                                       : Text(
-                                          '\$200 was added to account',
+                                          '\$${sortedTransactions[3]['amount']} was Deposited to your account',
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold),
                                         )),

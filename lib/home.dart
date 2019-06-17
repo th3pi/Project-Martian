@@ -36,6 +36,142 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        child: Column(
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(color: Colors.deepOrange),
+              child: Container(
+                width: double.infinity,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Text(
+                          dataStatus == DataStatus.NOT_DETERMINED
+                              ? 'Loading...'
+                              : '${userData['firstName']} ${userData['lastName']}',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Text(
+                          'uMail  ',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        Text(
+                          dataStatus == DataStatus.NOT_DETERMINED
+                              ? 'Loading...'
+                              : '${userData['email']}',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Text(
+                          'GSID  ',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        Text(
+                          dataStatus == DataStatus.NOT_DETERMINED
+                              ? 'Loading...'
+                              : '${userData['gsid']}',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Text(
+                          'From  ',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        Text(
+                          dataStatus == DataStatus.NOT_DETERMINED
+                              ? 'Loading...'
+                              : '${userData['mother_planet']}',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Text(
+                          'DOB  ',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        Text(
+                          dataStatus == DataStatus.NOT_DETERMINED
+                              ? 'Loading...'
+                              : '${userData['dateOfBirth']}',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+            ListTile(
+              title: Row(
+                children: <Widget>[
+                  Icon(Icons.person),
+                  SizedBox(width: 20,),
+                  Text('My Martian Account'),
+                ],
+              ),
+            ),
+            ListTile(
+              title: Row(
+                children: <Widget>[
+                  Icon(Icons.attach_money),
+                  SizedBox(width: 20,),
+                  Text('Bank'),
+                ],
+              ),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext) => Bank(
+                          email: widget.email,
+                        )));
+              },
+            ),
+            ListTile(
+              title: Row(
+                children: <Widget>[
+                  Icon(Icons.close),
+                  SizedBox(width: 20,),
+                  Text('Logout'),
+                ],
+              ),
+              onTap: () {
+                _signOut();
+              },
+            )
+          ],
+        ),
+      ),
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
@@ -54,9 +190,9 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     user = User(email: widget.email);
-    user.getAllData().then((data){
+    user.getAllData().then((data) {
       setState(() {
-        if(data != null) {
+        if (data != null) {
           dataStatus = DataStatus.DETERMINED;
           userData = data;
         }
@@ -120,8 +256,8 @@ class _HomePageState extends State<HomePage> {
                 context,
                 MaterialPageRoute(
                     builder: (BuildContext) => Bank(
-                      email: widget.email,
-                    )));
+                          email: widget.email,
+                        )));
           },
           child: BankCard(
             email: widget.email,
