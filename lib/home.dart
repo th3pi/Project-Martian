@@ -10,6 +10,7 @@ import 'widgets/id_card.dart';
 import 'widgets/email_verification.dart';
 import 'widgets/header.dart';
 import 'bank.dart';
+import 'profile.dart';
 
 class HomePage extends StatefulWidget {
   final BaseAuth auth;
@@ -151,6 +152,15 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext) => Profile(
+                          email: widget.email, auth: widget.auth,
+                        )));
+              },
             ),
             ListTile(
               title: Card(                elevation: 20,
