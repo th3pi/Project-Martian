@@ -30,34 +30,32 @@ class Bank extends StatefulWidget {
 enum DataStatus { DETERMINED, NOT_DETERMINED }
 
 class _BankState extends State<Bank> {
-  var controller = MoneyMaskedTextController(
+  var _controller = MoneyMaskedTextController(
       leftSymbol: '\$', decimalSeparator: '.', thousandSeparator: ',');
-  var _imageFile, image, _imageFile2;
-  String receiverEmail,
-      appBarTitle = 'Financial Details',
-      checkPattern = "/\\d/",
-      testString = '500';
-  RegExp regExp;
-  Finance finance;
-  double balance, amount, mlAmount;
-  DataStatus dataStatus = DataStatus.NOT_DETERMINED;
-  List<Map<String, dynamic>> sortedTransactions = [];
-  bool userExists;
+  var _imageFile, _image, _imageFile2;
+  String _receiverEmail,
+      _appBarTitle = 'Financial Details';
+  RegExp _regExp;
+  Finance _finance;
+  double _balance, _amount, _mlAmount;
+  DataStatus _dataStatus = DataStatus.NOT_DETERMINED;
+  List<Map<String, dynamic>> _sortedTransactions = [];
+  bool _userExists;
 
   @override
   void initState() {
     super.initState();
-    finance = Finance(email: widget.email);
-    finance.getData().then((value) {
+    _finance = Finance(email: widget.email);
+    _finance.getData().then((value) {
       setState(() {
-        dataStatus =
+        _dataStatus =
             value == null ? DataStatus.NOT_DETERMINED : DataStatus.DETERMINED;
         if (value != null) {
-          finance.getBalance(null).then((value) {
-            balance = value;
+          _finance.getBalance(null).then((value) {
+            _balance = value;
           });
         }
-        finance.checkForBalanceChanges().then((data) {
+        _finance.checkForBalanceChanges().then((data) {
           data.snapshots().listen((value) {
             value.documentChanges.forEach((change) {
 //              finance = Finance(email: widget.email);
@@ -73,13 +71,13 @@ class _BankState extends State<Bank> {
         .orderBy('dateTimeOfTransaction', descending: true)
         .snapshots()
         .listen((onData) {
-      dataStatus =
+      _dataStatus =
           onData == null ? DataStatus.NOT_DETERMINED : DataStatus.DETERMINED;
       if (onData != null) {
         onData.documents.forEach((f) {
           if (this.mounted) {
             setState(() {
-              sortedTransactions.add(f.data);
+              _sortedTransactions.add(f.data);
             });
           }
         });
@@ -92,7 +90,7 @@ class _BankState extends State<Bank> {
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            appBarTitle,
+            _appBarTitle,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           actions: <Widget>[_showRefreshButton()],
@@ -102,7 +100,7 @@ class _BankState extends State<Bank> {
             _showBody(),
             Transactions(
               email: widget.email,
-              appBarTitle: appBarTitle,
+              appBarTitle: _appBarTitle,
             ),
           ],
         ));
@@ -141,7 +139,7 @@ class _BankState extends State<Bank> {
             email: widget.email,
           ),
         ),
-        dataStatus == DataStatus.NOT_DETERMINED
+        _dataStatus == DataStatus.NOT_DETERMINED
             ? SpinKitDualRing(color: Colors.deepOrangeAccent)
             : _showSendDepositMoney(),
         _recentTransactions(),
@@ -247,18 +245,18 @@ class _BankState extends State<Bank> {
 
   Future<void> _takePicture() async {
     _imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
-    image = FirebaseVisionImage.fromFile(_imageFile);
+    _image = FirebaseVisionImage.fromFile(_imageFile);
     TextRecognizer recognizeText = FirebaseVision.instance.textRecognizer();
-    VisionText readText = await recognizeText.processImage(image);
-    regExp = RegExp(r"(\d)");
+    VisionText readText = await recognizeText.processImage(_image);
+    _regExp = RegExp(r"(\d)");
     for (TextBlock block in readText.blocks) {
       for (TextLine line in block.lines) {
         for (TextElement word in line.elements) {
-          if (regExp.hasMatch(word.text)) {
+          if (_regExp.hasMatch(word.text)) {
             setState(() {
-              mlAmount = double.parse(word.text);
-              finance.depositMoney(mlAmount);
-              _restartPageNotificationPicDeposit(mlAmount);
+              _mlAmount = double.parse(word.text);
+              _finance.depositMoney(_mlAmount);
+              _restartPageNotificationPicDeposit(_mlAmount);
             });
           } else {
             print('No match');
@@ -287,7 +285,7 @@ class _BankState extends State<Bank> {
                       borderRadius: BorderRadius.circular(20)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
+                    children: <Widget>[Icon(Icons.call_received, color: Colors.white,),SizedBox(width: 15,),
                       Text(
                         'Deposit',
                         style: TextStyle(
@@ -315,7 +313,7 @@ class _BankState extends State<Bank> {
                       borderRadius: BorderRadius.circular(20)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
+                    children: <Widget>[Icon(Icons.send, color: Colors.white,),SizedBox(width: 15,),
                       Text(
                         'Send',
                         style: TextStyle(
@@ -373,13 +371,13 @@ class _BankState extends State<Bank> {
                           child: TextField(
                             keyboardType: TextInputType.emailAddress,
                             onChanged: (value) {
-                              receiverEmail = value;
-                              finance
-                                  .checkIfUserExists(receiverEmail)
+                              _receiverEmail = value;
+                              _finance
+                                  .checkIfUserExists(_receiverEmail)
                                   .then((value) {
                                 setState(() {
                                   if (value != null) {
-                                    userExists = value;
+                                    _userExists = value;
                                     print(value);
                                   }
                                 });
@@ -402,9 +400,9 @@ class _BankState extends State<Bank> {
                           padding: EdgeInsets.only(left: 15),
                           child: TextField(
                             keyboardType: TextInputType.number,
-                            controller: controller,
+                            controller: _controller,
                             onChanged: (value) {
-                              amount = controller.numberValue;
+                              _amount = _controller.numberValue;
                             },
                             decoration: InputDecoration(
                               border: InputBorder.none,
@@ -436,14 +434,14 @@ class _BankState extends State<Bank> {
                 ),
                 onPressed: () {
                   Navigator.pop(context);
-                  if (dataStatus == DataStatus.DETERMINED) {
-                    if (balance >= amount) {
-                      if (userExists) {
+                  if (_dataStatus == DataStatus.DETERMINED) {
+                    if (_balance >= _amount) {
+                      if (_userExists) {
                         _restartPageNotification();
-                        finance.sendMoney(amount, receiverEmail).then((value) {
+                        _finance.sendMoney(_amount, _receiverEmail).then((value) {
                           setState(() {
-                            finance.getBalance(null).then((value) {
-                              balance = value;
+                            _finance.getBalance(null).then((value) {
+                              _balance = value;
                             });
                           });
                         });
@@ -451,7 +449,7 @@ class _BankState extends State<Bank> {
                         CustomFlushbar(context: context)
                             .userDoesntExistNotification();
                       }
-                    } else if (balance < amount) {
+                    } else if (_balance < _amount) {
                       CustomFlushbar(context: context).lowBalanceNotification();
                     }
                   }
@@ -470,7 +468,7 @@ class _BankState extends State<Bank> {
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
             content: Container(
-              height: 200,
+              height: 220,
               child: Column(
                 children: <Widget>[
                   Card(
@@ -492,14 +490,21 @@ class _BankState extends State<Bank> {
                                   color: Colors.white),
                             ),
                           ))),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Container(
                       width: 250,
                       child: RaisedButton(
-                        color: Colors.green,
+                        color: Colors.white,
                         padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
-                        child: Text(
-                          'Submit Check',
-                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        child: Row(mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[Icon(Icons.camera_alt, color: Colors.deepOrange,), SizedBox(width: 10,),
+                            Text(
+                              'Submit Check',
+                              style: TextStyle(color: Colors.deepOrange, fontSize: 20),
+                            ),
+                          ],
                         ),
                         elevation: 20,
                         shape: RoundedRectangleBorder(
@@ -510,17 +515,21 @@ class _BankState extends State<Bank> {
                         },
                       )),
                   SizedBox(
-                    height: 6,
+                    height: 10,
                   ),
                   Container(
                       width: 250,
                       child: RaisedButton(
-                        child: Text(
-                          'Direct Deposit',
-                          style: TextStyle(color: Colors.white),
+                        child: Row(mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              'Direct Deposit',
+                              style: TextStyle(color: Colors.deepOrange),
+                            ),
+                          ],
                         ),
                         elevation: 20,
-                        color: Colors.deepOrangeAccent,
+                        color: Colors.white,
                         padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15)),
@@ -568,10 +577,10 @@ class _BankState extends State<Bank> {
                                                 child: TextField(
                                                   keyboardType:
                                                       TextInputType.number,
-                                                  controller: controller,
+                                                  controller: _controller,
                                                   onChanged: (value) {
-                                                    amount =
-                                                        controller.numberValue;
+                                                    _amount =
+                                                        _controller.numberValue;
                                                   },
                                                   decoration: InputDecoration(
                                                     border: InputBorder.none,
@@ -611,7 +620,7 @@ class _BankState extends State<Bank> {
                                       onPressed: () {
                                         Navigator.pop(context);
                                         _restartPageNotification();
-                                        finance.depositMoney(amount);
+                                        _finance.depositMoney(_amount);
                                       },
                                     )
                                   ],
