@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'dart:async';
-import 'package:circular_profile_avatar/circular_profile_avatar.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'models/user_data.dart';
 import 'services/authentication_check.dart';
@@ -23,17 +23,28 @@ class Profile extends StatefulWidget {
   }
 }
 
+enum DataStatus { NOT_DETERMINED, DETERMINED }
+
 class _ProfileState extends State<Profile> {
+  DataStatus dataStatus = DataStatus.NOT_DETERMINED;
   User _user;
   File image, _cachedImage;
   StorageTaskSnapshot picDownloader;
   String picUrl, confirmedPicUrl;
+  Map<String, dynamic> userData;
 
   @override
   void initState() {
     super.initState();
-    setState(() {
-      _user = User(email: widget.email);
+    _user = User(email: widget.email);
+    _user.getAllData().then((value) {
+      setState(() {
+        dataStatus =
+            value == null ? DataStatus.NOT_DETERMINED : DataStatus.DETERMINED;
+        if (value != null) {
+          userData = value;
+        }
+      });
     });
     downloadFile();
   }
@@ -42,9 +53,19 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Martian Profile', style: TextStyle(fontWeight: FontWeight.bold),),
+        title: Text(
+          'My Martian Profile',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        actions: <Widget>[
+          _showEditButton(),
+        ],
       ),
-      body: _showBody(),
+      body: dataStatus == DataStatus.NOT_DETERMINED
+          ? SpinKitDualRing(
+        color: Colors.deepOrangeAccent,
+      )
+          : _showBody(),
     );
   }
 
@@ -53,6 +74,8 @@ class _ProfileState extends State<Profile> {
       padding: EdgeInsets.only(top: 35),
       children: <Widget>[
         _profilePicture(),
+        _fullName(),
+        _globalId(),
       ],
     );
   }
@@ -99,7 +122,7 @@ class _ProfileState extends State<Profile> {
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
             content: Container(
-              height: 260,
+              height: 220,
               child: Column(
                 children: <Widget>[
                   Card(
@@ -182,32 +205,20 @@ class _ProfileState extends State<Profile> {
                   SizedBox(
                     height: 10,
                   ),
-                  Container(
-                      width: 150,
-                      child: RaisedButton(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              'Delete',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                        elevation: 20,
-                        color: Colors.red,
-                        padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15)),
-                        onPressed: () async {
-                          Navigator.pop(context);
-                          _cachedImage.delete();
-                        },
-                      )),
                 ],
               ),
             ),
           );
+        });
+  }
+
+  Widget _showEditButton(){
+    return FlatButton(
+        child: Text(
+          'Manage Profile',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        onPressed: () {
         });
   }
 
@@ -234,6 +245,54 @@ class _ProfileState extends State<Profile> {
                   _cachedImage.path,
                   fit: BoxFit.cover,
                 ),
+        ),
+      ),
+    );
+  }
+
+  Widget _fullName() {
+    return Center(
+      child: Container(
+        padding: EdgeInsets.only(top: 15),
+        child: dataStatus == DataStatus.NOT_DETERMINED
+            ? SpinKitDualRing(
+                color: Colors.deepOrangeAccent,
+              )
+            : Text(
+                '${userData['firstName']} ${userData['lastName']}',
+                style: TextStyle(
+                    color: Colors.deepOrange,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 45),
+              ),
+      ),
+    );
+  }
+
+  Widget _globalId() {
+    return Center(
+      child: Container(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+                    'Global Security ID:  ',
+                    style: TextStyle(color: Colors.deepOrange, fontSize: 15),
+                  ),
+            Text(
+              '${userData['gsid']}',
+              style: TextStyle(
+                  color: Colors.deepOrange,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20),
+            ),
+            SizedBox(width: 10,),
+            Icon(
+              Icons.info_outline,
+              color: Colors.blueGrey,
+              size: 15,
+            ),
+          ],
         ),
       ),
     );

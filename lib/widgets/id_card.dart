@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'dart:math';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:rounded_modal/rounded_modal.dart';
 
 import '../services/authentication_check.dart';
 import '../services/auth_service.dart';
@@ -519,7 +520,9 @@ class _IdCardState extends State<IdCard> {
   }
 
   void _cardInfoBottomSheet(index, context) {
-    showModalBottomSheet(
+    showRoundedModalBottomSheet(
+        radius: 15,
+        autoResize: true,
         context: context,
         builder: (BuildContext context) {
           return Container(

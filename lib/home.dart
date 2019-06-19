@@ -136,9 +136,11 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             ListTile(
-              title: Card(
+              title: RaisedButton(
+                color: Colors.white,
                 elevation: 20,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15)),
                 child: Container(
                   padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
                   child: Row(
@@ -151,26 +153,29 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext) => Profile(
+                            email: widget.email,
+                            auth: widget.auth,
+                          )));
+                },
               ),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext) => Profile(
-                          email: widget.email, auth: widget.auth,
-                        )));
-              },
             ),
             ListTile(
-              title: Card(                elevation: 20,
-
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+              title: RaisedButton(
+                color: Colors.white,
+                elevation: 20,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15)),
                 child: Container(
                   padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
                   child: Row(
                     children: <Widget>[
-                      Icon(Icons.attach_money),
+                      Icon(Icons.card_travel),
                       SizedBox(
                         width: 20,
                       ),
@@ -178,20 +183,21 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext) => Bank(
+                            email: widget.email,
+                          )));
+                },
               ),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext) => Bank(
-                              email: widget.email,
-                            )));
-              },
             ),
             ListTile(
-              title: Card(                elevation: 20,
-
+              title: RaisedButton(
+                color: Colors.white,
+                elevation: 20,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15)),
                 child: Container(
@@ -206,10 +212,10 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
+                onPressed: () {
+                  _signOut();
+                },
               ),
-              onTap: () {
-                _signOut();
-              },
             )
           ],
         ),
@@ -231,7 +237,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _messaging.getToken().then((token){
+    _messaging.getToken().then((token) {
       setState(() {
         this.token = token;
       });
