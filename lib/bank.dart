@@ -40,7 +40,7 @@ class _BankState extends State<Bank> {
   double _balance, _amount, _mlAmount;
   DataStatus _dataStatus = DataStatus.NOT_DETERMINED;
   List<Map<String, dynamic>> _sortedTransactions = [];
-  bool _userExists;
+  bool _userExists = false;
 
   @override
   void initState() {

@@ -17,6 +17,7 @@ environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
+  circular_profile_avatar: ^0.2.0
   firebase_storage: ^3.0.1
   firebase_ml_vision: ^0.9.0
   image_picker: ^0.6.0+9

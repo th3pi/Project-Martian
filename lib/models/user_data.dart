@@ -11,7 +11,7 @@ class User {
       species,
       email,
       reason,
-      gender;
+      gender, profilePic;
   num gsid;
   bool martian;
   Map<String, dynamic> userData;
@@ -62,5 +62,12 @@ class User {
         .collection('users')
         .document(email)
         .updateData({fieldName: data});
+  }
+
+  Future<String> getField(String fieldName) async {
+    await Firestore.instance.collection('users').document(email).get().then((value) {
+      profilePic = value.data[fieldName];
+    });
+    return profilePic;
   }
 }
