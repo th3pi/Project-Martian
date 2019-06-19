@@ -35,31 +35,38 @@ class _ProfileState extends State<Profile> {
     setState(() {
       _user = User(email: widget.email);
     });
+    downloadFile();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Martian Records'),
+        title: Text('My Martian Profile', style: TextStyle(fontWeight: FontWeight.bold),),
       ),
       body: _showBody(),
     );
   }
 
   Widget _showBody() {
-    return Column(
+    return ListView(
+      padding: EdgeInsets.only(top: 35),
       children: <Widget>[
-        _uploadPhoto(),
+        _profilePicture(),
       ],
     );
   }
 
-  Future<void> getImage() async {
-    var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
+  Future<void> getImageAndUpload(ImageSource source) async {
+    var tempImage = await ImagePicker.pickImage(source: source);
     setState(() {
       image = tempImage;
     });
+    StorageReference ref = FirebaseStorage.instance
+        .ref()
+        .child('${widget.email}_profile_picture.jpg');
+    StorageUploadTask task = ref.putFile(image);
+    await addProfilePhoto(task);
   }
 
   Future<void> addProfilePhoto(StorageUploadTask task) async {
@@ -68,63 +75,166 @@ class _ProfileState extends State<Profile> {
     await _user.addField('profilePic', picUrl);
   }
 
-//  Future<void> getImageFromFirebase() async {
-//    final ByteData byteData = await rootBundle.load('${widget.email}_profile_picture.jpg');
-//    final Directory tempDir = Directory.systemTemp;
-//    confirmedPicUrl = await _user.getField('profilePic');
-//    final File file = File('${tempDir.path}/$confirmedPicUrl');
-//    file.writeAsBytes(byteData.buffer.asInt8List(), mode: FileMode.write);
-//    print(confirmedPicUrl);
-//  }
-
   Future<Null> downloadFile() async {
     final String filePath = '${widget.email}_profile_picture.jpg';
     final Directory tempDir = Directory.systemTemp;
-    final File file  = File('${tempDir.path}/$filePath');
+    final File file = File('${tempDir.path}/$filePath');
 
-    final StorageReference ref =  FirebaseStorage.instance.ref().child(filePath);
+    final StorageReference ref = FirebaseStorage.instance.ref().child(filePath);
     final StorageFileDownloadTask downloadTask = ref.writeToFile(file);
 
     final int byteNumber = (await downloadTask.future).totalByteCount;
     print(byteNumber);
-
     setState(() {
-      _cachedImage =  file;
+      _cachedImage = file;
+      print(_cachedImage.path);
     });
   }
 
-  Widget _uploadPhoto() {
-    return Container(
-      child: Column(
-        children: <Widget>[
-          _cachedImage == null
-              ? Text('Select an Image')
+  void _profilePicOption() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            content: Container(
+              height: 260,
+              child: Column(
+                children: <Widget>[
+                  Card(
+                      elevation: 0,
+                      borderOnForeground: false,
+                      clipBehavior: Clip.antiAlias,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Container(
+                          decoration:
+                              BoxDecoration(color: Colors.deepOrangeAccent),
+                          padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                          child: Center(
+                            child: Text(
+                              'Profile Picture',
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
+                            ),
+                          ))),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                      width: 250,
+                      child: RaisedButton(
+                        color: Colors.white,
+                        padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Icon(
+                              Icons.camera_alt,
+                              color: Colors.deepOrange,
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              'Take Picture',
+                              style: TextStyle(
+                                  color: Colors.deepOrange, fontSize: 20),
+                            ),
+                          ],
+                        ),
+                        elevation: 20,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15)),
+                        onPressed: () async {
+                          Navigator.pop(context);
+                          await getImageAndUpload(ImageSource.camera);
+                        },
+                      )),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                      width: 250,
+                      child: RaisedButton(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              'Choose from Gallery',
+                              style: TextStyle(color: Colors.deepOrange),
+                            ),
+                          ],
+                        ),
+                        elevation: 20,
+                        color: Colors.white,
+                        padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15)),
+                        onPressed: () async {
+                          Navigator.pop(context);
+                          await getImageAndUpload(ImageSource.gallery);
+                        },
+                      )),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                      width: 150,
+                      child: RaisedButton(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              'Delete',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                        elevation: 20,
+                        color: Colors.red,
+                        padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15)),
+                        onPressed: () async {
+                          Navigator.pop(context);
+                          _cachedImage.delete();
+                        },
+                      )),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  Widget _profilePicture() {
+    return Center(
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.white, width: 10),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black26,
+                  offset: Offset(2, 0),
+                  blurRadius: 25,
+                  spreadRadius: 1)
+            ]),
+        height: 200,
+        width: 200,
+        child: InkWell(
+          onTap: () => _profilePicOption(),
+          child: _cachedImage == null
+              ? Image.asset('assets/mars_profile.jpg')
               : Image.asset(
                   _cachedImage.path,
+                  fit: BoxFit.cover,
                 ),
-          FlatButton(
-            child: Text('Take pic'),
-            onPressed: () {
-              getImage();
-            },
-          ),
-          FlatButton(
-            child: Text('Upload pic'),
-            onPressed: () {
-              StorageReference ref = FirebaseStorage.instance
-                  .ref()
-                  .child('${widget.email}_profile_picture.jpg');
-              StorageUploadTask task = ref.putFile(image);
-              addProfilePhoto(task);
-            },
-          ),
-          FlatButton(
-            child: Text('Download File'),
-            onPressed: () async {
-              await downloadFile();
-            },
-          )
-        ],
+        ),
       ),
     );
   }

@@ -81,6 +81,7 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   assets:
+    - assets/mars_profile.jpg
     - assets/mars.jpg
     - assets/jupiter.jpg
     - assets/mercury.jpg
