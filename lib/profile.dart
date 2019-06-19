@@ -10,6 +10,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'models/user_data.dart';
 import 'services/authentication_check.dart';
 import 'services/auth_service.dart';
+import 'models/planet_data.dart';
 
 class Profile extends StatefulWidget {
   final BaseAuth auth;
@@ -32,11 +33,17 @@ class _ProfileState extends State<Profile> {
   StorageTaskSnapshot picDownloader;
   String picUrl, confirmedPicUrl;
   Map<String, dynamic> userData;
+  List<Map<String, dynamic>> listOfIds = [];
+  PlanetData planetData;
+  int numOfIds;
+  bool criminalRecord = false;
+  List<String> nameOfPlanets = [];
 
   @override
   void initState() {
     super.initState();
     _user = User(email: widget.email);
+    planetData = PlanetData(email: widget.email);
     _user.getAllData().then((value) {
       setState(() {
         dataStatus =
@@ -44,9 +51,37 @@ class _ProfileState extends State<Profile> {
         if (value != null) {
           userData = value;
         }
+        Firestore.instance
+            .collection('users')
+            .document(widget.email)
+            .collection('planetary_ids')
+            .snapshots()
+            .listen((snapshot) {
+          dataStatus =
+          snapshot == null ? DataStatus.NOT_DETERMINED : DataStatus.DETERMINED;
+          if (snapshot != null) {
+            snapshot.documents.forEach((doc) {
+              listOfIds.add(doc.data);
+            });
+            _getPlanetaryData();
+          }
+        });
       });
     });
     downloadFile();
+  }
+
+  void _getPlanetaryData() async {
+    int accessLevel = 0;
+    numOfIds = listOfIds.length;
+    for(int i = 0; i < listOfIds.length; i++){
+      nameOfPlanets.add(listOfIds[i]['planetName']);
+      if(listOfIds[i]['criminalRecord'] ==  'Yes') criminalRecord = true;
+      if(int.parse(listOfIds[i]['accessLevel']) > accessLevel) accessLevel = int.parse(listOfIds[i]['accessLevel']);
+      print(accessLevel);
+      print(nameOfPlanets);
+      print(criminalRecord);
+    }
   }
 
   @override
@@ -63,8 +98,8 @@ class _ProfileState extends State<Profile> {
       ),
       body: dataStatus == DataStatus.NOT_DETERMINED
           ? SpinKitDualRing(
-        color: Colors.deepOrangeAccent,
-      )
+              color: Colors.deepOrangeAccent,
+            )
           : _showBody(),
     );
   }
@@ -76,6 +111,8 @@ class _ProfileState extends State<Profile> {
         _profilePicture(),
         _fullName(),
         _globalId(),
+        _header('Personal Information'),
+        _userDetails(),
       ],
     );
   }
@@ -212,14 +249,13 @@ class _ProfileState extends State<Profile> {
         });
   }
 
-  Widget _showEditButton(){
+  Widget _showEditButton() {
     return FlatButton(
         child: Text(
           'Manage Profile',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        onPressed: () {
-        });
+        onPressed: () {});
   }
 
   Widget _profilePicture() {
@@ -230,7 +266,7 @@ class _ProfileState extends State<Profile> {
             border: Border.all(color: Colors.white, width: 10),
             boxShadow: [
               BoxShadow(
-                  color: Colors.black26,
+                  color: Colors.black12,
                   offset: Offset(2, 0),
                   blurRadius: 25,
                   spreadRadius: 1)
@@ -254,16 +290,12 @@ class _ProfileState extends State<Profile> {
     return Center(
       child: Container(
         padding: EdgeInsets.only(top: 15),
-        child: dataStatus == DataStatus.NOT_DETERMINED
-            ? SpinKitDualRing(
-                color: Colors.deepOrangeAccent,
-              )
-            : Text(
+        child: Text(
                 '${userData['firstName']} ${userData['lastName']}',
                 style: TextStyle(
                     color: Colors.deepOrange,
                     fontWeight: FontWeight.bold,
-                    fontSize: 45),
+                    fontSize: 50),
               ),
       ),
     );
@@ -276,9 +308,9 @@ class _ProfileState extends State<Profile> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-                    'Global Security ID:  ',
-                    style: TextStyle(color: Colors.deepOrange, fontSize: 15),
-                  ),
+              'Global Security ID:  ',
+              style: TextStyle(color: Colors.deepOrange, fontSize: 15),
+            ),
             Text(
               '${userData['gsid']}',
               style: TextStyle(
@@ -286,13 +318,194 @@ class _ProfileState extends State<Profile> {
                   fontWeight: FontWeight.bold,
                   fontSize: 20),
             ),
-            SizedBox(width: 10,),
-            Icon(
-              Icons.info_outline,
-              color: Colors.blueGrey,
-              size: 15,
+            SizedBox(
+              width: 10,
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _header(String header) {
+    return Container(
+      padding: EdgeInsets.fromLTRB(0, 20, 0, 5),
+      child: Center(
+          child: Text(
+        header,
+        style: TextStyle(color: Colors.black26, fontSize: 25, fontWeight: FontWeight.bold),
+      )),
+    );
+  }
+
+  Widget _userDetails() {
+    return Container(
+      padding: EdgeInsets.fromLTRB(7, 0, 7, 0),
+      child: Card(
+        elevation: 15,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        child: Container(
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text('Full Name: '),
+                  Text(
+                    '${userData['firstName']} ${userData['lastName']}',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Container(
+                  margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                  child: Divider(height: 3, color: Colors.black45)),
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text('Date of Birth: '),
+                  Text(
+                    '${userData['dateOfBirth']}',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Container(
+                  margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                  child: Divider(height: 3, color: Colors.black45)),
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text('Gender: '),
+                  Text(
+                    '${userData['gender']}',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text('Species: '),
+                  Text(
+                    '${userData['species']}',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Container(
+                  margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                  child: Divider(height: 3, color: Colors.black45)),
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text('Citizenship Status: '),
+                  userData['martian'] == false
+                      ? Text(
+                          'Non-Martian',
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red),
+                        )
+                      : Text(
+                          'Martian',
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green),
+                        ),
+                ],
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Container(
+                  margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                  child: Divider(height: 3, color: Colors.black45)),
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text('Planet of Origin: '),
+                  Text(
+                    '${userData['mother_planet']}',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Container(
+                  margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                  child: Divider(height: 3, color: Colors.black45)),
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text('Reason For Visit: '),
+                  Text(
+                    '${userData['reason']}',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Container(
+                  margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                  child: Divider(height: 3, color: Colors.black45)),
+            ],
+          ),
         ),
       ),
     );

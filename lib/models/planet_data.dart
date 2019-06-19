@@ -84,18 +84,4 @@ class PlanetData {
     });
   }
 
-  void getAllPlanetData() {
-    Firestore.instance.runTransaction((Transaction tx) async {
-      Firestore.instance
-          .collection('users')
-          .document(email)
-          .collection('planetary_ids')
-          .snapshots()
-          .listen((snapshot) {
-        snapshot.documents.forEach((doc) {
-          listOfIds.add(doc.data);
-        });
-      });
-    });
-  }
 }
