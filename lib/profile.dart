@@ -11,6 +11,7 @@ import 'models/user_data.dart';
 import 'services/authentication_check.dart';
 import 'services/auth_service.dart';
 import 'models/planet_data.dart';
+import 'models/finance_data.dart';
 
 class Profile extends StatefulWidget {
   final BaseAuth auth;
@@ -35,15 +36,20 @@ class _ProfileState extends State<Profile> {
   Map<String, dynamic> userData;
   List<Map<String, dynamic>> listOfIds = [];
   PlanetData planetData;
-  int numOfIds;
+  int numOfIds, maxAccessLevel, numOfTransactions;
   bool criminalRecord = false;
   List<String> nameOfPlanets = [];
+  List<Map<String, dynamic>> _sortedTransactions = [];
+  Finance finance;
+  double balance = 0, maxBalance = 0;
+  bool debt = false, financialStability = true;
 
   @override
   void initState() {
     super.initState();
     _user = User(email: widget.email);
     planetData = PlanetData(email: widget.email);
+    finance = Finance(email: widget.email);
     _user.getAllData().then((value) {
       setState(() {
         dataStatus =
@@ -57,13 +63,35 @@ class _ProfileState extends State<Profile> {
             .collection('planetary_ids')
             .snapshots()
             .listen((snapshot) {
-          dataStatus =
-          snapshot == null ? DataStatus.NOT_DETERMINED : DataStatus.DETERMINED;
+          dataStatus = snapshot == null
+              ? DataStatus.NOT_DETERMINED
+              : DataStatus.DETERMINED;
           if (snapshot != null) {
             snapshot.documents.forEach((doc) {
               listOfIds.add(doc.data);
             });
             _getPlanetaryData();
+            Firestore.instance
+                .collection('users')
+                .document(widget.email)
+                .collection('transactions')
+                .orderBy('dateTimeOfTransaction', descending: true)
+                .snapshots()
+                .listen((onData) {
+              dataStatus = onData == null
+                  ? DataStatus.NOT_DETERMINED
+                  : DataStatus.DETERMINED;
+              if (onData != null) {
+                onData.documents.forEach((f) {
+                  if (this.mounted) {
+                    setState(() {
+                      _sortedTransactions.add(f.data);
+                    });
+                  }
+                });
+                _getFinancialData();
+              }
+            });
           }
         });
       });
@@ -74,13 +102,30 @@ class _ProfileState extends State<Profile> {
   void _getPlanetaryData() async {
     int accessLevel = 0;
     numOfIds = listOfIds.length;
-    for(int i = 0; i < listOfIds.length; i++){
+    for (int i = 0; i < listOfIds.length; i++) {
       nameOfPlanets.add(listOfIds[i]['planetName']);
-      if(listOfIds[i]['criminalRecord'] ==  'Yes') criminalRecord = true;
-      if(int.parse(listOfIds[i]['accessLevel']) > accessLevel) accessLevel = int.parse(listOfIds[i]['accessLevel']);
-      print(accessLevel);
-      print(nameOfPlanets);
-      print(criminalRecord);
+      if (listOfIds[i]['criminalRecord'] == 'Yes') criminalRecord = true;
+      if (int.parse(listOfIds[i]['accessLevel']) > accessLevel)
+        accessLevel = int.parse(listOfIds[i]['accessLevel']);
+
+      maxAccessLevel = accessLevel;
+    }
+  }
+
+  void _getFinancialData() {
+    balance = _sortedTransactions[0]['balance'];
+    numOfTransactions = _sortedTransactions.length;
+    print(balance);
+    if (balance > 0) {
+      debt = true;
+    }
+    if (!debt) {
+      financialStability = false;
+    }
+    print(financialStability);
+    for (int i = 0; i < _sortedTransactions.length; i++) {
+      if (_sortedTransactions[i]['balance'] > maxBalance)
+        maxBalance = _sortedTransactions[i]['balance'];
     }
   }
 
@@ -113,6 +158,10 @@ class _ProfileState extends State<Profile> {
         _globalId(),
         _header('Personal Information'),
         _userDetails(),
+        _header('Planetary Information'),
+        _planetDetails(),
+        _header('Financial Information'),
+        _financialDetails(),
       ],
     );
   }
@@ -291,12 +340,12 @@ class _ProfileState extends State<Profile> {
       child: Container(
         padding: EdgeInsets.only(top: 15),
         child: Text(
-                '${userData['firstName']} ${userData['lastName']}',
-                style: TextStyle(
-                    color: Colors.deepOrange,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 50),
-              ),
+          '${userData['firstName']} ${userData['lastName']}',
+          style: TextStyle(
+              color: Colors.deepOrange,
+              fontWeight: FontWeight.bold,
+              fontSize: 50),
+        ),
       ),
     );
   }
@@ -333,8 +382,220 @@ class _ProfileState extends State<Profile> {
       child: Center(
           child: Text(
         header,
-        style: TextStyle(color: Colors.black26, fontSize: 25, fontWeight: FontWeight.bold),
+        style: TextStyle(
+            color: Colors.black26, fontSize: 25, fontWeight: FontWeight.bold),
       )),
+    );
+  }
+
+  Widget _financialDetails() {
+    return Container(
+      padding: EdgeInsets.fromLTRB(7, 0, 7, 0),
+      child: Card(
+        elevation: 15,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        child: Container(
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                children: <Widget>[
+                  Text('Current Balance: '),
+                  Text(
+                    '$balance',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  )
+                ],
+                mainAxisAlignment: MainAxisAlignment.center,
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Container(
+                  margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                  child: Divider(height: 3, color: Colors.black45)),
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                children: <Widget>[
+                  Text('Max Balance: '),
+                  Text(
+                    '$maxBalance',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  )
+                ],
+                mainAxisAlignment: MainAxisAlignment.center,
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Container(
+                  margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                  child: Divider(height: 3, color: Colors.black45)),
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                children: <Widget>[
+                  Text('Debt Incurred: '),
+                  debt
+                      ? Text(
+                          'No',
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green),
+                        )
+                      : Text(
+                          'Yes',
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red),
+                        )
+                ],
+                mainAxisAlignment: MainAxisAlignment.center,
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Container(
+                  margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                  child: Divider(height: 3, color: Colors.black45)),
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                children: <Widget>[
+                  Text('Financial Stability: '),
+                  financialStability
+                      ? Text(
+                          'Stable',
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green),
+                        )
+                      : Text(
+                          'Unstable',
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red),
+                        )
+                ],
+                mainAxisAlignment: MainAxisAlignment.center,
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Container(
+                  margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                  child: Divider(height: 3, color: Colors.black45)),
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                children: <Widget>[
+                  Text('Number of Transactions: '),
+                  Text(
+                    '$numOfTransactions',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  )
+                ],
+                mainAxisAlignment: MainAxisAlignment.center,
+              ),
+              SizedBox(
+                height: 15,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _planetDetails() {
+    return Container(
+      padding: EdgeInsets.fromLTRB(7, 0, 7, 0),
+      child: Card(
+        elevation: 15,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        child: Container(
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                children: <Widget>[
+                  Text('Number of Passports: '),
+                  Text(
+                    '$numOfIds',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  )
+                ],
+                mainAxisAlignment: MainAxisAlignment.center,
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Container(
+                  margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                  child: Divider(height: 3, color: Colors.black45)),
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                children: <Widget>[
+                  Text('Maximum Access Level: '),
+                  Text(
+                    '$maxAccessLevel',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  )
+                ],
+                mainAxisAlignment: MainAxisAlignment.center,
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Container(
+                  margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                  child: Divider(height: 3, color: Colors.black45)),
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                children: <Widget>[
+                  Text('Criminal Record: '),
+                  criminalRecord
+                      ? Text(
+                          'Yes',
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red),
+                        )
+                      : Text(
+                          'None',
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green),
+                        )
+                ],
+                mainAxisAlignment: MainAxisAlignment.center,
+              ),
+              SizedBox(
+                height: 15,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -501,9 +762,6 @@ class _ProfileState extends State<Profile> {
               SizedBox(
                 height: 15,
               ),
-              Container(
-                  margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
-                  child: Divider(height: 3, color: Colors.black45)),
             ],
           ),
         ),
