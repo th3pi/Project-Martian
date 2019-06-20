@@ -32,7 +32,7 @@ class _PassportManagerState extends State<PassportManager> {
     return Container(
       padding: EdgeInsets.fromLTRB(7, 35, 7, 0),
       child: ListView.builder(itemCount: widget.listOfIds.length+1, itemBuilder: (BuildContext context, int i){
-        return i == 0 ? _showAddIdCard() : _idCards(i-1);
+        return i == widget.listOfIds.length ? _showAddIdCard() : _idCards(i);
       }),
     );
   }
