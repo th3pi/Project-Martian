@@ -9,6 +9,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:project_martian/services/auth_service.dart';
 import '../models/planet_data.dart';
 import '../services/authentication_check.dart';
+import 'package:project_martian/profile.dart';
 
 enum DbRetrieval { RETRIEVED, NOT_RETRIEVED }
 enum PlanetExists { ALREADY_EXISTS, NO_EXIST }
@@ -16,8 +17,9 @@ enum PlanetExists { ALREADY_EXISTS, NO_EXIST }
 class IdForm extends StatefulWidget {
   final String email;
   final BaseAuth auth;
+  final String from;
 
-  IdForm({this.email, this.auth});
+  IdForm({this.email, this.auth, this.from});
 
   @override
   State<StatefulWidget> createState() {
@@ -137,13 +139,24 @@ class _IdFormState extends State<IdForm> {
           planetLastName: planetLastName,
           planetName: planetName);
       planetData.saveInfo();
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext) => CheckAuthentication(
-                    auth: widget.auth,
-                    userId: widget.email,
-                  )));
+      if(widget.from == 'profile'){
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext) => Profile(
+                  auth: widget.auth,
+                  email: widget.email,
+                )));
+      }else {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext) =>
+                    CheckAuthentication(
+                      auth: widget.auth,
+                      userId: widget.email,
+                    )));
+      }
     }
   }
 

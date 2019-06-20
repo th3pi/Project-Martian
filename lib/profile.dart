@@ -12,6 +12,7 @@ import 'services/authentication_check.dart';
 import 'services/auth_service.dart';
 import 'models/planet_data.dart';
 import 'models/finance_data.dart';
+import 'manage_passports.dart';
 
 class Profile extends StatefulWidget {
   final BaseAuth auth;
@@ -27,7 +28,8 @@ class Profile extends StatefulWidget {
 
 enum DataStatus { NOT_DETERMINED, DETERMINED }
 
-class _ProfileState extends State<Profile> {
+class _ProfileState extends State<Profile> with TickerProviderStateMixin {
+  TabController tabController;
   DataStatus dataStatus = DataStatus.NOT_DETERMINED;
   User _user;
   File image, _cachedImage;
@@ -47,6 +49,7 @@ class _ProfileState extends State<Profile> {
   @override
   void initState() {
     super.initState();
+    tabController = TabController(length: 2, vsync: this);
     _user = User(email: widget.email);
     planetData = PlanetData(email: widget.email);
     finance = Finance(email: widget.email);
@@ -134,18 +137,25 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'My Martian Profile',
+          'My Martian Account',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        actions: <Widget>[
-          _showEditButton(),
-        ],
+        bottom: TabBar(controller: tabController, tabs: <Widget>[
+          Tab(
+            icon: Icon(Icons.person),
+          ),
+          Tab(
+            icon: Icon(Icons.card_membership),
+          )
+        ]),
       ),
       body: dataStatus == DataStatus.NOT_DETERMINED
           ? SpinKitDualRing(
               color: Colors.deepOrangeAccent,
             )
-          : _showBody(),
+          : TabBarView(controller: tabController,
+              children: <Widget>[_showBody(), PassportManager(listOfIds: listOfIds, email: widget.email, auth: widget.auth)],
+            ),
     );
   }
 
@@ -188,7 +198,7 @@ class _ProfileState extends State<Profile> {
     final String filePath = '${widget.email}_profile_picture.jpg';
     final Directory tempDir = Directory.systemTemp;
     final File file = File('${tempDir.path}/$filePath');
-
+    print(file);
     final StorageReference ref = FirebaseStorage.instance.ref().child(filePath);
     final StorageFileDownloadTask downloadTask = ref.writeToFile(file);
 
@@ -298,10 +308,10 @@ class _ProfileState extends State<Profile> {
         });
   }
 
-  Widget _showEditButton() {
+  Widget _managePassportButton() {
     return FlatButton(
         child: Text(
-          'Manage Profile',
+          'Manage Passports',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         onPressed: () {});
