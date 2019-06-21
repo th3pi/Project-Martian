@@ -6,7 +6,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'models/user_data.dart';
 import 'models/finance_data.dart';
 import 'package:project_martian/widgets/bank_page/bank_card.dart';
-import 'widgets/id_card.dart';
+import 'widgets/id_card_carousel.dart';
 import 'widgets/email_verification.dart';
 import 'widgets/header.dart';
 import 'bank.dart';
@@ -291,7 +291,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _showIdCards() {
-    return IdCard(email: widget.email, auth: widget.auth);
+    return IdCardCarousel(email: widget.email, auth: widget.auth);
   }
 
   Widget _showBankCard() {

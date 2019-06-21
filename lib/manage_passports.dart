@@ -4,7 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import 'services/auth_service.dart';
-import 'widgets/id_card.dart';
+import 'widgets/id_card_carousel.dart';
 import 'forms/id_form.dart';
 import 'models/planet_data.dart';
 
