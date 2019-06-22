@@ -14,7 +14,10 @@ class VerifyEmail extends StatefulWidget {
   }
 }
 
+enum DataStatus { NOT_DETERMINED, DETERMINED }
+
 class _VerifyEmailState extends State<VerifyEmail> {
+  DataStatus dataStatus = DataStatus.NOT_DETERMINED;
   bool _status = false;
   String _errorMessage = 'Resending Verification Email',
       _errorDetails =
@@ -22,7 +25,14 @@ class _VerifyEmailState extends State<VerifyEmail> {
 
   @override
   Widget build(BuildContext context) {
-    return _showUnverifiedEmailNotification();
+    return dataStatus == DataStatus.DETERMINED
+        ? _showUnverifiedEmailNotification()
+        : Center(
+            child: Text(
+            'Checking passport status...',
+            style:
+                TextStyle(color: Colors.black54, fontWeight: FontWeight.bold),
+          ));
   }
 
   @override
@@ -30,6 +40,8 @@ class _VerifyEmailState extends State<VerifyEmail> {
     super.initState();
     widget.auth.isEmailVerified().then((value) {
       setState(() {
+        dataStatus =
+            value == null ? DataStatus.NOT_DETERMINED : DataStatus.DETERMINED;
         if (value != null) {
           _status = value;
         }
