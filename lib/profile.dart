@@ -6,6 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'dart:async';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:image_downloader/image_downloader.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'models/user_data.dart';
 import 'services/authentication_check.dart';
@@ -34,7 +36,7 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
   User _user;
   File image, _cachedImage;
   StorageTaskSnapshot picDownloader;
-  String picUrl, confirmedPicUrl;
+  String picUrl, downloadUrl;
   Map<String, dynamic> userData;
   List<Map<String, dynamic>> listOfIds = [];
   PlanetData planetData;
@@ -198,15 +200,18 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
     final String filePath = '${widget.email}_profile_picture.jpg';
     final Directory tempDir = Directory.systemTemp;
     final File file = File('${tempDir.path}/$filePath');
-    print(file);
+//    print(file);
     final StorageReference ref = FirebaseStorage.instance.ref().child(filePath);
     final StorageFileDownloadTask downloadTask = ref.writeToFile(file);
+    final String downloadUrl = await ref.getDownloadURL();
 
     final int byteNumber = (await downloadTask.future).totalByteCount;
     print(byteNumber);
     setState(() {
+      this.downloadUrl = downloadUrl;
+      print(this.downloadUrl);
       _cachedImage = file;
-      print(_cachedImage.path);
+//      print(_cachedImage.path);
     });
   }
 
@@ -334,12 +339,9 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
         width: 200,
         child: InkWell(
           onTap: () => _profilePicOption(),
-          child: _cachedImage == null
+          child: downloadUrl == null
               ? Image.asset('assets/mars_profile.jpg')
-              : Image.asset(
-                  _cachedImage.path,
-                  fit: BoxFit.cover,
-                ),
+              : CachedNetworkImage(imageUrl: downloadUrl,),
         ),
       ),
     );
