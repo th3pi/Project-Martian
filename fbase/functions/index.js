@@ -27,6 +27,11 @@ exports.pushNotification = functions.firestore.document('users/{email}/transacti
               body: senderName + ' just sent you $' + amount,                      //we use the receiver's name and message to show in notifcation
               icon: "default",                                   //you can change the icon on the app side too
               sound : "default"                                  //also you can change the sound in app side
-            }};
+            },
+            data : {
+                click_action: 'FLUTTER_NOTIFICATION_CLICK',
+                message: 'hello'
+            }
+            };
     if(token) {return admin.messaging().sendToDevice(token, notificationContent);}
  });

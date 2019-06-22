@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:project_martian/services/auth_service.dart';
 import 'package:swipedetector/swipedetector.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:animator/animator.dart';
 
 import 'models/user_data.dart';
 import 'models/finance_data.dart';
@@ -29,7 +30,11 @@ class HomePage extends StatefulWidget {
 
 enum DataStatus { NOT_DETERMINED, DETERMINED }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
+  Animation animation, delayedAnimation, muchDelayedAnimation;
+  AnimationController animationController;
+
   final FirebaseMessaging _messaging = FirebaseMessaging();
   User user;
   Finance finance;
@@ -160,9 +165,9 @@ class _HomePageState extends State<HomePage> {
                       context,
                       MaterialPageRoute(
                           builder: (BuildContext) => Profile(
-                            email: widget.email,
-                            auth: widget.auth,
-                          )));
+                                email: widget.email,
+                                auth: widget.auth,
+                              )));
                 },
               ),
             ),
@@ -190,8 +195,8 @@ class _HomePageState extends State<HomePage> {
                       context,
                       MaterialPageRoute(
                           builder: (BuildContext) => Bank(
-                            email: widget.email,
-                          )));
+                                email: widget.email,
+                              )));
                 },
               ),
             ),
@@ -219,9 +224,9 @@ class _HomePageState extends State<HomePage> {
                       context,
                       MaterialPageRoute(
                           builder: (BuildContext) => Comms(
-                            email: widget.email,
-                            auth: widget.auth,
-                          )));
+                                email: widget.email,
+                                auth: widget.auth,
+                              )));
                 },
               ),
             ),
@@ -273,6 +278,23 @@ class _HomePageState extends State<HomePage> {
         this.token = token;
       });
     });
+    _messaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print('on message ${message['data']['message']}');
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print('on resume $message');
+        if(message['data']['message'] == 'hello'){
+          Navigator.push(context, MaterialPageRoute(
+              builder: (BuildContext) => Bank(
+                email: widget.email,
+              )));
+        }
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print('on launch $message');
+      },
+    );
     user = User(email: widget.email);
     user.getAllData().then((data) {
       setState(() {
@@ -288,7 +310,7 @@ class _HomePageState extends State<HomePage> {
   Widget _showBody() {
     return ListView(children: <Widget>[
       _showUnverifiedEmailNotification(),
-      Header(text: 'Planetary IDs'),
+      Header(text: 'Passports'),
       _showIdCards(),
       Header(text: 'Finance'),
       _showBankCard(),
