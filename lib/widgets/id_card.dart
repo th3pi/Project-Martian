@@ -438,9 +438,8 @@ class _IdCardState extends State<IdCard> {
   }
 
   void _cardInfoBottomSheet(index, context) {
-    showRoundedModalBottomSheet(
-        radius: 15,
-        autoResize: true,
+    showModalBottomSheet(
+      
         context: context,
         builder: (BuildContext context) {
           return Container(

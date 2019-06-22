@@ -11,6 +11,7 @@ import 'widgets/email_verification.dart';
 import 'widgets/header.dart';
 import 'bank.dart';
 import 'profile.dart';
+import 'comms.dart';
 
 class HomePage extends StatefulWidget {
   final BaseAuth auth;
@@ -190,6 +191,36 @@ class _HomePageState extends State<HomePage> {
                       MaterialPageRoute(
                           builder: (BuildContext) => Bank(
                             email: widget.email,
+                          )));
+                },
+              ),
+            ),
+            ListTile(
+              title: RaisedButton(
+                color: Colors.white,
+                elevation: 20,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15)),
+                child: Container(
+                  padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+                  child: Row(
+                    children: <Widget>[
+                      Icon(Icons.chat),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Text('Comms'),
+                    ],
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext) => Comms(
+                            email: widget.email,
+                            auth: widget.auth,
                           )));
                 },
               ),
