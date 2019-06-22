@@ -61,6 +61,7 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
             value == null ? DataStatus.NOT_DETERMINED : DataStatus.DETERMINED;
         if (value != null) {
           userData = value;
+          downloadUrl = userData['profilePic'];
         }
         Firestore.instance
             .collection('users')
@@ -101,7 +102,6 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
         });
       });
     });
-    downloadFile();
   }
 
   void _getPlanetaryData() async {
@@ -155,8 +155,15 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
           ? SpinKitDualRing(
               color: Colors.deepOrangeAccent,
             )
-          : TabBarView(controller: tabController,
-              children: <Widget>[_showBody(), PassportManager(listOfIds: listOfIds, email: widget.email, auth: widget.auth)],
+          : TabBarView(
+              controller: tabController,
+              children: <Widget>[
+                _showBody(),
+                PassportManager(
+                    listOfIds: listOfIds,
+                    email: widget.email,
+                    auth: widget.auth)
+              ],
             ),
     );
   }
@@ -194,24 +201,8 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
     picDownloader = await task.onComplete;
     picUrl = await picDownloader.ref.getDownloadURL();
     await _user.addField('profilePic', picUrl);
-  }
-
-  Future<Null> downloadFile() async {
-    final String filePath = '${widget.email}_profile_picture.jpg';
-    final Directory tempDir = Directory.systemTemp;
-    final File file = File('${tempDir.path}/$filePath');
-//    print(file);
-    final StorageReference ref = FirebaseStorage.instance.ref().child(filePath);
-    final StorageFileDownloadTask downloadTask = ref.writeToFile(file);
-    final String downloadUrl = await ref.getDownloadURL();
-
-    final int byteNumber = (await downloadTask.future).totalByteCount;
-    print(byteNumber);
     setState(() {
-      this.downloadUrl = downloadUrl;
-      print(this.downloadUrl);
-      _cachedImage = file;
-//      print(_cachedImage.path);
+      downloadUrl = userData['profilePic'];
     });
   }
 
@@ -313,15 +304,6 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
         });
   }
 
-  Widget _managePassportButton() {
-    return FlatButton(
-        child: Text(
-          'Manage Passports',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        onPressed: () {});
-  }
-
   Widget _profilePicture() {
     return Center(
       child: Container(
@@ -339,9 +321,11 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
         width: 200,
         child: InkWell(
           onTap: () => _profilePicOption(),
-          child: downloadUrl == null
-              ? Image.asset('assets/mars_profile.jpg')
-              : CachedNetworkImage(imageUrl: downloadUrl,),
+          child: CachedNetworkImage(
+            placeholder: (context, url) => SpinKitDualRing(color: Colors.deepOrangeAccent),
+            imageUrl: downloadUrl,
+            fit: BoxFit.cover,
+          ),
         ),
       ),
     );
