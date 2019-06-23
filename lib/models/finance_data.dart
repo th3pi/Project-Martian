@@ -43,6 +43,7 @@ class Finance {
       'amount' : amount,
       'receiver' : to,
       'userId': email,
+      'sender' : email,
       'transactionType': 'Sent',
       'dateTimeOfTransaction': '${DateTime.now()}',
       'dateOfTransaction':
@@ -77,6 +78,7 @@ class Finance {
       'transactionId': txId,
       'amount' : amount,
       'sender' : email,
+      'receiver' : to,
       'userId': to,
       'tokenId' : token,
       'transactionType': 'Received',

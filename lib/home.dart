@@ -278,9 +278,6 @@ class _HomePageState extends State<HomePage>
       print(token);
       setState(() {
         this.token = token;
-        if (token != null) {
-          user.addToken(token);
-        }
       });
     });
     _messaging.configure(
@@ -309,14 +306,12 @@ class _HomePageState extends State<HomePage>
       },
     );
     user = User(email: widget.email);
-    if (token != null) {
-      user.addToken(token);
-    }
     user.getAllData().then((data) {
       setState(() {
         if (data != null) {
           dataStatus = DataStatus.DETERMINED;
           userData = data;
+          user.addField('tokenId', token);
         }
       });
     });
