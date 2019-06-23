@@ -274,8 +274,12 @@ class _HomePageState extends State<HomePage>
   void initState() {
     super.initState();
     _messaging.getToken().then((token) {
+      print(token);
       setState(() {
         this.token = token;
+        if(token != null) {
+          user.addToken(token);
+        }
       });
     });
     _messaging.configure(
@@ -283,8 +287,7 @@ class _HomePageState extends State<HomePage>
         print('on message ${message['data']['message']}');
       },
       onResume: (Map<String, dynamic> message) async {
-        print('on resume $message');
-        if(message['data']['message'] == 'hello'){
+        if(message['data']['message'] == 'receive'){
           Navigator.push(context, MaterialPageRoute(
               builder: (BuildContext) => Bank(
                 email: widget.email,
@@ -292,16 +295,23 @@ class _HomePageState extends State<HomePage>
         }
       },
       onLaunch: (Map<String, dynamic> message) async {
-        print('on launch $message');
+        if(message['data']['message'] == 'receive'){
+          Navigator.push(context, MaterialPageRoute(
+              builder: (BuildContext) => Bank(
+                email: widget.email,
+              )));
+        }
       },
     );
     user = User(email: widget.email);
+    if(token != null) {
+      user.addToken(token);
+    }
     user.getAllData().then((data) {
       setState(() {
         if (data != null) {
           dataStatus = DataStatus.DETERMINED;
           userData = data;
-          user.addField('tokenId', token);
         }
       });
     });

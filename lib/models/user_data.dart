@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'package:device_info/device_info.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
@@ -11,7 +14,8 @@ class User {
       species,
       email,
       reason,
-      gender, profilePic;
+      gender,
+      profilePic;
   num gsid;
   bool martian;
   Map<String, dynamic> userData;
@@ -64,8 +68,31 @@ class User {
         .updateData({fieldName: data});
   }
 
+  Future<void> addToken(String data) async {
+//    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+//    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+//    IosDeviceInfo iosDeviceInfo = await deviceInfo.iosInfo;
+    await Firestore.instance
+        .collection('users')
+        .document(email)
+        .collection('tokens')
+        .document(data)
+        .setData({
+      'token': data,
+      'createdAt': FieldValue.serverTimestamp(),
+      'platform': Platform.operatingSystem,
+//      'device': androidInfo.model != null
+//          ? androidInfo.model
+//          : iosDeviceInfo.utsname.machine,
+    });
+  }
+
   Future<String> getField(String fieldName) async {
-    await Firestore.instance.collection('users').document(email).get().then((value) {
+    await Firestore.instance
+        .collection('users')
+        .document(email)
+        .get()
+        .then((value) {
       profilePic = value.data[fieldName];
     });
     return profilePic;

@@ -1,23 +1,16 @@
-//const functions = require('firebase-functions');
-
-// The Firebase Admin SDK to access the Firebase Realtime Database.
-// const admin = require('firebase-admin');
-// admin.initializeApp();
-
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });'users/{email}/transactions/{transactionId}'
-
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp(functions.config().firebase);
+const db = admin.firestore();
 
 exports.pushNotification = functions.firestore.document('users/{email}/transactions/{transactionId}')
- .onCreate(( snap,context) => {
+ .onCreate( async snap => {
     const newValue = snap.data();
+
+    const querySnap = await db.collection('users').doc(newValue.userId).collection('tokens').get();
+
+    const tokens = querySnap.docs.map(snap => snap.id);
+
     const amount = newValue.amount;
 	const token = newValue.tokenId;
 	const senderName = newValue.senderName;
@@ -30,8 +23,8 @@ exports.pushNotification = functions.firestore.document('users/{email}/transacti
             },
             data : {
                 click_action: 'FLUTTER_NOTIFICATION_CLICK',
-                message: 'hello'
+                message: 'receive'
             }
             };
-    if(token) {return admin.messaging().sendToDevice(token, notificationContent);}
+    if(token) {return admin.messaging().sendToDevice(tokens, notificationContent);}
  });
