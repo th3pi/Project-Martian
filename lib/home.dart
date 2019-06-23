@@ -41,6 +41,7 @@ class _HomePageState extends State<HomePage>
   Finance finance;
   String token;
   int numOfIds;
+  double myOpacity = 0;
   Map<String, dynamic> userData;
   DataStatus dataStatus = DataStatus.NOT_DETERMINED;
 
@@ -145,16 +146,16 @@ class _HomePageState extends State<HomePage>
             ListTile(
               title: RaisedButton(
                 color: Colors.white,
-                elevation: 20,
+                elevation: 0,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15)),
                 child: Container(
-                  padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+                  padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
                   child: Row(
                     children: <Widget>[
-                      Icon(Icons.person),
+                      Icon(Icons.person, size: 15),
                       SizedBox(
-                        width: 20,
+                        width: 15,
                       ),
                       Text('My Martian Account'),
                     ],
@@ -175,16 +176,16 @@ class _HomePageState extends State<HomePage>
             ListTile(
               title: RaisedButton(
                 color: Colors.white,
-                elevation: 20,
+                elevation: 0,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15)),
                 child: Container(
-                  padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+                  padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
                   child: Row(
                     children: <Widget>[
-                      Icon(Icons.card_travel),
+                      Icon(Icons.credit_card, size: 15),
                       SizedBox(
-                        width: 20,
+                        width: 15,
                       ),
                       Text('Bank'),
                     ],
@@ -204,16 +205,16 @@ class _HomePageState extends State<HomePage>
             ListTile(
               title: RaisedButton(
                 color: Colors.white,
-                elevation: 20,
+                elevation: 0,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15)),
                 child: Container(
-                  padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+                  padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
                   child: Row(
                     children: <Widget>[
-                      Icon(Icons.chat),
+                      Icon(Icons.chat_bubble_outline, size: 15),
                       SizedBox(
-                        width: 20,
+                        width: 15,
                       ),
                       Text('Comms'),
                     ],
@@ -234,16 +235,16 @@ class _HomePageState extends State<HomePage>
             ListTile(
               title: RaisedButton(
                 color: Colors.white,
-                elevation: 20,
+                elevation: 0,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15)),
                 child: Container(
-                  padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+                  padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
                   child: Row(
                     children: <Widget>[
-                      Icon(Icons.power_settings_new),
+                      Icon(Icons.power_settings_new, size: 15,),
                       SizedBox(
-                        width: 20,
+                        width: 15,
                       ),
                       Text('Logout'),
                     ],

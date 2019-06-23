@@ -64,7 +64,7 @@ class _BankCardState extends State<BankCard> {
         height: 260,
         width: double.infinity,
         child: Card(
-          elevation: 10,
+          elevation: 20,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           clipBehavior: Clip.antiAlias,
