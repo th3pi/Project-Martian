@@ -84,6 +84,7 @@ class _CheckAuthenticationState extends State<CheckAuthentication> {
     if(this.mounted) {
       setState(() {
         authStatus = AuthStatus.NOT_LOGGED_IN;
+        widget.auth.signOut();
       });
     }
   }

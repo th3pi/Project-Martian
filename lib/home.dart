@@ -4,6 +4,7 @@ import 'package:swipedetector/swipedetector.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:animator/animator.dart';
 
+import 'services/authentication_check.dart';
 import 'models/user_data.dart';
 import 'models/finance_data.dart';
 import 'package:project_martian/widgets/bank_page/bank_card.dart';
@@ -277,7 +278,7 @@ class _HomePageState extends State<HomePage>
       print(token);
       setState(() {
         this.token = token;
-        if(token != null) {
+        if (token != null) {
           user.addToken(token);
         }
       });
@@ -287,24 +288,28 @@ class _HomePageState extends State<HomePage>
         print('on message ${message['data']['message']}');
       },
       onResume: (Map<String, dynamic> message) async {
-        if(message['data']['message'] == 'receive'){
-          Navigator.push(context, MaterialPageRoute(
-              builder: (BuildContext) => Bank(
-                email: widget.email,
-              )));
+        if (message['data']['message'] == 'receive') {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext) => Bank(
+                        email: widget.email,
+                      )));
         }
       },
       onLaunch: (Map<String, dynamic> message) async {
-        if(message['data']['message'] == 'receive'){
-          Navigator.push(context, MaterialPageRoute(
-              builder: (BuildContext) => Bank(
-                email: widget.email,
-              )));
+        if (message['data']['message'] == 'receive') {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext) => Bank(
+                        email: widget.email,
+                      )));
         }
       },
     );
     user = User(email: widget.email);
-    if(token != null) {
+    if (token != null) {
       user.addToken(token);
     }
     user.getAllData().then((data) {
@@ -348,6 +353,13 @@ class _HomePageState extends State<HomePage>
     try {
       await widget.auth.signOut();
       widget.onSignedOut();
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext) => CheckAuthentication(
+                    auth: widget.auth,
+                    userId: widget.email,
+                  )));
     } catch (e) {
       print(e);
     }
@@ -377,6 +389,7 @@ class _HomePageState extends State<HomePage>
                         )));
           },
           child: BankCard(
+            auth: widget.auth,
             email: widget.email,
           ),
         ));

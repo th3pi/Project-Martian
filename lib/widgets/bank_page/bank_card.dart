@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+import 'package:project_martian/services/auth_service.dart';
 import 'package:project_martian/models/finance_data.dart';
 import 'package:toast/toast.dart';
 
 class BankCard extends StatefulWidget {
   final String email;
+  final BaseAuth auth;
 
-  BankCard({this.email});
+  BankCard({this.email, this.auth});
 
   @override
   State<StatefulWidget> createState() {
