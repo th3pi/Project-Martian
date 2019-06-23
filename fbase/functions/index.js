@@ -38,13 +38,16 @@ exports.txNotification = functions.firestore.document('users/{email}/transaction
 
      const token = querySnap.data().tokenId;
 
+     const requestedToFirstName = querySnap.data().firstName;
+     const requestedToLastName = querySnap.data().lastName;
+
      const userId = newValue.requestedBy;
      const firstName = newValue.contactFirstName;
      const lastName = newValue.contactLastName;
  	const notificationContent = {
             notification: {
                title: 'New Contact Request',           //we use the sender name to show in notification
-               body: firstName + ' ' + lastName + ' wants to connect with you',                      //we use the receiver's name and message to show in notifcation
+               body: firstName + ' ' + lastName + ' wants to establish comms with you',                      //we use the receiver's name and message to show in notifcation
                icon: "default",                                   //you can change the icon on the app side too
                sound : "default"                                  //also you can change the sound in app side
              },
@@ -53,5 +56,5 @@ exports.txNotification = functions.firestore.document('users/{email}/transaction
                  message: 'contactRequest'
              }
              };
-     if(token && firstName && lastName) {return admin.messaging().sendToDevice(token, notificationContent);}
+     if(token && firstName && lastName && (firstName !== requestedToFirstName) && (lastName !== requestedToLastName)) {return admin.messaging().sendToDevice(token, notificationContent);}
   });
