@@ -17,6 +17,12 @@ class Contacts {
         .collection('contacts')
         .document(email)
         .setData({
+      'contactFrom' : receiverData['mother_planet'],
+      'contactSpecies' : receiverData['species'],
+      'contactReason' : receiverData['reason'],
+      'contactMartian' : receiverData['martian'],
+      'contactGender' : receiverData['gender'],
+      'contactDateOfBirth' : receiverData['dateOfBirth'],
       'status': 'pending',
       'contactEmail': email,
       'requestedBy': userEmail,
@@ -36,6 +42,12 @@ class Contacts {
         .collection('contacts')
         .document(userEmail)
         .setData({
+      'contactFrom' : senderData['mother_planet'],
+      'contactSpecies' : senderData['species'],
+      'contactReason' : senderData['reason'],
+      'contactMartian' : senderData['martian'],
+      'contactGender' : senderData['gender'],
+      'contactDateOfBirth' : senderData['dateOfBirth'],
       'status': 'pending',
       'contactEmail': userEmail,
       'requestedBy': userEmail,
@@ -47,19 +59,6 @@ class Contacts {
   }
 
   Future<QuerySnapshot> getPendingContacts() async {
-    List<Map<String, dynamic>> pendingContacts;
-//    Firestore.instance
-//        .collection('users')
-//        .document(userEmail)
-//        .collection('contacts')
-//        .where('status', isEqualTo: 'pending')
-//        .snapshots()
-//        .listen((snapshot) {
-//      snapshot.documents.forEach((f) {
-////        print(f.data);
-//        pendingContacts.add(f.data);
-//      });
-//    });
     final QuerySnapshot querySnapshot = await Firestore.instance
         .collection('users')
         .document(userEmail)
