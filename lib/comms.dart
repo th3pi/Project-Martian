@@ -4,7 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'models/contacts_data.dart';
 import 'services/auth_service.dart';
-import 'contacts.dart';
+import 'pending_requests.dart';
 
 class Comms extends StatefulWidget {
   final String email;
@@ -18,6 +18,7 @@ class Comms extends StatefulWidget {
 
 class _CommsState extends State<Comms> with SingleTickerProviderStateMixin {
   TabController tabController;
+  String appBarTitle = 'Comms';
   Contacts contacts;
   String addEmail;
 
@@ -30,10 +31,26 @@ class _CommsState extends State<Comms> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+
+    void detectChange(){
+      if(tabController.index == 1) {
+        setState(() {
+          appBarTitle = 'Pending Requests';
+        });
+      }
+      else if(tabController.index == 0){
+        setState(() {
+          appBarTitle = 'Comms';
+        });
+      }
+    }
+
+    tabController.addListener(detectChange);
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: Text('Comms'),
+        title: Text(appBarTitle, style: TextStyle(fontWeight: FontWeight.bold),),
         bottom: TabBar(controller: tabController, tabs: <Widget>[
           Tab(
             icon: Icon(Icons.message),
@@ -46,7 +63,7 @@ class _CommsState extends State<Comms> with SingleTickerProviderStateMixin {
       body: TabBarView(
         children: <Widget>[
           _placeHolderText(),
-          ContactsPage(
+          PendingRequests(
             auth: widget.auth,
             email: widget.email,
           )

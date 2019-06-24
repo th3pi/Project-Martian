@@ -36,7 +36,7 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
   User _user;
   File image, _cachedImage;
   StorageTaskSnapshot picDownloader;
-  String picUrl, downloadUrl;
+  String picUrl, downloadUrl, appBarTitle = 'My Martian Account';
   Map<String, dynamic> userData;
   List<Map<String, dynamic>> listOfIds = [];
   PlanetData planetData;
@@ -136,10 +136,24 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    void detectChange(){
+      if(tabController.index == 0) {
+        setState(() {
+          appBarTitle = 'My Martian Account';
+        });
+      }
+      else if(tabController.index == 1){
+        setState(() {
+          appBarTitle = 'Manage Passports';
+        });
+      }
+    }
+
+    tabController.addListener(detectChange);
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'My Martian Account',
+          appBarTitle,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         bottom: TabBar(controller: tabController, tabs: <Widget>[

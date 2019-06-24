@@ -6,19 +6,19 @@ import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'models/contacts_data.dart';
 import 'services/auth_service.dart';
 
-class ContactsPage extends StatefulWidget {
+class PendingRequests extends StatefulWidget {
   final String email;
   final BaseAuth auth;
 
-  ContactsPage({this.email, this.auth});
+  PendingRequests({this.email, this.auth});
 
   @override
-  _ContactsPageState createState() => _ContactsPageState();
+  _PendingRequestsState createState() => _PendingRequestsState();
 }
 
 enum DataStatus { NOT_DETERMINED, DETERMINED }
 
-class _ContactsPageState extends State<ContactsPage> {
+class _PendingRequestsState extends State<PendingRequests> {
   DataStatus dataStatus = DataStatus.NOT_DETERMINED;
   Contacts contacts;
   List<Map<String, dynamic>> pendingContacts = [];
@@ -41,8 +41,16 @@ class _ContactsPageState extends State<ContactsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: _showListOfPendingContacts(),
+    return Scaffold(
+      body: _showBody(),
+    );
+  }
+
+  Widget _showBody() {
+    return Column(
+      children: <Widget>[
+        Expanded(child: _showListOfPendingContacts()),
+      ],
     );
   }
 
