@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import 'models/contacts_data.dart';
 import 'services/auth_service.dart';
@@ -53,10 +54,10 @@ class _CommsState extends State<Comms> with SingleTickerProviderStateMixin {
         title: Text(appBarTitle, style: TextStyle(fontWeight: FontWeight.bold),),
         bottom: TabBar(controller: tabController, tabs: <Widget>[
           Tab(
-            icon: Icon(Icons.message),
+            icon: Icon(MdiIcons.forumOutline),
           ),
           Tab(
-            icon: Icon(Icons.people),
+            icon: Icon(MdiIcons.accountPlus),
           )
         ]),
       ),

@@ -51,7 +51,7 @@ class _RecentTransactionsState extends State<RecentTransactions> {
 
   Widget _showRecentNotifications() {
     return Card(
-        elevation: 20,
+        elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Container(
           padding: EdgeInsets.only(left: 10),

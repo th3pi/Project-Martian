@@ -3,6 +3,7 @@ import 'package:project_martian/services/auth_service.dart';
 import 'package:swipedetector/swipedetector.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:animator/animator.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import 'services/authentication_check.dart';
 import 'models/user_data.dart';
@@ -153,7 +154,7 @@ class _HomePageState extends State<HomePage>
                   padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
                   child: Row(
                     children: <Widget>[
-                      Icon(Icons.person, size: 15),
+                      Icon(MdiIcons.accountCardDetailsOutline, size: 15),
                       SizedBox(
                         width: 15,
                       ),
@@ -183,7 +184,7 @@ class _HomePageState extends State<HomePage>
                   padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
                   child: Row(
                     children: <Widget>[
-                      Icon(Icons.credit_card, size: 15),
+                      Icon(MdiIcons.bank, size: 15),
                       SizedBox(
                         width: 15,
                       ),
@@ -242,7 +243,7 @@ class _HomePageState extends State<HomePage>
                   padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
                   child: Row(
                     children: <Widget>[
-                      Icon(Icons.power_settings_new, size: 15,),
+                      Icon(MdiIcons.logout, size: 15,),
                       SizedBox(
                         width: 15,
                       ),

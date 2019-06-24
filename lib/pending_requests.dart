@@ -156,6 +156,7 @@ class _PendingRequestsState extends State<PendingRequests> {
                                       contacts.updateStatus(
                                           pendingContacts[i]['contactEmail'],
                                           'rejected');
+                                      contacts.removeContact(pendingContacts[i]['contactEmail']);
                                       setState(() {
                                         pendingContacts.removeAt(i);
                                       });
@@ -193,14 +194,14 @@ class _PendingRequestsState extends State<PendingRequests> {
                                 children: <Widget>[
                                   Container(
                                     child: Text(
-                                        pendingContacts[i]['contactFirstName']),
+                                      pendingContacts[i]['contactFirstName'], style: TextStyle(fontWeight: FontWeight.bold),),
                                   ),
                                   SizedBox(
                                     width: 5,
                                   ),
                                   Container(
                                     child: Text(
-                                        pendingContacts[i]['contactLastName']),
+                                      pendingContacts[i]['contactLastName'], style: TextStyle(fontWeight: FontWeight.bold),),
                                   )
                                 ],
                               ),
@@ -208,15 +209,16 @@ class _PendingRequestsState extends State<PendingRequests> {
                                 children: <Widget>[
                                   Container(
                                     child: Text(
-                                        pendingContacts[i]['contactFirstName']),
+                                      'From: ${pendingContacts[i]['contactFrom']}', style: TextStyle(color: Colors.grey, fontSize: 10),),
                                   ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: <Widget>[
                                   Container(
                                     child: Text(
-                                        pendingContacts[i]['contactLastName']),
-                                  )
+                                      'Species: ${pendingContacts[i]['contactSpecies']}', style: TextStyle(color: Colors.grey, fontSize: 10),),
+                                  ),
                                 ],
                               ),
                             ],

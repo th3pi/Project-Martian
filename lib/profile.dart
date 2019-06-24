@@ -402,7 +402,7 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
     return Container(
       padding: EdgeInsets.fromLTRB(7, 0, 7, 0),
       child: Card(
-        elevation: 15,
+        elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Container(
           child: Column(
@@ -532,7 +532,7 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
     return Container(
       padding: EdgeInsets.fromLTRB(7, 0, 7, 0),
       child: Card(
-        elevation: 15,
+        elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Container(
           child: Column(
@@ -613,7 +613,7 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
     return Container(
       padding: EdgeInsets.fromLTRB(7, 0, 7, 0),
       child: Card(
-        elevation: 15,
+        elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Container(
           child: Column(

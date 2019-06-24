@@ -269,7 +269,7 @@ class _BankState extends State<Bank> {
   Widget _showSendDepositMoney() {
     return Container(
       child: Card(
-        elevation: 20,
+        elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Container(
           padding: EdgeInsets.fromLTRB(0, 15, 0, 15),

@@ -83,5 +83,8 @@ class Contacts {
         .updateData({'status': status});
   }
 
-  Future<void> removeContact(String email) {}
+  Future<void> removeContact(String email) async {
+    await Firestore.instance.collection('users').document(userEmail).collection('contacts').document(email).delete();
+    await Firestore.instance.collection('users').document(email).collection('contacts').document(userEmail).delete();
+  }
 }
