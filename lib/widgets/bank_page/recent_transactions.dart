@@ -22,7 +22,7 @@ class _RecentTransactionsState extends State<RecentTransactions> {
 
   @override
   Widget build(BuildContext context) {
-    return _showRecentNotifications();
+    return Container(padding: EdgeInsets.only(left: 10, right: 10),child: _showRecentNotifications());
   }
 
   @override
@@ -51,7 +51,7 @@ class _RecentTransactionsState extends State<RecentTransactions> {
 
   Widget _showRecentNotifications() {
     return Card(
-        elevation: 0,
+        elevation: 15,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Container(
           padding: EdgeInsets.only(left: 10),
@@ -76,14 +76,14 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                             child: sortedTransactions[0]['transactionType'] ==
                                     'Sent'
                                 ? Text(
-                                    'Sent \$${sortedTransactions[0]['amount']} to ${sortedTransactions[0]['receiver']}',
+                                    'Sent \$${sortedTransactions[0]['amount']} to ${sortedTransactions[0]['receiverName']}',
                                     style:
                                         TextStyle(fontWeight: FontWeight.bold),
                                   )
                                 : (sortedTransactions[0]['transactionType'] ==
                                         'Received'
                                     ? Text(
-                                        'Received \$${sortedTransactions[0]['amount']} from ${sortedTransactions[0]['sender']}',
+                                        'Received \$${sortedTransactions[0]['amount']} from ${sortedTransactions[0]['senderName']}',
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -97,7 +97,7 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                             child: Text(
                                 sortedTransactions[0]['dateOfTransaction'],
                                 style: TextStyle(
-                                    fontSize: 10, color: Colors.grey)),
+                                    fontSize: 8, color: Colors.grey)),
                           ),
                         ],
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -122,14 +122,14 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                             child: sortedTransactions[1]['transactionType'] ==
                                     'Sent'
                                 ? Text(
-                                    'Sent \$${sortedTransactions[1]['amount']} to ${sortedTransactions[1]['receiver']}',
+                                    'Sent \$${sortedTransactions[1]['amount']} to ${sortedTransactions[1]['receiverName']}',
                                     style:
                                         TextStyle(fontWeight: FontWeight.bold),
                                   )
                                 : (sortedTransactions[3]['transactionType'] ==
                                         'Received'
                                     ? Text(
-                                        'Received \$${sortedTransactions[1]['amount']} from ${sortedTransactions[1]['sender']}',
+                                        'Received \$${sortedTransactions[1]['amount']} from ${sortedTransactions[1]['senderName']}',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold),
                                       )
@@ -144,7 +144,7 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                             child: Text(
                                 sortedTransactions[1]['dateOfTransaction'],
                                 style: TextStyle(
-                                    fontSize: 10, color: Colors.grey)),
+                                    fontSize: 8, color: Colors.grey)),
                           ),
                         ],
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -169,14 +169,14 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                             child: sortedTransactions[2]['transactionType'] ==
                                     'Sent'
                                 ? Text(
-                                    'Sent \$${sortedTransactions[3]['amount']} to ${sortedTransactions[2]['receiver']}',
+                                    'Sent \$${sortedTransactions[3]['amount']} to ${sortedTransactions[2]['receiverName']}',
                                     style:
                                         TextStyle(fontWeight: FontWeight.bold),
                                   )
                                 : (sortedTransactions[2]['transactionType'] ==
                                         'Received'
                                     ? Text(
-                                        'Received \$${sortedTransactions[2]['amount']} from ${sortedTransactions[2]['sender']}',
+                                        'Received \$${sortedTransactions[2]['amount']} from ${sortedTransactions[2]['senderName']}',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold),
                                       )
@@ -191,7 +191,7 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                             child: Text(
                                 sortedTransactions[2]['dateOfTransaction'],
                                 style: TextStyle(
-                                    fontSize: 10, color: Colors.grey)),
+                                    fontSize: 8, color: Colors.grey)),
                           ),
                         ],
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -227,14 +227,14 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                               child: sortedTransactions[3]['transactionType'] ==
                                       'Sent'
                                   ? Text(
-                                      'Sent \$${sortedTransactions[3]['amount']} to ${sortedTransactions[3]['receiver']}',
+                                      'Sent \$${sortedTransactions[3]['amount']} to ${sortedTransactions[3]['receiverName']}',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold),
                                     )
                                   : (sortedTransactions[3]['transactionType'] ==
                                           'Received'
                                       ? Text(
-                                          'Received \$${sortedTransactions[3]['amount']} from ${sortedTransactions[3]['sender']}',
+                                          'Received \$${sortedTransactions[3]['amount']} from ${sortedTransactions[3]['senderName']}',
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold),
                                         )
@@ -250,7 +250,7 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                             child: Text(
                                 sortedTransactions[3]['dateOfTransaction'],
                                 style: TextStyle(
-                                    fontSize: 10, color: Colors.grey)),
+                                    fontSize: 8, color: Colors.grey)),
                           ),
                         ],
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -9,12 +9,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 
 import 'package:project_martian/widgets/bank_page/bank_card.dart';
-import 'models/finance_data.dart';
+import '../../models/finance_data.dart';
 import 'package:project_martian/widgets/bank_page/bank_transactions.dart';
 import 'package:project_martian/widgets/bank_page/transaction_details.dart';
-import 'widgets/bank_page/recent_transactions.dart';
-import 'widgets/flushbar.dart';
-import 'widgets/testAlert.dart';
+import '../../widgets/bank_page/recent_transactions.dart';
+import '../../widgets/flushbar.dart';
+import '../../widgets/testAlert.dart';
 
 class Bank extends StatefulWidget {
   final String email;

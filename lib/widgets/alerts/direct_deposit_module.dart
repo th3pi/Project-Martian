@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flushbar/flushbar.dart';
-import 'package:project_martian/bank.dart';
+import 'package:project_martian/pages/bank/bank.dart';
 
 class DirectDepositAlert extends StatefulWidget{
   final controller;

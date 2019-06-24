@@ -9,7 +9,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:project_martian/services/auth_service.dart';
 import '../models/planet_data.dart';
 import '../services/authentication_check.dart';
-import 'package:project_martian/profile.dart';
+import 'package:project_martian/pages/profile/profile.dart';
 
 enum DbRetrieval { RETRIEVED, NOT_RETRIEVED }
 enum PlanetExists { ALREADY_EXISTS, NO_EXIST }

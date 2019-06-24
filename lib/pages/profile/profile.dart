@@ -9,12 +9,12 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_downloader/image_downloader.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-import 'models/user_data.dart';
-import 'services/authentication_check.dart';
-import 'services/auth_service.dart';
-import 'models/planet_data.dart';
-import 'models/finance_data.dart';
-import 'manage_passports.dart';
+import '../../models/user_data.dart';
+import '../../services/authentication_check.dart';
+import '../../services/auth_service.dart';
+import '../../models/planet_data.dart';
+import '../../models/finance_data.dart';
+import 'package:project_martian/pages/profile/manage_passports.dart';
 
 class Profile extends StatefulWidget {
   final BaseAuth auth;
@@ -402,7 +402,7 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
     return Container(
       padding: EdgeInsets.fromLTRB(7, 0, 7, 0),
       child: Card(
-        elevation: 0,
+        elevation: 15,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Container(
           child: Column(
@@ -532,7 +532,7 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
     return Container(
       padding: EdgeInsets.fromLTRB(7, 0, 7, 0),
       child: Card(
-        elevation: 0,
+        elevation: 15,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Container(
           child: Column(
@@ -613,7 +613,7 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
     return Container(
       padding: EdgeInsets.fromLTRB(7, 0, 7, 0),
       child: Card(
-        elevation: 0,
+        elevation: 15,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Container(
           child: Column(

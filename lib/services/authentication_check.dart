@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:project_martian/services/auth_service.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-import '../auth.dart';
-import '../home.dart';
+import 'package:project_martian/pages/onboarding/auth.dart';
+import 'package:project_martian/pages/home.dart';
 
 class CheckAuthentication extends StatefulWidget {
   final BaseAuth auth;

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:project_martian/services/auth_service.dart';
 
 import 'package:project_martian/services/authentication_check.dart';
-import 'auth.dart';
+import 'package:project_martian/pages/onboarding/auth.dart';
 
 void main() => runApp(MyApp());
 

@@ -68,7 +68,7 @@ class User {
         .updateData({fieldName: data});
   }
 
-  Future<String> getField(String fieldName) async {
+  Future<String> getField(String fieldName, String email) async {
     await Firestore.instance
         .collection('users')
         .document(email)

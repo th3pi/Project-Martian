@@ -9,8 +9,8 @@ import '../services/authentication_check.dart';
 import '../services/auth_service.dart';
 import '../forms/id_form.dart';
 import '../models/planet_data.dart';
-import 'package:project_martian/manage_passports.dart';
-import 'package:project_martian/profile.dart';
+import 'package:project_martian/pages/profile/manage_passports.dart';
+import 'package:project_martian/pages/profile/profile.dart';
 
 class IdCard extends StatefulWidget {
   final String email;

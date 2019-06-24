@@ -3,6 +3,8 @@ import 'package:uuid/uuid.dart';
 import 'package:random_string/random_string.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
+import 'user_data.dart';
+
 class Finance {
   String email, name, transactionType, token, senderName;
   double balance, receiversBalance;
@@ -17,6 +19,9 @@ class Finance {
 
   Future<void> sendMoney(double amount, String to) async {
     String txId = Uuid().v4();
+    User receiver = User(email: to);
+    String receiverFirstName = await receiver.getField('firstName', to);
+    String receiverLastName = await receiver.getField('lastName', to);
     await Firestore.instance
         .collection('users')
         .document(email)
@@ -39,11 +44,13 @@ class Finance {
         .collection('transactions')
         .document(txId)
         .setData({
+      'senderName' : senderName,
       'transactionId': txId,
       'amount' : amount,
       'receiver' : to,
       'userId': email,
       'sender' : email,
+      'receiverName' : '$receiverFirstName $receiverLastName',
       'transactionType': 'Sent',
       'dateTimeOfTransaction': '${DateTime.now()}',
       'dateOfTransaction':
@@ -80,6 +87,7 @@ class Finance {
       'sender' : email,
       'receiver' : to,
       'userId': to,
+      'receiverName' : '$receiverFirstName $receiverLastName',
       'tokenId' : token,
       'transactionType': 'Received',
       'dateTimeOfTransaction': '${DateTime.now()}',

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'services/auth_service.dart';
-import 'widgets/id_card.dart';
-import 'widgets/add_id_card.dart';
+import '../../services/auth_service.dart';
+import '../../widgets/id_card.dart';
+import '../../widgets/add_id_card.dart';
 
 class PassportManager extends StatefulWidget {
   final List<Map<String, dynamic>> listOfIds;

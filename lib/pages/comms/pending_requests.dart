@@ -3,8 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 
-import 'models/contacts_data.dart';
-import 'services/auth_service.dart';
+import '../../models/contacts_data.dart';
+import '../../services/auth_service.dart';
 
 class PendingRequests extends StatefulWidget {
   final String email;

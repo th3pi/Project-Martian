@@ -4,17 +4,19 @@ import 'package:swipedetector/swipedetector.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:animator/animator.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:circular_profile_avatar/circular_profile_avatar.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-import 'services/authentication_check.dart';
-import 'models/user_data.dart';
-import 'models/finance_data.dart';
+import '../services/authentication_check.dart';
+import '../models/user_data.dart';
+import '../models/finance_data.dart';
 import 'package:project_martian/widgets/bank_page/bank_card.dart';
-import 'widgets/id_card_carousel.dart';
-import 'widgets/email_verification.dart';
-import 'widgets/header.dart';
-import 'bank.dart';
-import 'profile.dart';
-import 'comms.dart';
+import '../widgets/id_card_carousel.dart';
+import '../widgets/email_verification.dart';
+import '../widgets/header.dart';
+import 'package:project_martian/pages/bank/bank.dart';
+import 'package:project_martian/pages/profile/profile.dart';
+import 'comms/comms.dart';
 
 class HomePage extends StatefulWidget {
   final BaseAuth auth;
@@ -61,6 +63,16 @@ class _HomePageState extends State<HomePage>
                   children: <Widget>[
                     Row(
                       children: <Widget>[
+
+                        //TODO: Fix showing empty string
+                        CircularProfileAvatar(
+                          userData['profilePic'],
+                          radius: 30,
+                          borderWidth: 2,
+                          borderColor: Colors.white.withOpacity(.5),
+                          cacheImage: true,
+                        ),
+                        SizedBox(width: 10,),
                         Text(
                           dataStatus == DataStatus.NOT_DETERMINED
                               ? 'Loading...'
@@ -72,6 +84,7 @@ class _HomePageState extends State<HomePage>
                         ),
                       ],
                     ),
+                    SizedBox(height: 5,),
                     Row(
                       children: <Widget>[
                         Text(

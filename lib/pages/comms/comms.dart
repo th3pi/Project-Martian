@@ -3,9 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-import 'models/contacts_data.dart';
-import 'services/auth_service.dart';
-import 'pending_requests.dart';
+import '../../models/contacts_data.dart';
+import '../../services/auth_service.dart';
+import 'package:project_martian/pages/comms/pending_requests.dart';
 
 class Comms extends StatefulWidget {
   final String email;
