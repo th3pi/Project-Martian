@@ -1,7 +1,8 @@
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
+import 'package:project_martian/services/auth_service.dart';
+import 'package:project_martian/widgets/drawer.dart';
 import 'package:swipedetector/swipedetector.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -18,8 +19,9 @@ import '../../widgets/testAlert.dart';
 
 class Bank extends StatefulWidget {
   final String email;
+  final BaseAuth auth;
 
-  Bank({this.email});
+  Bank({@required this.email, @required this.auth});
 
   @override
   State<StatefulWidget> createState() {
@@ -88,6 +90,7 @@ class _BankState extends State<Bank> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: CustomDrawer(email: widget.email,),
         appBar: AppBar(
           title: Text(
             _appBarTitle,

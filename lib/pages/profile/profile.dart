@@ -15,6 +15,7 @@ import '../../services/auth_service.dart';
 import '../../models/planet_data.dart';
 import '../../models/finance_data.dart';
 import 'package:project_martian/pages/profile/manage_passports.dart';
+import '../../widgets/drawer.dart';
 
 class Profile extends StatefulWidget {
   final BaseAuth auth;
@@ -104,45 +105,14 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
     });
   }
 
-  void _getPlanetaryData() async {
-    int accessLevel = 0;
-    numOfIds = listOfIds.length;
-    for (int i = 0; i < listOfIds.length; i++) {
-      nameOfPlanets.add(listOfIds[i]['planetName']);
-      if (listOfIds[i]['criminalRecord'] == 'Yes') criminalRecord = true;
-      if (int.parse(listOfIds[i]['accessLevel']) > accessLevel)
-        accessLevel = int.parse(listOfIds[i]['accessLevel']);
-
-      maxAccessLevel = accessLevel;
-    }
-  }
-
-  void _getFinancialData() {
-    balance = _sortedTransactions[0]['balance'];
-    numOfTransactions = _sortedTransactions.length;
-    print(balance);
-    if (balance > 0) {
-      debt = true;
-    }
-    if (!debt) {
-      financialStability = false;
-    }
-    print(financialStability);
-    for (int i = 0; i < _sortedTransactions.length; i++) {
-      if (_sortedTransactions[i]['balance'] > maxBalance)
-        maxBalance = _sortedTransactions[i]['balance'];
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    void detectChange(){
-      if(tabController.index == 0) {
+    void detectChange() {
+      if (tabController.index == 0) {
         setState(() {
           appBarTitle = 'My Martian Account';
         });
-      }
-      else if(tabController.index == 1){
+      } else if (tabController.index == 1) {
         setState(() {
           appBarTitle = 'Manage Passports';
         });
@@ -151,6 +121,10 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
 
     tabController.addListener(detectChange);
     return Scaffold(
+      drawer: CustomDrawer(
+        email: widget.email,
+        auth: widget.auth,
+      ),
       appBar: AppBar(
         title: Text(
           appBarTitle,
@@ -180,6 +154,36 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
               ],
             ),
     );
+  }
+
+  void _getPlanetaryData() async {
+    int accessLevel = 0;
+    numOfIds = listOfIds.length;
+    for (int i = 0; i < listOfIds.length; i++) {
+      nameOfPlanets.add(listOfIds[i]['planetName']);
+      if (listOfIds[i]['criminalRecord'] == 'Yes') criminalRecord = true;
+      if (int.parse(listOfIds[i]['accessLevel']) > accessLevel)
+        accessLevel = int.parse(listOfIds[i]['accessLevel']);
+
+      maxAccessLevel = accessLevel;
+    }
+  }
+
+  void _getFinancialData() {
+    balance = _sortedTransactions[0]['balance'];
+    numOfTransactions = _sortedTransactions.length;
+    print(balance);
+    if (balance > 0) {
+      debt = true;
+    }
+    if (!debt) {
+      financialStability = false;
+    }
+    print(financialStability);
+    for (int i = 0; i < _sortedTransactions.length; i++) {
+      if (_sortedTransactions[i]['balance'] > maxBalance)
+        maxBalance = _sortedTransactions[i]['balance'];
+    }
   }
 
   Widget _showBody() {
@@ -336,7 +340,8 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
         child: InkWell(
           onTap: () => _profilePicOption(),
           child: CachedNetworkImage(
-            placeholder: (context, url) => SpinKitDualRing(color: Colors.deepOrangeAccent),
+            placeholder: (context, url) =>
+                SpinKitDualRing(color: Colors.deepOrangeAccent),
             imageUrl: downloadUrl,
             fit: BoxFit.cover,
           ),

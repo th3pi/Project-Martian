@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
-import 'package:material_search/material_search.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../models/contacts_data.dart';
 import '../../services/auth_service.dart';
@@ -23,6 +23,8 @@ class PendingRequests extends StatefulWidget {
 enum DataStatus { NOT_DETERMINED, DETERMINED }
 
 class _PendingRequestsState extends State<PendingRequests> {
+  TextEditingController editingController;
+  IconData addIcon = MdiIcons.accountPlusOutline;
   DataStatus dataStatus = DataStatus.NOT_DETERMINED;
   Contacts contacts;
   List<Map<String, dynamic>> allUsers = [];
@@ -31,6 +33,7 @@ class _PendingRequestsState extends State<PendingRequests> {
   @override
   void initState() {
     super.initState();
+    editingController = TextEditingController(text: '');
     contacts = Contacts(userEmail: widget.email);
     getListOfPendingContacts();
   }
@@ -53,62 +56,61 @@ class _PendingRequestsState extends State<PendingRequests> {
 
   Widget _showBody() {
     return Column(
-            children: <Widget>[
-              _header(
-                'Search',
+      children: <Widget>[
+        _header(
+          'Search',
+        ),
+        Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              border: Border.all(
+                  color: Colors.deepOrangeAccent.withOpacity(0.4),
+                  width: 2,
+                  style: BorderStyle.solid),
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.white, offset: Offset(2, 0), blurRadius: 5)
+              ]),
+          margin: EdgeInsets.only(left: 15, right: 15, top: 5),
+          child: TextField(
+            controller: editingController,
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.only(
+                left: 5,
+                top: 10,
+                bottom: 10,
               ),
-              Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    border: Border.all(
-                        color: Colors.deepOrangeAccent.withOpacity(0.4),
-                        width: 2,
-                        style: BorderStyle.solid),
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.white,
-                          offset: Offset(2, 0),
-                          blurRadius: 5)
-                    ]),
-                margin: EdgeInsets.only(left: 15, right: 15, top: 5),
-                child: TextField(
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.only(
-                      left: 5,
-                      top: 10,
-                      bottom: 10,
-                    ),
-                    border: InputBorder.none,
-                  ),
-                  onChanged: (value) async {
-                    QuerySnapshot snapshot = await contacts.getAllUsers(value);
-                    print(snapshot.documents.length);
-                    if (snapshot.documents.length > 0) {
-                      snapshot.documents.forEach((f) {
-                        setState(() {
-                          allUsers.add(f.data);
-                        });
-                      });
-                    } else {
-                      setState(() {
-                        allUsers.clear();
-                      });
-                    }
-                  },
-                ),
-              ),
-              allUsers.length > 0
-                  ? Expanded(
-                      child: _showSearchResults(),
-                    )
-                  : SizedBox(),
-              _header(
-                'Pending Requests',
-              ),
-              Expanded(child: _showListOfPendingContacts()),
-            ],
-          );
+              border: InputBorder.none,
+            ),
+            onChanged: (value) async {
+              QuerySnapshot snapshot = await contacts.getAllUsers(value);
+              print(snapshot.documents.length);
+              if (snapshot.documents.length > 0) {
+                snapshot.documents.forEach((f) {
+                  setState(() {
+                    allUsers.add(f.data);
+                  });
+                });
+              } else {
+                setState(() {
+                  allUsers.clear();
+                });
+              }
+            },
+          ),
+        ),
+        allUsers.length > 0
+            ? Expanded(
+                child: _showSearchResults(),
+              )
+            : SizedBox(),
+        _header(
+          'Pending Requests',
+        ),
+        Expanded(child: _showListOfPendingContacts()),
+      ],
+    );
   }
 
   Widget _header(String header) {
@@ -144,44 +146,47 @@ class _PendingRequestsState extends State<PendingRequests> {
                     ),
                   ),
                   Expanded(
-                    child: Column(
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Container(
-                              child: Text(
-                                allUsers[i]['fullName'],
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                    child: InkWell(
+                      onTap: () => _showContactInfo(allUsers, i),
+                      child: Column(
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                child: Text(
+                                  allUsers[i]['fullName'],
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
                               ),
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Container(
-                              child: Text(
-                                'From: ${allUsers[i]['mother_planet']}',
-                                style:
-                                    TextStyle(color: Colors.grey, fontSize: 10),
+                              SizedBox(
+                                width: 5,
                               ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Container(
-                              child: Text(
-                                'Species: ${allUsers[i]['species']}',
-                                style:
-                                    TextStyle(color: Colors.grey, fontSize: 10),
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                child: Text(
+                                  'From: ${allUsers[i]['mother_planet']}',
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 10),
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                child: Text(
+                                  'Species: ${allUsers[i]['species']}',
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 10),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   Container(
@@ -189,20 +194,21 @@ class _PendingRequestsState extends State<PendingRequests> {
                     padding: EdgeInsets.only(right: 10),
                     child: Row(
                       children: <Widget>[
-                        SizedBox(
-                          width: 50,
-                          child: FlatButton(
-                            child: Icon(
-                              MdiIcons.accountPlusOutline,
-                              color: Colors.green,
-                            ),
-                            onPressed: () async {
-                              contacts.addContact(allUsers[i]['email']);
-
-                              //TODO: Fix new requests now showing up
-                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext) => Comms(email: widget.email, auth: widget.auth, tab: 1,)));
-                            },
+                        FlatButton(
+                          child: Icon(
+                            addIcon,
+                            color: Colors.green,
                           ),
+                          onPressed: () async {
+                            contacts.addContact(allUsers[i]['email']);
+                            editingController.clear();
+                            print(allUsers[i]);
+                            setState(() {
+                              allUsers[i]['requestedBy'] = widget.email;
+                              pendingContacts.add(allUsers[i]);
+                              allUsers.clear();
+                            });
+                          },
                         ),
                       ],
                     ),
@@ -228,7 +234,7 @@ class _PendingRequestsState extends State<PendingRequests> {
                         Container(
                           padding: EdgeInsets.all(10),
                           child: CircularProfileAvatar(
-                            pendingContacts[i]['contactImage'],
+                            pendingContacts[i]['profilePic'],
                             radius: 30,
                             borderWidth: 2,
                             borderColor: Colors.grey.withOpacity(.5),
@@ -236,52 +242,55 @@ class _PendingRequestsState extends State<PendingRequests> {
                           ),
                         ),
                         Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  Container(
-                                    child: Text(
-                                      pendingContacts[i]['contactFirstName'],
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
+                          child: InkWell(
+                            onTap: () => _showContactInfo(allUsers, i),
+                            child: Column(
+                              children: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    Container(
+                                      child: Text(
+                                        pendingContacts[i]['firstName'],
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Container(
-                                    child: Text(
-                                      pendingContacts[i]['contactLastName'],
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
+                                    SizedBox(
+                                      width: 5,
                                     ),
-                                  )
-                                ],
-                              ),
-                              Row(
-                                children: <Widget>[
-                                  Container(
-                                    child: Text(
-                                      'From: ${pendingContacts[i]['contactFrom']}',
-                                      style: TextStyle(
-                                          color: Colors.grey, fontSize: 10),
+                                    Container(
+                                      child: Text(
+                                        pendingContacts[i]['lastName'],
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Row(
+                                  children: <Widget>[
+                                    Container(
+                                      child: Text(
+                                        'From: ${pendingContacts[i]['mother_planet']}',
+                                        style: TextStyle(
+                                            color: Colors.grey, fontSize: 10),
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: <Widget>[
-                                  Container(
-                                    child: Text(
-                                      'Species: ${pendingContacts[i]['contactSpecies']}',
-                                      style: TextStyle(
-                                          color: Colors.grey, fontSize: 10),
+                                  ],
+                                ),
+                                Row(
+                                  children: <Widget>[
+                                    Container(
+                                      child: Text(
+                                        'Species: ${pendingContacts[i]['species']}',
+                                        style: TextStyle(
+                                            color: Colors.grey, fontSize: 10),
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         Container(
@@ -343,7 +352,7 @@ class _PendingRequestsState extends State<PendingRequests> {
                         Container(
                           padding: EdgeInsets.all(10),
                           child: CircularProfileAvatar(
-                            pendingContacts[i]['contactImage'],
+                            pendingContacts[i]['profilePic'],
                             radius: 30,
                             borderWidth: 2,
                             borderColor: Colors.grey.withOpacity(.5),
@@ -351,52 +360,55 @@ class _PendingRequestsState extends State<PendingRequests> {
                           ),
                         ),
                         Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  Container(
-                                    child: Text(
-                                      pendingContacts[i]['contactFirstName'],
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
+                          child: InkWell(
+                            onTap: () => _showContactInfo(pendingContacts, i),
+                            child: Column(
+                              children: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    Container(
+                                      child: Text(
+                                        pendingContacts[i]['firstName'],
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Container(
-                                    child: Text(
-                                      pendingContacts[i]['contactLastName'],
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
+                                    SizedBox(
+                                      width: 5,
                                     ),
-                                  )
-                                ],
-                              ),
-                              Row(
-                                children: <Widget>[
-                                  Container(
-                                    child: Text(
-                                      'From: ${pendingContacts[i]['contactFrom']}',
-                                      style: TextStyle(
-                                          color: Colors.grey, fontSize: 10),
+                                    Container(
+                                      child: Text(
+                                        pendingContacts[i]['lastName'],
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Row(
+                                  children: <Widget>[
+                                    Container(
+                                      child: Text(
+                                        'From: ${pendingContacts[i]['mother_planet']}',
+                                        style: TextStyle(
+                                            color: Colors.grey, fontSize: 10),
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: <Widget>[
-                                  Container(
-                                    child: Text(
-                                      'Species: ${pendingContacts[i]['contactSpecies']}',
-                                      style: TextStyle(
-                                          color: Colors.grey, fontSize: 10),
+                                  ],
+                                ),
+                                Row(
+                                  children: <Widget>[
+                                    Container(
+                                      child: Text(
+                                        'Species: ${pendingContacts[i]['species']}',
+                                        style: TextStyle(
+                                            color: Colors.grey, fontSize: 10),
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         Container(
@@ -414,6 +426,202 @@ class _PendingRequestsState extends State<PendingRequests> {
                     ),
                   ),
                 );
+        });
+  }
+
+  void _showContactInfo(List<Map<String, dynamic>> typeOfList, int i) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return ListView(
+            children: <Widget>[
+              Card(
+                clipBehavior: Clip.antiAlias,
+                elevation: 15,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15)),
+                child: CachedNetworkImage(
+                  placeholder: (context, url) =>
+                      SpinKitDualRing(color: Colors.deepOrangeAccent),
+                  imageUrl: typeOfList[i]['profilePic'],
+                  height: 150,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              _header('Contact Info'),
+              Card(
+                elevation: 15,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15)),
+                child: Container(
+                  child: Column(
+                    children: <Widget>[
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text('Full Name: '),
+                          Text(
+                            '${typeOfList[i]['firstName']} ${typeOfList[i]['lastName']}',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Container(
+                          margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                          child: Divider(height: 3, color: Colors.black45)),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text('Date of Birth: '),
+                          Text(
+                            '${typeOfList[i]['dateOfBirth']}',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Container(
+                          margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                          child: Divider(height: 3, color: Colors.black45)),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text('Gender: '),
+                          Text(
+                            '${typeOfList[i]['gender']}',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text('Species: '),
+                          Text(
+                            '${typeOfList[i]['species']}',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Container(
+                          margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                          child: Divider(height: 3, color: Colors.black45)),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text('Citizenship Status: '),
+                          typeOfList[i]['martian'] == false
+                              ? Text(
+                                  'Non-Martian',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.red),
+                                )
+                              : Text(
+                                  'Martian',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green),
+                                ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Container(
+                          margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                          child: Divider(height: 3, color: Colors.black45)),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text('Planet of Origin: '),
+                          Text(
+                            '${typeOfList[i]['mother_planet']}',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Container(
+                          margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                          child: Divider(height: 3, color: Colors.black45)),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text('Reason For Visit: '),
+                          Text(
+                            '${typeOfList[i]['reason']}',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          );
         });
   }
 }

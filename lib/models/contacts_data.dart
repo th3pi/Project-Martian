@@ -25,19 +25,19 @@ class Contacts {
         .collection('contacts')
         .document(email)
         .setData({
-      'contactFrom': receiverData['mother_planet'],
-      'contactSpecies': receiverData['species'],
-      'contactReason': receiverData['reason'],
-      'contactMartian': receiverData['martian'],
-      'contactGender': receiverData['gender'],
-      'contactDateOfBirth': receiverData['dateOfBirth'],
+      'mother_planet': receiverData['mother_planet'],
+      'species': receiverData['species'],
+      'reason': receiverData['reason'],
+      'martian': receiverData['martian'],
+      'gender': receiverData['gender'],
+      'dateOfBirth': receiverData['dateOfBirth'],
       'status': 'pending',
       'contactEmail': email,
       'requestedBy': userEmail,
       'requestedTo': email,
-      'contactImage': receiverData['profilePic'],
-      'contactFirstName': receiverData['firstName'],
-      'contactLastName': receiverData['lastName'],
+      'profilePic': receiverData['profilePic'],
+      'firstName': receiverData['firstName'],
+      'lastName': receiverData['lastName'],
     });
 
     User sender = User(email: userEmail);
@@ -50,19 +50,19 @@ class Contacts {
         .collection('contacts')
         .document(userEmail)
         .setData({
-      'contactFrom': senderData['mother_planet'],
-      'contactSpecies': senderData['species'],
-      'contactReason': senderData['reason'],
-      'contactMartian': senderData['martian'],
-      'contactGender': senderData['gender'],
-      'contactDateOfBirth': senderData['dateOfBirth'],
+      'mother_planet': senderData['mother_planet'],
+      'species': senderData['species'],
+      'reason': senderData['reason'],
+      'martian': senderData['martian'],
+      'gender': senderData['gender'],
+      'dateOfBirth': senderData['dateOfBirth'],
       'status': 'pending',
       'contactEmail': userEmail,
       'requestedBy': userEmail,
       'requestedTo': email,
-      'contactImage': senderData['profilePic'],
-      'contactFirstName': senderData['firstName'],
-      'contactLastName': senderData['lastName'],
+      'profilePic': senderData['profilePic'],
+      'firstName': senderData['firstName'],
+      'lastName': senderData['lastName'],
     });
   }
 

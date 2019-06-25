@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:project_martian/services/auth_service.dart';
 import 'package:swipedetector/swipedetector.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:animator/animator.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -87,6 +86,7 @@ class _HomePageState extends State<HomePage>
               MaterialPageRoute(
                   builder: (BuildContext) => Bank(
                         email: widget.email,
+                    auth: widget.auth,
                       )));
         }
       },
@@ -97,6 +97,7 @@ class _HomePageState extends State<HomePage>
               MaterialPageRoute(
                   builder: (BuildContext) => Bank(
                         email: widget.email,
+                    auth: widget.auth,
                       )));
         }
       },
@@ -168,6 +169,7 @@ class _HomePageState extends State<HomePage>
               MaterialPageRoute(
                   builder: (BuildContext) => Bank(
                         email: widget.email,
+                    auth: widget.auth,
                       )));
         },
         child: SwipeDetector(
@@ -177,6 +179,7 @@ class _HomePageState extends State<HomePage>
                 MaterialPageRoute(
                     builder: (BuildContext) => Bank(
                           email: widget.email,
+                      auth: widget.auth,
                         )));
           },
           child: BankCard(
