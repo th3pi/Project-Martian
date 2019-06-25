@@ -10,8 +10,9 @@ import 'package:project_martian/pages/comms/pending_requests.dart';
 class Comms extends StatefulWidget {
   final String email;
   final BaseAuth auth;
+  final int tab;
 
-  Comms({this.auth, this.email});
+  Comms({this.auth, this.email, this.tab});
 
   @override
   _CommsState createState() => _CommsState();
@@ -32,7 +33,9 @@ class _CommsState extends State<Comms> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-
+    if(widget.tab != null){
+      tabController.animateTo(widget.tab, duration: Duration(milliseconds: 200));
+    }
     void detectChange(){
       if(tabController.index == 1) {
         setState(() {

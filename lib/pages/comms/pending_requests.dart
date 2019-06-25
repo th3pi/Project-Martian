@@ -8,6 +8,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import '../../models/contacts_data.dart';
 import '../../services/auth_service.dart';
 import '../../widgets/header.dart';
+import 'comms.dart';
 
 class PendingRequests extends StatefulWidget {
   final String email;
@@ -51,8 +52,7 @@ class _PendingRequestsState extends State<PendingRequests> {
   }
 
   Widget _showBody() {
-    return pendingContacts.length > 0
-        ? Column(
+    return Column(
             children: <Widget>[
               _header(
                 'Search',
@@ -108,15 +108,6 @@ class _PendingRequestsState extends State<PendingRequests> {
               ),
               Expanded(child: _showListOfPendingContacts()),
             ],
-          )
-        : Center(
-            child: Text(
-              'No Pending Requests',
-              style: TextStyle(
-                  color: Colors.deepOrangeAccent,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 25),
-            ),
           );
   }
 
@@ -207,10 +198,7 @@ class _PendingRequestsState extends State<PendingRequests> {
                             ),
                             onPressed: () async {
                               contacts.addContact(allUsers[i]['email']);
-                              setState(() {
-                                pendingContacts.clear();
-                              });
-                              await getListOfPendingContacts();
+                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext) => Comms(email: widget.email, auth: widget.auth, tab: 1,)));
                             },
                           ),
                         ),
