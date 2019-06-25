@@ -58,6 +58,7 @@ class User {
       'email': email,
       'reason': reason,
       'martian': martian,
+      'fullName' : '$firstName $lastName'
     });
   }
 

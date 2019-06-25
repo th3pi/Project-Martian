@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
+import 'package:material_search/material_search.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../../models/contacts_data.dart';
 import '../../services/auth_service.dart';
+import '../../widgets/header.dart';
 
 class PendingRequests extends StatefulWidget {
   final String email;
@@ -21,6 +24,7 @@ enum DataStatus { NOT_DETERMINED, DETERMINED }
 class _PendingRequestsState extends State<PendingRequests> {
   DataStatus dataStatus = DataStatus.NOT_DETERMINED;
   Contacts contacts;
+  List<Map<String, dynamic>> allUsers = [];
   List<Map<String, dynamic>> pendingContacts = [];
 
   @override
@@ -50,6 +54,58 @@ class _PendingRequestsState extends State<PendingRequests> {
     return pendingContacts.length > 0
         ? Column(
             children: <Widget>[
+              _header(
+                'Search',
+              ),
+              Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(
+                        color: Colors.deepOrangeAccent.withOpacity(0.4),
+                        width: 2,
+                        style: BorderStyle.solid),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.white,
+                          offset: Offset(2, 0),
+                          blurRadius: 5)
+                    ]),
+                margin: EdgeInsets.only(left: 15, right: 15, top: 5),
+                child: TextField(
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.only(
+                      left: 5,
+                      top: 10,
+                      bottom: 10,
+                    ),
+                    border: InputBorder.none,
+                  ),
+                  onChanged: (value) async {
+                    QuerySnapshot snapshot = await contacts.getAllUsers(value);
+                    print(snapshot.documents.length);
+                    if (snapshot.documents.length > 0) {
+                      snapshot.documents.forEach((f) {
+                        setState(() {
+                          allUsers.add(f.data);
+                        });
+                      });
+                    } else {
+                      setState(() {
+                        allUsers.clear();
+                      });
+                    }
+                  },
+                ),
+              ),
+              allUsers.length > 0
+                  ? Expanded(
+                      child: _showSearchResults(),
+                    )
+                  : SizedBox(),
+              _header(
+                'Pending Requests',
+              ),
               Expanded(child: _showListOfPendingContacts()),
             ],
           )
@@ -62,6 +118,110 @@ class _PendingRequestsState extends State<PendingRequests> {
                   fontSize: 25),
             ),
           );
+  }
+
+  Widget _header(String header) {
+    return Container(
+      padding: EdgeInsets.fromLTRB(0, 10, 0, 5),
+      child: Center(
+          child: Text(
+        header,
+        style: TextStyle(
+            color: Colors.black26, fontSize: 25, fontWeight: FontWeight.bold),
+      )),
+    );
+  }
+
+  Widget _showSearchResults() {
+    return ListView.builder(
+        itemCount: allUsers.length,
+        itemBuilder: (BuildContext context, int i) {
+          return Card(
+            elevation: 0,
+            child: Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    child: CircularProfileAvatar(
+                      allUsers[i]['profilePic'],
+                      radius: 30,
+                      borderWidth: 2,
+                      borderColor: Colors.grey.withOpacity(.5),
+                      cacheImage: true,
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              child: Text(
+                                allUsers[i]['fullName'],
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              child: Text(
+                                'From: ${allUsers[i]['mother_planet']}',
+                                style:
+                                    TextStyle(color: Colors.grey, fontSize: 10),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              child: Text(
+                                'Species: ${allUsers[i]['species']}',
+                                style:
+                                    TextStyle(color: Colors.grey, fontSize: 10),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: 110,
+                    padding: EdgeInsets.only(right: 10),
+                    child: Row(
+                      children: <Widget>[
+                        SizedBox(
+                          width: 50,
+                          child: FlatButton(
+                            child: Icon(
+                              MdiIcons.accountPlusOutline,
+                              color: Colors.green,
+                            ),
+                            onPressed: () async {
+                              contacts.addContact(allUsers[i]['email']);
+                              setState(() {
+                                pendingContacts.clear();
+                              });
+                              await getListOfPendingContacts();
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+        });
   }
 
   Widget _showListOfPendingContacts() {
@@ -92,14 +252,20 @@ class _PendingRequestsState extends State<PendingRequests> {
                                 children: <Widget>[
                                   Container(
                                     child: Text(
-                                        pendingContacts[i]['contactFirstName'], style: TextStyle(fontWeight: FontWeight.bold),),
+                                      pendingContacts[i]['contactFirstName'],
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                   ),
                                   SizedBox(
                                     width: 5,
                                   ),
                                   Container(
                                     child: Text(
-                                        pendingContacts[i]['contactLastName'], style: TextStyle(fontWeight: FontWeight.bold),),
+                                      pendingContacts[i]['contactLastName'],
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                   )
                                 ],
                               ),
@@ -107,7 +273,10 @@ class _PendingRequestsState extends State<PendingRequests> {
                                 children: <Widget>[
                                   Container(
                                     child: Text(
-                                        'From: ${pendingContacts[i]['contactFrom']}', style: TextStyle(color: Colors.grey, fontSize: 10),),
+                                      'From: ${pendingContacts[i]['contactFrom']}',
+                                      style: TextStyle(
+                                          color: Colors.grey, fontSize: 10),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -115,7 +284,10 @@ class _PendingRequestsState extends State<PendingRequests> {
                                 children: <Widget>[
                                   Container(
                                     child: Text(
-                                      'Species: ${pendingContacts[i]['contactSpecies']}', style: TextStyle(color: Colors.grey, fontSize: 10),),
+                                      'Species: ${pendingContacts[i]['contactSpecies']}',
+                                      style: TextStyle(
+                                          color: Colors.grey, fontSize: 10),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -156,7 +328,8 @@ class _PendingRequestsState extends State<PendingRequests> {
                                       contacts.updateStatus(
                                           pendingContacts[i]['contactEmail'],
                                           'rejected');
-                                      contacts.removeContact(pendingContacts[i]['contactEmail']);
+                                      contacts.removeContact(
+                                          pendingContacts[i]['contactEmail']);
                                       setState(() {
                                         pendingContacts.removeAt(i);
                                       });
@@ -194,14 +367,20 @@ class _PendingRequestsState extends State<PendingRequests> {
                                 children: <Widget>[
                                   Container(
                                     child: Text(
-                                      pendingContacts[i]['contactFirstName'], style: TextStyle(fontWeight: FontWeight.bold),),
+                                      pendingContacts[i]['contactFirstName'],
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                   ),
                                   SizedBox(
                                     width: 5,
                                   ),
                                   Container(
                                     child: Text(
-                                      pendingContacts[i]['contactLastName'], style: TextStyle(fontWeight: FontWeight.bold),),
+                                      pendingContacts[i]['contactLastName'],
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                   )
                                 ],
                               ),
@@ -209,7 +388,10 @@ class _PendingRequestsState extends State<PendingRequests> {
                                 children: <Widget>[
                                   Container(
                                     child: Text(
-                                      'From: ${pendingContacts[i]['contactFrom']}', style: TextStyle(color: Colors.grey, fontSize: 10),),
+                                      'From: ${pendingContacts[i]['contactFrom']}',
+                                      style: TextStyle(
+                                          color: Colors.grey, fontSize: 10),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -217,7 +399,10 @@ class _PendingRequestsState extends State<PendingRequests> {
                                 children: <Widget>[
                                   Container(
                                     child: Text(
-                                      'Species: ${pendingContacts[i]['contactSpecies']}', style: TextStyle(color: Colors.grey, fontSize: 10),),
+                                      'Species: ${pendingContacts[i]['contactSpecies']}',
+                                      style: TextStyle(
+                                          color: Colors.grey, fontSize: 10),
+                                    ),
                                   ),
                                 ],
                               ),

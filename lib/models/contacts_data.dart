@@ -6,6 +6,14 @@ class Contacts {
 
   Contacts({this.userEmail});
 
+  Future<QuerySnapshot> getAllUsers(String fullName) async {
+    final QuerySnapshot querySnapshot = await Firestore.instance
+        .collection('users')
+        .where('fullName', isEqualTo: fullName)
+        .getDocuments();
+    return querySnapshot;
+  }
+
   Future<void> addContact(String email) async {
     User receiver = User(email: email);
     Map<String, dynamic> receiverData = await receiver.getAllData();
@@ -17,12 +25,12 @@ class Contacts {
         .collection('contacts')
         .document(email)
         .setData({
-      'contactFrom' : receiverData['mother_planet'],
-      'contactSpecies' : receiverData['species'],
-      'contactReason' : receiverData['reason'],
-      'contactMartian' : receiverData['martian'],
-      'contactGender' : receiverData['gender'],
-      'contactDateOfBirth' : receiverData['dateOfBirth'],
+      'contactFrom': receiverData['mother_planet'],
+      'contactSpecies': receiverData['species'],
+      'contactReason': receiverData['reason'],
+      'contactMartian': receiverData['martian'],
+      'contactGender': receiverData['gender'],
+      'contactDateOfBirth': receiverData['dateOfBirth'],
       'status': 'pending',
       'contactEmail': email,
       'requestedBy': userEmail,
@@ -42,12 +50,12 @@ class Contacts {
         .collection('contacts')
         .document(userEmail)
         .setData({
-      'contactFrom' : senderData['mother_planet'],
-      'contactSpecies' : senderData['species'],
-      'contactReason' : senderData['reason'],
-      'contactMartian' : senderData['martian'],
-      'contactGender' : senderData['gender'],
-      'contactDateOfBirth' : senderData['dateOfBirth'],
+      'contactFrom': senderData['mother_planet'],
+      'contactSpecies': senderData['species'],
+      'contactReason': senderData['reason'],
+      'contactMartian': senderData['martian'],
+      'contactGender': senderData['gender'],
+      'contactDateOfBirth': senderData['dateOfBirth'],
       'status': 'pending',
       'contactEmail': userEmail,
       'requestedBy': userEmail,
@@ -84,7 +92,17 @@ class Contacts {
   }
 
   Future<void> removeContact(String email) async {
-    await Firestore.instance.collection('users').document(userEmail).collection('contacts').document(email).delete();
-    await Firestore.instance.collection('users').document(email).collection('contacts').document(userEmail).delete();
+    await Firestore.instance
+        .collection('users')
+        .document(userEmail)
+        .collection('contacts')
+        .document(email)
+        .delete();
+    await Firestore.instance
+        .collection('users')
+        .document(email)
+        .collection('contacts')
+        .document(userEmail)
+        .delete();
   }
 }
