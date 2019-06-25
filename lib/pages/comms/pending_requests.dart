@@ -198,6 +198,8 @@ class _PendingRequestsState extends State<PendingRequests> {
                             ),
                             onPressed: () async {
                               contacts.addContact(allUsers[i]['email']);
+
+                              //TODO: Fix new requests now showing up
                               Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext) => Comms(email: widget.email, auth: widget.auth, tab: 1,)));
                             },
                           ),
