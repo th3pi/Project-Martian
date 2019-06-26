@@ -212,16 +212,22 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
         .ref()
         .child('${widget.email}_profile_picture.jpg');
     StorageUploadTask task = ref.putFile(image);
+    setState(() {
+      dataStatus = DataStatus.NOT_DETERMINED;
+    });
     await addProfilePhoto(task);
   }
 
   Future<void> addProfilePhoto(StorageUploadTask task) async {
     picDownloader = await task.onComplete;
+    if(picDownloader != null) dataStatus = DataStatus.DETERMINED;
     picUrl = await picDownloader.ref.getDownloadURL();
     await _user.addField('profilePic', picUrl);
     setState(() {
       downloadUrl = userData['profilePic'];
     });
+    Navigator.pop(context);
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Profile(email: widget.email, auth: widget.auth,)));
   }
 
   void _profilePicOption() {
@@ -344,6 +350,7 @@ class _ProfileState extends State<Profile> with TickerProviderStateMixin {
                 SpinKitDualRing(color: Colors.deepOrangeAccent),
             imageUrl: downloadUrl,
             fit: BoxFit.cover,
+            useOldImageOnUrlChange: true,
           ),
         ),
       ),

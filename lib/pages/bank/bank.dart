@@ -35,8 +35,7 @@ class _BankState extends State<Bank> {
   var _controller = MoneyMaskedTextController(
       leftSymbol: '\$', decimalSeparator: '.', thousandSeparator: ',');
   var _imageFile, _image, _imageFile2;
-  String _receiverEmail,
-      _appBarTitle = 'Financial Details';
+  String _receiverEmail, _appBarTitle = 'Financial Details';
   RegExp _regExp;
   Finance _finance;
   double _balance, _amount, _mlAmount;
@@ -90,7 +89,10 @@ class _BankState extends State<Bank> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: CustomDrawer(email: widget.email, auth: widget.auth,),
+        drawer: CustomDrawer(
+          email: widget.email,
+          auth: widget.auth,
+        ),
         appBar: AppBar(
           title: Text(
             _appBarTitle,
@@ -127,6 +129,7 @@ class _BankState extends State<Bank> {
               MaterialPageRoute(
                   builder: (BuildContext) => Bank(
                         email: widget.email,
+                        auth: widget.auth,
                       )));
         });
   }
@@ -288,7 +291,14 @@ class _BankState extends State<Bank> {
                       borderRadius: BorderRadius.circular(20)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[Icon(Icons.call_received, color: Colors.white,),SizedBox(width: 15,),
+                    children: <Widget>[
+                      Icon(
+                        Icons.call_received,
+                        color: Colors.white,
+                      ),
+                      SizedBox(
+                        width: 15,
+                      ),
                       Text(
                         'Deposit',
                         style: TextStyle(
@@ -316,7 +326,14 @@ class _BankState extends State<Bank> {
                       borderRadius: BorderRadius.circular(20)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[Icon(Icons.send, color: Colors.white,),SizedBox(width: 15,),
+                    children: <Widget>[
+                      Icon(
+                        Icons.send,
+                        color: Colors.white,
+                      ),
+                      SizedBox(
+                        width: 15,
+                      ),
                       Text(
                         'Send',
                         style: TextStyle(
@@ -441,7 +458,9 @@ class _BankState extends State<Bank> {
                     if (_balance >= _amount) {
                       if (_userExists) {
                         _restartPageNotification();
-                        _finance.sendMoney(_amount, _receiverEmail).then((value) {
+                        _finance
+                            .sendMoney(_amount, _receiverEmail)
+                            .then((value) {
                           setState(() {
                             _finance.getBalance(null).then((value) {
                               _balance = value;
@@ -501,11 +520,20 @@ class _BankState extends State<Bank> {
                       child: RaisedButton(
                         color: Colors.white,
                         padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
-                        child: Row(mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[Icon(Icons.camera_alt, color: Colors.deepOrange,), SizedBox(width: 10,),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Icon(
+                              Icons.camera_alt,
+                              color: Colors.deepOrange,
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
                             Text(
                               'Submit Check',
-                              style: TextStyle(color: Colors.deepOrange, fontSize: 20),
+                              style: TextStyle(
+                                  color: Colors.deepOrange, fontSize: 20),
                             ),
                           ],
                         ),
@@ -523,7 +551,8 @@ class _BankState extends State<Bank> {
                   Container(
                       width: 250,
                       child: RaisedButton(
-                        child: Row(mainAxisAlignment: MainAxisAlignment.center,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Text(
                               'Direct Deposit',
