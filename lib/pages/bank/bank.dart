@@ -90,7 +90,7 @@ class _BankState extends State<Bank> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: CustomDrawer(email: widget.email,),
+      drawer: CustomDrawer(email: widget.email, auth: widget.auth,),
         appBar: AppBar(
           title: Text(
             _appBarTitle,
