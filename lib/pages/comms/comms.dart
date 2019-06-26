@@ -7,6 +7,7 @@ import 'package:project_martian/widgets/drawer.dart';
 import '../../models/contacts_data.dart';
 import '../../services/auth_service.dart';
 import 'package:project_martian/pages/comms/pending_requests.dart';
+import 'all_contacts.dart';
 
 class Comms extends StatefulWidget {
   final String email;
@@ -29,36 +30,72 @@ class _CommsState extends State<Comms> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     contacts = Contacts(userEmail: widget.email);
-    tabController = TabController(length: 2, vsync: this);
+    tabController = TabController(length: 3, vsync: this);
   }
 
   @override
   Widget build(BuildContext context) {
-    if(widget.tab != null){
-      tabController.animateTo(widget.tab, duration: Duration(milliseconds: 200));
+    if (widget.tab != null) {
+      tabController.animateTo(widget.tab,
+          duration: Duration(milliseconds: 200));
     }
-    void detectChange(){
-      if(tabController.index == 1) {
+    void detectChange() {
+      if (tabController.index == 0) {
+        setState(() {
+          appBarTitle = 'Comms';
+        });
+      } else if (tabController.index == 1) {
+        setState(() {
+          appBarTitle = 'Contacts';
+        });
+      } else if (tabController.index == 2) {
         setState(() {
           appBarTitle = 'Pending Requests';
         });
       }
-      else if(tabController.index == 0){
-        setState(() {
-          appBarTitle = 'Comms';
-        });
-      }
     }
+
     tabController.addListener(detectChange);
 
     return Scaffold(
-      drawer: CustomDrawer(email: widget.email, auth: widget.auth,),
+      drawer: CustomDrawer(
+        email: widget.email,
+        auth: widget.auth,
+      ),
       appBar: AppBar(
+        actions: <Widget>[
+          PopupMenuButton(
+            onSelected: (value) {
+              switch (value) {
+                case 1:
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext) => Comms(
+                                auth: widget.auth,
+                                email: widget.email,
+                              )));
+              }
+            },
+            itemBuilder: (context) => [
+                  PopupMenuItem(
+                    value: 1,
+                    child: Text('Refresh'),
+                  )
+                ],
+          )
+        ],
         elevation: 0,
-        title: Text(appBarTitle, style: TextStyle(fontWeight: FontWeight.bold),),
+        title: Text(
+          appBarTitle,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         bottom: TabBar(controller: tabController, tabs: <Widget>[
           Tab(
             icon: Icon(MdiIcons.forumOutline),
+          ),
+          Tab(
+            icon: Icon(MdiIcons.contacts),
           ),
           Tab(
             icon: Icon(MdiIcons.accountPlus),
@@ -68,6 +105,10 @@ class _CommsState extends State<Comms> with SingleTickerProviderStateMixin {
       body: TabBarView(
         children: <Widget>[
           _placeHolderText(),
+          AllContacts(
+            email: widget.email,
+            auth: widget.auth,
+          ),
           PendingRequests(
             auth: widget.auth,
             email: widget.email,
@@ -75,14 +116,15 @@ class _CommsState extends State<Comms> with SingleTickerProviderStateMixin {
         ],
         controller: tabController,
       ),
-      floatingActionButton:
-          FloatingActionButton(child: Icon(Icons.add), onPressed: () {
+      floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () {
             showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    shape:
-                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15)),
                     content: Container(
                       height: 220,
                       child: Column(
@@ -94,8 +136,8 @@ class _CommsState extends State<Comms> with SingleTickerProviderStateMixin {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10)),
                               child: Container(
-                                  decoration:
-                                  BoxDecoration(color: Colors.deepOrangeAccent),
+                                  decoration: BoxDecoration(
+                                      color: Colors.deepOrangeAccent),
                                   padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
                                   child: Center(
                                     child: Text(
@@ -133,7 +175,8 @@ class _CommsState extends State<Comms> with SingleTickerProviderStateMixin {
                       FlatButton(
                           onPressed: () => Navigator.pop(context),
                           child: Text('Cancel',
-                              style: TextStyle(color: Colors.deepOrangeAccent))),
+                              style:
+                                  TextStyle(color: Colors.deepOrangeAccent))),
                       RaisedButton(
                         padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                         elevation: 0,

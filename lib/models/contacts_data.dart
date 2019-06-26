@@ -38,6 +38,7 @@ class Contacts {
       'profilePic': receiverData['profilePic'],
       'firstName': receiverData['firstName'],
       'lastName': receiverData['lastName'],
+      'fullName': '${receiverData['firstName']} ${receiverData['lastName']}'
     });
 
     User sender = User(email: userEmail);
@@ -63,6 +64,7 @@ class Contacts {
       'profilePic': senderData['profilePic'],
       'firstName': senderData['firstName'],
       'lastName': senderData['lastName'],
+      'fullName': '${senderData['firstName']} ${senderData['lastName']}'
     });
   }
 
@@ -72,6 +74,16 @@ class Contacts {
         .document(userEmail)
         .collection('contacts')
         .where('status', isEqualTo: 'pending')
+        .getDocuments();
+    return querySnapshot;
+  }
+
+  Future<QuerySnapshot> getAllContacts() async {
+    final QuerySnapshot querySnapshot = await Firestore.instance
+        .collection('users')
+        .document(userEmail)
+        .collection('contacts')
+        .where('status', isEqualTo: 'accepted')
         .getDocuments();
     return querySnapshot;
   }

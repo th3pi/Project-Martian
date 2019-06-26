@@ -58,7 +58,7 @@ class _PendingRequestsState extends State<PendingRequests> {
     return Column(
       children: <Widget>[
         _header(
-          'Search',
+          'Search for Occupants',
         ),
         Container(
           decoration: BoxDecoration(
@@ -108,7 +108,16 @@ class _PendingRequestsState extends State<PendingRequests> {
         _header(
           'Pending Requests',
         ),
-        Expanded(child: _showListOfPendingContacts()),
+        Expanded(
+            child: pendingContacts.length > 0
+                ? _showListOfPendingContacts()
+                : Center(
+                    child: Text(
+                      'No pending requests',
+                      style: TextStyle(
+                          color: Colors.grey, fontWeight: FontWeight.bold),
+                    ),
+                  )),
       ],
     );
   }
@@ -118,10 +127,12 @@ class _PendingRequestsState extends State<PendingRequests> {
       padding: EdgeInsets.fromLTRB(0, 10, 0, 5),
       child: Center(
           child: Text(
-        header,
-        style: TextStyle(
-            color: Colors.black26, fontSize: 25, fontWeight: FontWeight.bold),
-      )),
+            header,
+            style: TextStyle(
+                color: Colors.black26,
+                fontSize: 25,
+                fontWeight: FontWeight.bold),
+          )),
     );
   }
 
