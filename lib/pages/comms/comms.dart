@@ -35,10 +35,6 @@ class _CommsState extends State<Comms> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.tab != null) {
-      tabController.animateTo(widget.tab,
-          duration: Duration(milliseconds: 200));
-    }
     void detectChange() {
       if (tabController.index == 0) {
         setState(() {

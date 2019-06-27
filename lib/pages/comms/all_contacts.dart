@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../models/contacts_data.dart';
 import '../../services/auth_service.dart';
@@ -29,9 +30,21 @@ class _AllContactsState extends State<AllContacts>
     _controller = AnimationController(vsync: this);
     _contacts = Contacts(userEmail: widget.email);
     getAllContacts();
+    Firestore.instance
+        .collection('users')
+        .document(widget.email)
+        .collection('contacts')
+        .where('status', isEqualTo: 'accepted')
+        .snapshots()
+        .listen((data) {
+      data.documentChanges.forEach((f) {
+        getAllContacts();
+      });
+    });
   }
 
   Future<Null> getAllContacts() async {
+    allContacts.clear();
     final snapshot = await _contacts.getAllContacts();
     snapshot.documents.forEach((f) {
       setState(() {

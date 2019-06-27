@@ -88,6 +88,16 @@ class Contacts {
     return querySnapshot;
   }
 
+  Future<Stream<QuerySnapshot>> getNewContacts() async {
+    final Stream<QuerySnapshot> querySnapshot = Firestore.instance
+        .collection('users')
+        .document(userEmail)
+        .collection('contacts')
+        .where('status', isEqualTo: 'accepted')
+        .snapshots();
+    return querySnapshot;
+  }
+
   Future<void> updateStatus(String email, String status) async {
     await Firestore.instance
         .collection('users')

@@ -36,9 +36,21 @@ class _PendingRequestsState extends State<PendingRequests> {
     editingController = TextEditingController(text: '');
     contacts = Contacts(userEmail: widget.email);
     getListOfPendingContacts();
+    Firestore.instance
+        .collection('users')
+        .document(widget.email)
+        .collection('contacts')
+        .where('status', isEqualTo: 'pending')
+        .snapshots()
+        .listen((data) {
+      data.documentChanges.forEach((f) {
+        getListOfPendingContacts();
+      });
+    });
   }
 
   Future<Null> getListOfPendingContacts() async {
+    pendingContacts.clear();
     QuerySnapshot snapshot = await contacts.getPendingContacts();
     snapshot.documents.forEach((f) {
       setState(() {
@@ -127,12 +139,10 @@ class _PendingRequestsState extends State<PendingRequests> {
       padding: EdgeInsets.fromLTRB(0, 10, 0, 5),
       child: Center(
           child: Text(
-            header,
-            style: TextStyle(
-                color: Colors.black26,
-                fontSize: 25,
-                fontWeight: FontWeight.bold),
-          )),
+        header,
+        style: TextStyle(
+            color: Colors.black26, fontSize: 25, fontWeight: FontWeight.bold),
+      )),
     );
   }
 
