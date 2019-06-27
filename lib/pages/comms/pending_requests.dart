@@ -264,7 +264,7 @@ class _PendingRequestsState extends State<PendingRequests> {
                         ),
                         Expanded(
                           child: InkWell(
-                            onTap: () => _showContactInfo(allUsers, i),
+                            onTap: () => _showContactInfo(pendingContacts, i),
                             child: Column(
                               children: <Widget>[
                                 Row(

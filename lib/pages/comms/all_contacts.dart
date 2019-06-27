@@ -29,7 +29,6 @@ class _AllContactsState extends State<AllContacts>
     super.initState();
     _controller = AnimationController(vsync: this);
     _contacts = Contacts(userEmail: widget.email);
-    getAllContacts();
     Firestore.instance
         .collection('users')
         .document(widget.email)
@@ -38,7 +37,9 @@ class _AllContactsState extends State<AllContacts>
         .snapshots()
         .listen((data) {
       data.documentChanges.forEach((f) {
-        getAllContacts();
+        if(!allContacts.contains(f.document.data)){
+          allContacts.add(f.document.data);
+        }
       });
     });
   }
