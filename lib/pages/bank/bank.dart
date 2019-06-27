@@ -182,6 +182,7 @@ class _BankState extends State<Bank> {
                 context,
                 MaterialPageRoute(
                     builder: (BuildContext) => Bank(
+                      auth: widget.auth,
                           email: widget.email,
                         )));
           },

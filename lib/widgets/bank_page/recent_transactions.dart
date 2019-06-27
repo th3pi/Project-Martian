@@ -22,7 +22,9 @@ class _RecentTransactionsState extends State<RecentTransactions> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(padding: EdgeInsets.only(left: 10, right: 10),child: _showRecentNotifications());
+    return Container(
+        padding: EdgeInsets.only(left: 10, right: 10),
+        child: _showRecentNotifications());
   }
 
   @override
@@ -88,7 +90,8 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       )
-                                    : Text('\$${sortedTransactions[0]['amount']} was Deposited to your account',
+                                    : Text(
+                                        '\$${sortedTransactions[0]['amount']} was Deposited to your account',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold))),
                           ),
@@ -96,8 +99,8 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                             message: sortedTransactions[0]['timeOfTransaction'],
                             child: Text(
                                 sortedTransactions[0]['dateOfTransaction'],
-                                style: TextStyle(
-                                    fontSize: 8, color: Colors.grey)),
+                                style:
+                                    TextStyle(fontSize: 8, color: Colors.grey)),
                           ),
                         ],
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -143,8 +146,8 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                             message: sortedTransactions[1]['timeOfTransaction'],
                             child: Text(
                                 sortedTransactions[1]['dateOfTransaction'],
-                                style: TextStyle(
-                                    fontSize: 8, color: Colors.grey)),
+                                style:
+                                    TextStyle(fontSize: 8, color: Colors.grey)),
                           ),
                         ],
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -190,8 +193,8 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                             message: sortedTransactions[2]['timeOfTransaction'],
                             child: Text(
                                 sortedTransactions[2]['dateOfTransaction'],
-                                style: TextStyle(
-                                    fontSize: 8, color: Colors.grey)),
+                                style:
+                                    TextStyle(fontSize: 8, color: Colors.grey)),
                           ),
                         ],
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -249,8 +252,8 @@ class _RecentTransactionsState extends State<RecentTransactions> {
                             message: sortedTransactions[3]['timeOfTransaction'],
                             child: Text(
                                 sortedTransactions[3]['dateOfTransaction'],
-                                style: TextStyle(
-                                    fontSize: 8, color: Colors.grey)),
+                                style:
+                                    TextStyle(fontSize: 8, color: Colors.grey)),
                           ),
                         ],
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
