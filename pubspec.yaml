@@ -17,6 +17,8 @@ environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
+  liquid_pull_to_refresh: ^1.1.1
+  pull_to_refresh: ^1.4.6
   expandable: ^3.0.0+1
   flutter_launcher_icons: ^0.7.2
   material_design_icons_flutter: 3.2.3695
