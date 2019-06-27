@@ -46,8 +46,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: dataStatus == DataStatus.DETERMINED
-          ? Column(
+      child: Column(
               children: <Widget>[
                 DrawerHeader(
                   decoration: BoxDecoration(color: Colors.deepOrange),
@@ -58,13 +57,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       children: <Widget>[
                         Row(
                           children: <Widget>[
-                            CircularProfileAvatar(
+                            dataStatus == DataStatus.DETERMINED
+                                ? CircularProfileAvatar(
                               userData['profilePic'],
                               radius: 30,
                               borderWidth: 2,
                               borderColor: Colors.white.withOpacity(.5),
                               cacheImage: true,
-                            ),
+                            ) : SpinKitDualRing(color: Colors.deepOrangeAccent,),
                             SizedBox(
                               width: 10,
                             ),
@@ -302,9 +302,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   ),
                 )
               ],
-            )
-          : SpinKitDualRing(
-              color: Colors.deepOrangeAccent,
             ),
     );
   }
