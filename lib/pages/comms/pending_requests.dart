@@ -4,6 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:animator/animator.dart';
 
 import '../../models/contacts_data.dart';
 import '../../services/auth_service.dart';
@@ -245,208 +246,229 @@ class _PendingRequestsState extends State<PendingRequests> {
     return ListView.builder(
         itemCount: pendingContacts.length,
         itemBuilder: (BuildContext context, int i) {
-          return pendingContacts[i]['requestedBy'] != widget.email
-              ? Card(
-                  elevation: 0,
-                  child: Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.all(10),
-                          child: CircularProfileAvatar(
-                            pendingContacts[i]['profilePic'],
-                            radius: 30,
-                            borderWidth: 2,
-                            borderColor: Colors.grey.withOpacity(.5),
-                            cacheImage: true,
-                          ),
-                        ),
-                        Expanded(
-                          child: InkWell(
-                            onTap: () => _showContactInfo(pendingContacts, i),
-                            child: Column(
-                              children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Container(
-                                      child: Text(
-                                        pendingContacts[i]['firstName'],
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
+          return Animator(
+              builder: (anim) => FadeTransition(
+                opacity: anim,
+                    child: pendingContacts[i]['requestedBy'] != widget.email
+                        ? Card(
+                            elevation: 0,
+                            child: Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Container(
+                                    padding: EdgeInsets.all(10),
+                                    child: CircularProfileAvatar(
+                                      pendingContacts[i]['profilePic'],
+                                      radius: 30,
+                                      borderWidth: 2,
+                                      borderColor: Colors.grey.withOpacity(.5),
+                                      cacheImage: true,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: InkWell(
+                                      onTap: () =>
+                                          _showContactInfo(pendingContacts, i),
+                                      child: Column(
+                                        children: <Widget>[
+                                          Row(
+                                            children: <Widget>[
+                                              Container(
+                                                child: Text(
+                                                  pendingContacts[i]
+                                                      ['firstName'],
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 5,
+                                              ),
+                                              Container(
+                                                child: Text(
+                                                  pendingContacts[i]
+                                                      ['lastName'],
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                          Row(
+                                            children: <Widget>[
+                                              Container(
+                                                child: Text(
+                                                  'From: ${pendingContacts[i]['mother_planet']}',
+                                                  style: TextStyle(
+                                                      color: Colors.grey,
+                                                      fontSize: 10),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: <Widget>[
+                                              Container(
+                                                child: Text(
+                                                  'Species: ${pendingContacts[i]['species']}',
+                                                  style: TextStyle(
+                                                      color: Colors.grey,
+                                                      fontSize: 10),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    SizedBox(
-                                      width: 5,
+                                  ),
+                                  Container(
+                                    width: 110,
+                                    padding: EdgeInsets.only(right: 10),
+                                    child: Row(
+                                      children: <Widget>[
+                                        SizedBox(
+                                          width: 50,
+                                          child: FlatButton(
+                                            child: Icon(
+                                              Icons.check,
+                                              color: Colors.green,
+                                            ),
+                                            onPressed: () {
+                                              contacts.updateStatus(
+                                                  pendingContacts[i]
+                                                      ['contactEmail'],
+                                                  'accepted');
+                                              setState(() {
+                                                pendingContacts.removeAt(i);
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 50,
+                                          child: Center(
+                                            child: FlatButton(
+                                              child: Icon(
+                                                Icons.clear,
+                                                color: Colors.red,
+                                              ),
+                                              onPressed: () {
+                                                contacts.updateStatus(
+                                                    pendingContacts[i]
+                                                        ['contactEmail'],
+                                                    'rejected');
+                                                contacts.removeContact(
+                                                    pendingContacts[i]
+                                                        ['contactEmail']);
+                                                setState(() {
+                                                  pendingContacts.removeAt(i);
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    Container(
-                                      child: Text(
-                                        pendingContacts[i]['lastName'],
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                Row(
-                                  children: <Widget>[
-                                    Container(
-                                      child: Text(
-                                        'From: ${pendingContacts[i]['mother_planet']}',
-                                        style: TextStyle(
-                                            color: Colors.grey, fontSize: 10),
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
+                        : Card(
+                            elevation: 0,
+                            child: Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Container(
+                                    padding: EdgeInsets.all(10),
+                                    child: CircularProfileAvatar(
+                                      pendingContacts[i]['profilePic'],
+                                      radius: 30,
+                                      borderWidth: 2,
+                                      borderColor: Colors.grey.withOpacity(.5),
+                                      cacheImage: true,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: InkWell(
+                                      onTap: () =>
+                                          _showContactInfo(pendingContacts, i),
+                                      child: Column(
+                                        children: <Widget>[
+                                          Row(
+                                            children: <Widget>[
+                                              Container(
+                                                child: Text(
+                                                  pendingContacts[i]
+                                                      ['firstName'],
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 5,
+                                              ),
+                                              Container(
+                                                child: Text(
+                                                  pendingContacts[i]
+                                                      ['lastName'],
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                          Row(
+                                            children: <Widget>[
+                                              Container(
+                                                child: Text(
+                                                  'From: ${pendingContacts[i]['mother_planet']}',
+                                                  style: TextStyle(
+                                                      color: Colors.grey,
+                                                      fontSize: 10),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: <Widget>[
+                                              Container(
+                                                child: Text(
+                                                  'Species: ${pendingContacts[i]['species']}',
+                                                  style: TextStyle(
+                                                      color: Colors.grey,
+                                                      fontSize: 10),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                  ],
-                                ),
-                                Row(
-                                  children: <Widget>[
-                                    Container(
-                                      child: Text(
-                                        'Species: ${pendingContacts[i]['species']}',
-                                        style: TextStyle(
-                                            color: Colors.grey, fontSize: 10),
-                                      ),
+                                  ),
+                                  Container(
+                                    padding: EdgeInsets.only(right: 10),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Text(
+                                          'Request Pending',
+                                          style: TextStyle(color: Colors.grey),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              ],
+                                  )
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        Container(
-                          width: 110,
-                          padding: EdgeInsets.only(right: 10),
-                          child: Row(
-                            children: <Widget>[
-                              SizedBox(
-                                width: 50,
-                                child: FlatButton(
-                                  child: Icon(
-                                    Icons.check,
-                                    color: Colors.green,
-                                  ),
-                                  onPressed: () {
-                                    contacts.updateStatus(
-                                        pendingContacts[i]['contactEmail'],
-                                        'accepted');
-                                    setState(() {
-                                      pendingContacts.removeAt(i);
-                                    });
-                                  },
-                                ),
-                              ),
-                              SizedBox(
-                                width: 50,
-                                child: Center(
-                                  child: FlatButton(
-                                    child: Icon(
-                                      Icons.clear,
-                                      color: Colors.red,
-                                    ),
-                                    onPressed: () {
-                                      contacts.updateStatus(
-                                          pendingContacts[i]['contactEmail'],
-                                          'rejected');
-                                      contacts.removeContact(
-                                          pendingContacts[i]['contactEmail']);
-                                      setState(() {
-                                        pendingContacts.removeAt(i);
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                )
-              : Card(
-                  elevation: 0,
-                  child: Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.all(10),
-                          child: CircularProfileAvatar(
-                            pendingContacts[i]['profilePic'],
-                            radius: 30,
-                            borderWidth: 2,
-                            borderColor: Colors.grey.withOpacity(.5),
-                            cacheImage: true,
-                          ),
-                        ),
-                        Expanded(
-                          child: InkWell(
-                            onTap: () => _showContactInfo(pendingContacts, i),
-                            child: Column(
-                              children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Container(
-                                      child: Text(
-                                        pendingContacts[i]['firstName'],
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Container(
-                                      child: Text(
-                                        pendingContacts[i]['lastName'],
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                Row(
-                                  children: <Widget>[
-                                    Container(
-                                      child: Text(
-                                        'From: ${pendingContacts[i]['mother_planet']}',
-                                        style: TextStyle(
-                                            color: Colors.grey, fontSize: 10),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: <Widget>[
-                                    Container(
-                                      child: Text(
-                                        'Species: ${pendingContacts[i]['species']}',
-                                        style: TextStyle(
-                                            color: Colors.grey, fontSize: 10),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(right: 10),
-                          child: Row(
-                            children: <Widget>[
-                              Text(
-                                'Request Pending',
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                );
+                  ));
         });
   }
 

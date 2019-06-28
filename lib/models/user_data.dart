@@ -57,7 +57,8 @@ class User {
       'email': email,
       'reason': reason,
       'martian': martian,
-      'fullName' : '$firstName $lastName'
+      'fullName' : '$firstName $lastName',
+      'profilePic' : 'https://firebasestorage.googleapis.com/v0/b/project-martian.appspot.com/o/mars_profile.jpg?alt=media&token=d19a401a-c044-4845-bb94-2388917c66d5'
     });
   }
 
