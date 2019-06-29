@@ -248,7 +248,7 @@ class _PendingRequestsState extends State<PendingRequests> {
         itemBuilder: (BuildContext context, int i) {
           return Animator(
               builder: (anim) => FadeTransition(
-                opacity: anim,
+                    opacity: anim,
                     child: pendingContacts[i]['requestedBy'] != widget.email
                         ? Card(
                             elevation: 0,
