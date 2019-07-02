@@ -118,7 +118,7 @@ class _MessageScreenState extends State<MessageScreen> {
                             Container(
                               padding: EdgeInsets.only(left: 10),
                               child: Text(
-                                snapshot.data.documents[i]['time'],
+                                snapshot.data.documents[i]['formattedTime'],
                                 textAlign: TextAlign.left,
                                 style: TextStyle(fontSize: 10, color: Colors.white),
                               ),
@@ -168,7 +168,7 @@ class _MessageScreenState extends State<MessageScreen> {
                             Container(
                               padding: EdgeInsets.only(right: 10),
                               child: Text(
-                                snapshot.data.documents[i]['time'],
+                                snapshot.data.documents[i]['formattedTime'],
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
                                     color: Colors.black, fontSize: 10),

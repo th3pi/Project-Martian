@@ -148,6 +148,8 @@ class _AllContactsState extends State<AllContacts>
                                             auth: widget.auth,
                                             email: widget.email,
                                             to: allContacts[i]['contactEmail'],
+                                            name:
+                                                '${allContacts[i]['fullName']}',
                                           )));
                           }
                         },

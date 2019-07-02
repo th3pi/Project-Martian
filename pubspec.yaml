@@ -17,6 +17,7 @@ environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
+  intl: ^0.15.8
   animator: ^0.1.4
   pull_to_refresh: ^1.4.6
   expandable: ^3.0.0+1

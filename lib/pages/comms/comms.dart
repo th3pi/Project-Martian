@@ -236,12 +236,12 @@ class _CommsState extends State<Comms> with SingleTickerProviderStateMixin {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => MessageScreen(
-                                  profilePic: allMessages[i]['profilePic'],
-                                  auth: widget.auth,
-                                  email: widget.email,
-                                  to: allMessages[i]['email'],
-                                  name: allMessages[i]['name'],
-                                )));
+                                      profilePic: allMessages[i]['profilePic'],
+                                      auth: widget.auth,
+                                      email: widget.email,
+                                      to: allMessages[i]['receiverEmail'],
+                                      name: allMessages[i]['name'],
+                                    )));
                       },
                       child: Column(
                         children: <Widget>[
@@ -250,7 +250,7 @@ class _CommsState extends State<Comms> with SingleTickerProviderStateMixin {
                               Container(
                                 child: Text(
                                   allMessages[i]['name'],
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                                 ),
                               ),
                               SizedBox(
@@ -264,7 +264,42 @@ class _CommsState extends State<Comms> with SingleTickerProviderStateMixin {
                                 child: Text(
                                   '${allMessages[i]['lastMessage']}',
                                   style: TextStyle(
-                                      color: Colors.grey, fontSize: 10),
+                                      color: Colors.grey, fontSize: 15),
+                                ),
+                              ),
+                              SizedBox(
+                                child: Icon(
+                                  Icons.radio_button_unchecked,
+                                  size: 3,
+                                ),
+                                width: 20,
+                              ),
+                              Container(
+                                child: Text(
+                                  DateTime.now()
+                                              .difference(DateTime.parse(
+                                                  allMessages[i][
+                                                      'dateTimeOfLastMessage']))
+                                              .inHours >
+                                          0
+                                      ? '${DateTime.now().difference(DateTime.parse(allMessages[i]['dateTimeOfLastMessage'])).inHours}h ago'
+                                      : (DateTime.now()
+                                                  .difference(DateTime.parse(
+                                                      allMessages[i][
+                                                          'dateTimeOfLastMessage']))
+                                                  .inMinutes >
+                                              0
+                                          ? '${DateTime.now().difference(DateTime.parse(allMessages[i]['dateTimeOfLastMessage'])).inMinutes}m ago'
+                                          : (DateTime.now()
+                                                      .difference(DateTime.parse(
+                                                          allMessages[i]
+                                                              ['dateTimeOfLastMessage']))
+                                                      .inHours >
+                                                  24
+                                              ? '${allMessages[i]['formattedDateTime']}'
+                                              : '${DateTime.now().difference(DateTime.parse(allMessages[i]['dateTimeOfLastMessage'])).inSeconds}s ago')),
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 13),
                                 ),
                               ),
                             ],
