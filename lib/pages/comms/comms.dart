@@ -1,13 +1,17 @@
+import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:project_martian/widgets/drawer.dart';
+import 'package:animator/animator.dart';
 
+import '../../models/comms_data.dart';
 import '../../models/contacts_data.dart';
 import '../../services/auth_service.dart';
 import 'package:project_martian/pages/comms/pending_requests.dart';
 import 'all_contacts.dart';
+import 'message.dart';
 
 class Comms extends StatefulWidget {
   final String email;
@@ -24,13 +28,27 @@ class _CommsState extends State<Comms> with SingleTickerProviderStateMixin {
   TabController tabController;
   String appBarTitle = 'Comms';
   Contacts contacts;
+  CommsData commsData;
   String addEmail;
+  List<Map<String, dynamic>> allMessages = [];
 
   @override
   void initState() {
     super.initState();
     contacts = Contacts(userEmail: widget.email);
     tabController = TabController(length: 3, vsync: this);
+    commsData = CommsData(email: widget.email, auth: widget.auth);
+    getAllMessages();
+  }
+
+  void getAllMessages() async {
+    commsData.getAllMessages().then((value) {
+      value.documents.forEach((f) {
+        setState(() {
+          allMessages.add(f.data);
+        });
+      });
+    });
   }
 
   @override
@@ -100,7 +118,7 @@ class _CommsState extends State<Comms> with SingleTickerProviderStateMixin {
       ),
       body: TabBarView(
         children: <Widget>[
-          _placeHolderText(),
+          _messageCard(),
           AllContacts(
             email: widget.email,
             auth: widget.auth,
@@ -195,15 +213,100 @@ class _CommsState extends State<Comms> with SingleTickerProviderStateMixin {
     );
   }
 
-  Widget _placeHolderText() {
-    return Center(
-      child: Text('Test1'),
-    );
-  }
-
-  Widget _placeHolderText2() {
-    return Center(
-      child: Text('Test2'),
-    );
+  Widget _messageCard() {
+    return allMessages.length > 0
+        ? ListView.builder(
+            itemCount: allMessages.length,
+            itemBuilder: (BuildContext context, int i) {
+              return Card(
+                elevation: 0,
+                child: Container(
+                  padding: EdgeInsets.only(top: 5, bottom: 5),
+                  child: ListTile(
+                    leading: CircularProfileAvatar(
+                      allMessages[i]['profilePic'],
+                      radius: 30,
+                      cacheImage: true,
+                      borderColor: Colors.grey,
+                      borderWidth: 2,
+                    ),
+                    title: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MessageScreen(
+                                  profilePic: allMessages[i]['profilePic'],
+                                  auth: widget.auth,
+                                  email: widget.email,
+                                  to: allMessages[i]['email'],
+                                  name: allMessages[i]['name'],
+                                )));
+                      },
+                      child: Column(
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                child: Text(
+                                  allMessages[i]['name'],
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                child: Text(
+                                  '${allMessages[i]['lastMessage']}',
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 10),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    trailing: PopupMenuButton(
+                        onSelected: (value) {
+                          switch (value) {
+                            case 1:
+                              break;
+                            case 2:
+                              break;
+                          }
+                        },
+                        itemBuilder: (context) => [
+                              PopupMenuItem(
+                                value: 1,
+                                child: Text(
+                                  'Show Info',
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                              ),
+                              PopupMenuItem(
+                                value: 2,
+                                child: Text(
+                                  'Disconnect Comms',
+                                  style: TextStyle(
+                                      fontSize: 15, color: Colors.red),
+                                ),
+                              ),
+                            ]),
+                  ),
+                ),
+              );
+            })
+        : Center(
+            child: Text(
+              'No comms established yet',
+              style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+            ),
+          );
   }
 }

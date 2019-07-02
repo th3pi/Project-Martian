@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../models/contacts_data.dart';
 import '../../services/auth_service.dart';
+import 'message.dart';
 
 class AllContacts extends StatefulWidget {
   final String email;
@@ -37,7 +38,7 @@ class _AllContactsState extends State<AllContacts>
         .snapshots()
         .listen((data) {
       data.documentChanges.forEach((f) {
-        if(!allContacts.contains(f.document.data)){
+        if (!allContacts.contains(f.document.data)) {
           allContacts.add(f.document.data);
         }
       });
@@ -62,104 +63,128 @@ class _AllContactsState extends State<AllContacts>
 
   @override
   Widget build(BuildContext context) {
-    return allContacts.length > 0 ? ListView.builder(
-        itemCount: allContacts.length,
-        itemBuilder: (BuildContext context, int i) {
-          return Card(
-            elevation: 0,
-            child: Container(
-              padding: EdgeInsets.only(top: 5, bottom: 5),
-              child: ListTile(
-                leading: CircularProfileAvatar(
-                  allContacts[i]['profilePic'],
-                  radius: 30,
-                  cacheImage: true,
-                  borderColor: Colors.grey,
-                  borderWidth: 2,
-                ),
-                title: InkWell(
-                  onTap: () => _showContactInfo(allContacts, i),
-                  child: Column(
-                    children: <Widget>[
-                      Row(
+    return allContacts.length > 0
+        ? ListView.builder(
+            itemCount: allContacts.length,
+            itemBuilder: (BuildContext context, int i) {
+              return Card(
+                elevation: 0,
+                child: Container(
+                  padding: EdgeInsets.only(top: 5, bottom: 5),
+                  child: ListTile(
+                    leading: CircularProfileAvatar(
+                      allContacts[i]['profilePic'],
+                      radius: 30,
+                      cacheImage: true,
+                      borderColor: Colors.grey,
+                      borderWidth: 2,
+                    ),
+                    title: InkWell(
+                      onTap: () => _showContactInfo(allContacts, i),
+                      child: Column(
                         children: <Widget>[
-                          Container(
-                            child: Text(
-                              allContacts[i]['firstName'],
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                child: Text(
+                                  allContacts[i]['firstName'],
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Container(
+                                child: Text(
+                                  allContacts[i]['lastName'],
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              )
+                            ],
                           ),
-                          SizedBox(
-                            width: 5,
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                child: Text(
+                                  'From: ${allContacts[i]['mother_planet']}',
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 10),
+                                ),
+                              ),
+                            ],
                           ),
-                          Container(
-                            child: Text(
-                              allContacts[i]['lastName'],
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          )
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                child: Text(
+                                  'Species: ${allContacts[i]['species']}',
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 10),
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
-                      Row(
-                        children: <Widget>[
-                          Container(
-                            child: Text(
-                              'From: ${allContacts[i]['mother_planet']}',
-                              style:
-                                  TextStyle(color: Colors.grey, fontSize: 10),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Container(
-                            child: Text(
-                              'Species: ${allContacts[i]['species']}',
-                              style:
-                                  TextStyle(color: Colors.grey, fontSize: 10),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                    ),
+                    trailing: PopupMenuButton(
+                        onSelected: (value) {
+                          switch (value) {
+                            case 1:
+                              _showContactInfo(allContacts, i);
+                              break;
+                            case 2:
+                              _contacts.removeContact(
+                                  allContacts[i]['contactEmail']);
+                              setState(() {
+                                allContacts.removeAt(i);
+                              });
+                              break;
+                            case 3:
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => MessageScreen(
+                                            auth: widget.auth,
+                                            email: widget.email,
+                                            to: allContacts[i]['contactEmail'],
+                                          )));
+                          }
+                        },
+                        itemBuilder: (context) => [
+                              PopupMenuItem(
+                                value: 3,
+                                child: Text(
+                                  'Send Message',
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                              ),
+                              PopupMenuItem(
+                                value: 1,
+                                child: Text(
+                                  'Show Info',
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                              ),
+                              PopupMenuItem(
+                                value: 2,
+                                child: Text(
+                                  'Disconnect Comms',
+                                  style: TextStyle(
+                                      fontSize: 15, color: Colors.red),
+                                ),
+                              ),
+                            ]),
                   ),
                 ),
-                trailing: PopupMenuButton(
-                  onSelected: (value) {
-                    switch (value){
-                      case 1:
-                        _showContactInfo(allContacts, i);
-                        break;
-                      case 2:
-                        _contacts.removeContact(
-                            allContacts[i]['contactEmail']);
-                        setState(() {
-                          allContacts.removeAt(i);
-                        });
-                        break;
-                    }
-                  },
-                    itemBuilder: (context) => [
-                          PopupMenuItem(
-                            value: 1,
-                            child: Text(
-                              'Show Info',
-                              style: TextStyle(fontSize: 15),
-                            ),
-                          ),
-                          PopupMenuItem(
-                            value: 2,
-                            child: Text(
-                              'Disconnect Comms',
-                              style: TextStyle(fontSize: 15, color: Colors.red),
-                            ),
-                          ),
-                        ]),
-              ),
+              );
+            })
+        : Center(
+            child: Text(
+              'No comms established yet',
+              style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
             ),
           );
-        }) : Center(child: Text('No comms established yet', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),),);
   }
 
   Widget _header(String header) {

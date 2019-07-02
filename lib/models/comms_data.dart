@@ -20,7 +20,7 @@ class CommsData {
     await Firestore.instance
         .collection('users')
         .document(email)
-        .collection('contacts')
+        .collection('communications')
         .document(to)
         .collection('messages')
         .document(messageId)
@@ -41,7 +41,7 @@ class CommsData {
     await Firestore.instance
         .collection('users')
         .document(to)
-        .collection('contacts')
+        .collection('communications')
         .document(email)
         .collection('messages')
         .document(messageId)
@@ -57,15 +57,52 @@ class CommsData {
       'message': '$message',
       'receiverEmail': '$to',
     });
+
+    //Document update
+    await Firestore.instance
+        .collection('users')
+        .document(email)
+        .collection('communications')
+        .document(to)
+        .setData({
+      'dateTimeOfLastMessage': '${DateTime.now()}',
+      'lastMessage': '$message',
+      'lastMessageType': 'sent',
+      'profilePic' : receiverData['profilePic'],
+      'name' : '${receiverData['firstName']} ${receiverData['lastName']}',
+      'email' : '${receiverData['email']}'
+    });
+    await Firestore.instance
+        .collection('users')
+        .document(to)
+        .collection('communications')
+        .document(email)
+        .setData({
+      'dateTimeOfLastMessage': '${DateTime.now()}',
+      'lastMessage': '$message',
+      'lastMessageType': 'received',
+      'profilePic' : senderData['profilePic'],
+      'name' : '${senderData['firstName']} ${senderData['lastName']}',
+      'email' : '${senderData['email']}'
+    });
   }
 
-  Future<QuerySnapshot> getAllMessages(String to) {
+  Future<QuerySnapshot> getAllContactMessages(String to) {
     final snapshot = Firestore.instance
         .collection('users')
         .document(email)
-        .collection('contacts')
+        .collection('communications')
         .document(to)
         .collection('messages')
+        .getDocuments();
+    return snapshot;
+  }
+
+  Future<QuerySnapshot> getAllMessages() {
+    final snapshot = Firestore.instance
+        .collection('users')
+        .document(email)
+        .collection('communications')
         .getDocuments();
     return snapshot;
   }
