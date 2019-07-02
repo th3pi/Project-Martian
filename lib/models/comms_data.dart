@@ -34,7 +34,8 @@ class CommsData {
       'dateTime': '${DateTime.now()}',
       'receiverName': '${receiverData['firstName']}',
       'message': '$message',
-      'receiverEmail': '$to'
+      'receiverEmail': '$to',
+      'messageId' : '$messageId'
     });
 
     //Receiver
@@ -56,6 +57,7 @@ class CommsData {
       'receiverName': '${receiverData['firstName']}',
       'message': '$message',
       'receiverEmail': '$to',
+      'messageId' : '$messageId'
     });
 
     //Document update
@@ -70,7 +72,8 @@ class CommsData {
       'lastMessageType': 'sent',
       'profilePic' : receiverData['profilePic'],
       'name' : '${receiverData['firstName']} ${receiverData['lastName']}',
-      'email' : '${receiverData['email']}'
+      'senderEmail' : '${senderData['email']}',
+      'receiverEmail' : '${receiverData['email']}'
     });
     await Firestore.instance
         .collection('users')
@@ -83,7 +86,8 @@ class CommsData {
       'lastMessageType': 'received',
       'profilePic' : senderData['profilePic'],
       'name' : '${senderData['firstName']} ${senderData['lastName']}',
-      'email' : '${senderData['email']}'
+      'senderEmail' : '${senderData['email']}',
+      'receiverEmail' : '${receiverData['email']}'
     });
   }
 

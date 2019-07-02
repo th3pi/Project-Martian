@@ -91,3 +91,34 @@ exports.txNotificationOne = functions.firestore.document('users/{email}/transact
                };
        if(token && firstName && lastName && (firstName !== requestedByFirstName) && (lastName !== requestedByLastName)) {return admin.messaging().sendToDevice(token, notificationContent);}
     });
+
+    exports.newMessage = functions.firestore.document('users/{email}/communications/{senderEmail}/messages/{messageId}')
+        .onCreate( async (snap, context) => {
+
+
+           const newValue = snap.data();
+
+           const querySnap = await db.collection('users').doc(newValue.receiverEmail).get();
+
+           const token = querySnap.data().tokenId;
+
+           const receiverName = querySnap.data().firstName;
+           const senderName = newValue.senderName;
+           const message = newValue.message;
+           const type = newValue.type;
+           const received = "received";
+
+       	const notificationContent = {
+                  notification: {
+                     title: senderName,           //we use the sender name to show in notification
+                     body: message,                      //we use the receiver's name and message to show in notifcation
+                     icon: "default",                                   //you can change the icon on the app side too
+                     sound : "default"                                  //also you can change the sound in app side
+                   },
+                   data : {
+                       click_action: 'FLUTTER_NOTIFICATION_CLICK',
+                       message: 'contactRequest'
+                   }
+                   };
+           if(token && senderName && (senderName !== receiverName) && (type === received)) {return admin.messaging().sendToDevice(token, notificationContent);}
+        });
