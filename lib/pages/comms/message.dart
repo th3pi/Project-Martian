@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:animator/animator.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 
 import '../../services/auth_service.dart';

@@ -24,8 +24,11 @@ class Comms extends StatefulWidget {
   _CommsState createState() => _CommsState();
 }
 
+enum DataStatus { NOT_DETERMINED, DETERMINED }
+
 class _CommsState extends State<Comms> with SingleTickerProviderStateMixin {
   TabController tabController;
+  DataStatus dataStatus = DataStatus.NOT_DETERMINED;
   String appBarTitle = 'Comms';
   Contacts contacts;
   CommsData commsData;
@@ -214,136 +217,146 @@ class _CommsState extends State<Comms> with SingleTickerProviderStateMixin {
   }
 
   Widget _messageCard() {
-    return allMessages.length > 0
-        ? ListView.builder(
-            itemCount: allMessages.length,
-            itemBuilder: (BuildContext context, int i) {
-              return Card(
-                elevation: 0,
-                child: Container(
-                  padding: EdgeInsets.only(top: 5, bottom: 5),
-                  child: ListTile(
-                    leading: CircularProfileAvatar(
-                      allMessages[i]['profilePic'],
-                      radius: 30,
-                      cacheImage: true,
-                      borderColor: Colors.grey,
-                      borderWidth: 2,
-                    ),
-                    title: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => MessageScreen(
-                                  auth: widget.auth,
-                                  email: widget.email,
-                                  to: allMessages[i]['senderEmail'],
-                                  name:
-                                  '${allMessages[i]['name']}',
-                                  profilePic:
-                                  '${allMessages[i]['profilePic']}',
-                                )));
-                      },
-                      child: Column(
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              Container(
-                                child: Text(
-                                  allMessages[i]['name'],
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                            ],
+    return StreamBuilder(
+        stream: Firestore.instance
+            .collection('users')
+            .document(widget.email)
+            .collection('communications')
+            .orderBy('dateTimeOfLastMessage', descending: true)
+            .snapshots(),
+        builder: (context, snapshot) {
+          return snapshot.data != null
+              ? ListView.builder(
+                  itemCount: snapshot.data.documents.length,
+                  itemBuilder: (BuildContext context, int i) {
+                    return Card(
+                      elevation: 0,
+                      child: Container(
+                        padding: EdgeInsets.only(top: 5, bottom: 5),
+                        child: ListTile(
+                          leading: CircularProfileAvatar(
+                            snapshot.data.documents[i]['profilePic'],
+                            radius: 30,
+                            cacheImage: true,
+                            borderColor: Colors.grey,
+                            borderWidth: 2,
                           ),
-                          Row(
-                            children: <Widget>[
-                              Container(
-                                child: Text(
-                                  '${allMessages[i]['lastMessage']}',
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 15),
+                          title: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => MessageScreen(
+                                            auth: widget.auth,
+                                            email: widget.email,
+                                            to: snapshot.data.documents[i]
+                                                        ['senderEmail'] ==
+                                                    widget.email
+                                                ? snapshot.data.documents[i]
+                                                    ['receiverEmail']
+                                                : snapshot.data.documents[i]
+                                                    ['senderEmail'],
+                                            name:
+                                                '${snapshot.data.documents[i]['name']}',
+                                            profilePic:
+                                                '${snapshot.data.documents[i]['profilePic']}',
+                                          )));
+                            },
+                            child: Column(
+                              children: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    Container(
+                                      child: Text(
+                                        snapshot.data.documents[i]['name'],
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                  ],
                                 ),
-                              ),
-                              SizedBox(
-                                child: Icon(
-                                  Icons.radio_button_unchecked,
-                                  size: 3,
+                                Row(
+                                  children: <Widget>[
+                                    Container(
+                                      child: Text(
+                                        '${snapshot.data.documents[i]['lastMessage']}',
+                                        style: TextStyle(
+                                            color: Colors.grey, fontSize: 15),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      child: Icon(
+                                        Icons.radio_button_unchecked,
+                                        size: 3,
+                                      ),
+                                      width: 20,
+                                    ),
+                                    Container(
+                                      child: Text(
+                                        DateTime.now()
+                                                    .difference(DateTime.parse(
+                                                        snapshot.data.documents[i][
+                                                            'dateTimeOfLastMessage']))
+                                                    .inHours >
+                                                0
+                                            ? '${DateTime.now().difference(DateTime.parse(snapshot.data.documents[i]['dateTimeOfLastMessage'])).inHours}h ago'
+                                            : (DateTime.now()
+                                                        .difference(DateTime.parse(
+                                                            snapshot.data
+                                                                    .documents[i][
+                                                                'dateTimeOfLastMessage']))
+                                                        .inMinutes >
+                                                    0
+                                                ? '${DateTime.now().difference(DateTime.parse(snapshot.data.documents[i]['dateTimeOfLastMessage'])).inMinutes}m ago'
+                                                : (DateTime.now().difference(DateTime.parse(snapshot.data.documents[i]['dateTimeOfLastMessage'])).inHours > 24
+                                                    ? '${snapshot.data.documents[i]['formattedDateTime']}'
+                                                    : '${DateTime.now().difference(DateTime.parse(snapshot.data.documents[i]['dateTimeOfLastMessage'])).inSeconds}s ago')),
+                                        style: TextStyle(
+                                            color: Colors.grey, fontSize: 13),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                width: 20,
-                              ),
-                              Container(
-                                child: Text(
-                                  DateTime.now()
-                                              .difference(DateTime.parse(
-                                                  allMessages[i][
-                                                      'dateTimeOfLastMessage']))
-                                              .inHours >
-                                          0
-                                      ? '${DateTime.now().difference(DateTime.parse(allMessages[i]['dateTimeOfLastMessage'])).inHours}h ago'
-                                      : (DateTime.now()
-                                                  .difference(DateTime.parse(
-                                                      allMessages[i][
-                                                          'dateTimeOfLastMessage']))
-                                                  .inMinutes >
-                                              0
-                                          ? '${DateTime.now().difference(DateTime.parse(allMessages[i]['dateTimeOfLastMessage'])).inMinutes}m ago'
-                                          : (DateTime.now()
-                                                      .difference(DateTime.parse(
-                                                          allMessages[i]
-                                                              ['dateTimeOfLastMessage']))
-                                                      .inHours >
-                                                  24
-                                              ? '${allMessages[i]['formattedDateTime']}'
-                                              : '${DateTime.now().difference(DateTime.parse(allMessages[i]['dateTimeOfLastMessage'])).inSeconds}s ago')),
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 13),
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ],
+                          trailing: PopupMenuButton(
+                              onSelected: (value) {
+                                switch (value) {
+                                  case 1:
+                                    break;
+                                  case 2:
+                                    break;
+                                }
+                              },
+                              itemBuilder: (context) => [
+                                    PopupMenuItem(
+                                      value: 1,
+                                      child: Text(
+                                        'Show Info',
+                                        style: TextStyle(fontSize: 15),
+                                      ),
+                                    ),
+                                    PopupMenuItem(
+                                      value: 2,
+                                      child: Text(
+                                        'Disconnect Comms',
+                                        style: TextStyle(
+                                            fontSize: 15, color: Colors.red),
+                                      ),
+                                    ),
+                                  ]),
+                        ),
                       ),
-                    ),
-                    trailing: PopupMenuButton(
-                        onSelected: (value) {
-                          switch (value) {
-                            case 1:
-                              break;
-                            case 2:
-                              break;
-                          }
-                        },
-                        itemBuilder: (context) => [
-                              PopupMenuItem(
-                                value: 1,
-                                child: Text(
-                                  'Show Info',
-                                  style: TextStyle(fontSize: 15),
-                                ),
-                              ),
-                              PopupMenuItem(
-                                value: 2,
-                                child: Text(
-                                  'Disconnect Comms',
-                                  style: TextStyle(
-                                      fontSize: 15, color: Colors.red),
-                                ),
-                              ),
-                            ]),
-                  ),
-                ),
-              );
-            })
-        : Center(
-            child: Text(
-              'No comms established yet',
-              style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
-            ),
-          );
+                    );
+                  })
+              : SpinKitDualRing(
+                  color: Colors.red,
+                );
+        });
   }
 }
