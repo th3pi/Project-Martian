@@ -150,6 +150,8 @@ class _AllContactsState extends State<AllContacts>
                                             to: allContacts[i]['contactEmail'],
                                             name:
                                                 '${allContacts[i]['fullName']}',
+                                            profilePic:
+                                                '${allContacts[i]['profilePic']}',
                                           )));
                           }
                         },

@@ -236,12 +236,14 @@ class _CommsState extends State<Comms> with SingleTickerProviderStateMixin {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => MessageScreen(
-                                      profilePic: allMessages[i]['profilePic'],
-                                      auth: widget.auth,
-                                      email: widget.email,
-                                      to: allMessages[i]['receiverEmail'],
-                                      name: allMessages[i]['name'],
-                                    )));
+                                  auth: widget.auth,
+                                  email: widget.email,
+                                  to: allMessages[i]['senderEmail'],
+                                  name:
+                                  '${allMessages[i]['name']}',
+                                  profilePic:
+                                  '${allMessages[i]['profilePic']}',
+                                )));
                       },
                       child: Column(
                         children: <Widget>[

@@ -24,7 +24,6 @@ enum DataStatus { DETERMINED, NOT_DETERMINED }
 
 class _MessageScreenState extends State<MessageScreen> {
   DataStatus dataStatus = DataStatus.NOT_DETERMINED;
-  ScrollController scrollController = ScrollController();
   TextEditingController editingController;
   CommsData commsData;
   User user;
@@ -48,7 +47,6 @@ class _MessageScreenState extends State<MessageScreen> {
         dataStatus =
             f == null ? DataStatus.NOT_DETERMINED : DataStatus.DETERMINED;
         messages.add(f.document.data);
-        scrollController.jumpTo(0.0);
       });
     });
   }
@@ -99,7 +97,6 @@ class _MessageScreenState extends State<MessageScreen> {
         return ListView.builder(
             reverse: true,
             shrinkWrap: true,
-            controller: scrollController,
             itemCount: snapshot.data.documents.length,
             itemBuilder: (context, i) {
               return snapshot.data.documents[i]['type'] == 'sent'
