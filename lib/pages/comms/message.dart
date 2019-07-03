@@ -95,7 +95,7 @@ class _MessageScreenState extends State<MessageScreen> {
           .orderBy('dateTime', descending: true)
           .snapshots(),
       builder: (context, snapshot) {
-        return ListView.builder(
+        return snapshot.data.documents != null ? ListView.builder(
             reverse: true,
             shrinkWrap: true,
             controller: scrollController,
@@ -176,7 +176,7 @@ class _MessageScreenState extends State<MessageScreen> {
                           ],
                         ),
                       ));
-            });
+            }) : Center(child: Text('Send your first message', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),),);
       },
     );
   }
