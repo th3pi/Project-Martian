@@ -30,11 +30,11 @@ class CommsData {
       'senderName': '${senderData['firstName']}',
       'senderEmail': '$email',
       'date':
-      '${DateTime.now().month}/${DateTime.now().day}/${DateTime.now().year}',
+          '${DateTime.now().month}/${DateTime.now().day}/${DateTime.now().year}',
       'time': '${DateTime.now().hour}:${DateTime.now().minute}',
       'dateTime': '${DateTime.now()}',
-      'formattedTime' : '${DateFormat.jm().format(DateTime.now())}',
-      'formattedDateTime' : '${DateFormat.Md().add_jm().format(DateTime.now())}',
+      'formattedTime': '${DateFormat.jm().format(DateTime.now())}',
+      'formattedDateTime': '${DateFormat.Md().add_jm().format(DateTime.now())}',
       'receiverName': '${receiverData['firstName']}',
       'message': '$message',
       'receiverEmail': '$to',
@@ -54,11 +54,11 @@ class CommsData {
       'senderName': '${senderData['firstName']}',
       'senderEmail': '$email',
       'date':
-      '${DateTime.now().month}/${DateTime.now().day}/${DateTime.now().year}',
+          '${DateTime.now().month}/${DateTime.now().day}/${DateTime.now().year}',
       'time': '${DateTime.now().hour}:${DateTime.now().minute}',
       'dateTime': '${DateTime.now()}',
-      'formattedTime' : '${DateFormat.jm().format(DateTime.now())}',
-      'formattedDateTime' : '${DateFormat.Md().add_jm().format(DateTime.now())}',
+      'formattedTime': '${DateFormat.jm().format(DateTime.now())}',
+      'formattedDateTime': '${DateFormat.Md().add_jm().format(DateTime.now())}',
       'receiverName': '${receiverData['firstName']}',
       'message': '$message',
       'receiverEmail': '$to',
@@ -72,15 +72,16 @@ class CommsData {
         .collection('communications')
         .document(to)
         .setData({
-      'dateTimeOfLastMessage':
-      '${DateTime.now()}',
-      'formattedDateTime' : '${DateFormat.yMd().add_jms().format(DateTime.now())}',
+      'dateTimeOfLastMessage': '${DateTime.now()}',
+      'formattedDateTime':
+          '${DateFormat.yMd().add_jms().format(DateTime.now())}',
       'lastMessage': '$message',
       'lastMessageType': 'sent',
       'profilePic': receiverData['profilePic'],
       'name': '${receiverData['firstName']} ${receiverData['lastName']}',
       'senderEmail': '${senderData['email']}',
-      'receiverEmail': '${receiverData['email']}'
+      'receiverEmail': '${receiverData['email']}',
+      'status': 'opened'
     });
     await Firestore.instance
         .collection('users')
@@ -89,13 +90,15 @@ class CommsData {
         .document(email)
         .setData({
       'dateTimeOfLastMessage': '${DateTime.now()}',
-      'formattedDateTime' : '${DateFormat.yMd().add_jms().format(DateTime.now())}',
+      'formattedDateTime':
+          '${DateFormat.yMd().add_jms().format(DateTime.now())}',
       'lastMessage': '$message',
       'lastMessageType': 'received',
       'profilePic': senderData['profilePic'],
       'name': '${senderData['firstName']} ${senderData['lastName']}',
       'senderEmail': '${senderData['email']}',
-      'receiverEmail': '${receiverData['email']}'
+      'receiverEmail': '${receiverData['email']}',
+      'status': 'unopened'
     });
   }
 
@@ -117,5 +120,14 @@ class CommsData {
         .collection('communications')
         .getDocuments();
     return snapshot;
+  }
+
+  Future<void> updateStatus(String to) async {
+    await Firestore.instance
+        .collection('users')
+        .document(email)
+        .collection('communications')
+        .document(to)
+        .updateData({'status': 'opened'});
   }
 }

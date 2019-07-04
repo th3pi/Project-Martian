@@ -224,7 +224,7 @@ class _CommsState extends State<Comms> with SingleTickerProviderStateMixin {
             .collection('communications')
             .orderBy('dateTimeOfLastMessage', descending: true)
             .snapshots(),
-        builder: (context, snapshot) {
+        builder: (context, AsyncSnapshot<dynamic> snapshot) {
           return snapshot.data != null
               ? ListView.builder(
                   itemCount: snapshot.data.documents.length,
@@ -261,6 +261,11 @@ class _CommsState extends State<Comms> with SingleTickerProviderStateMixin {
                                             profilePic:
                                                 '${snapshot.data.documents[i]['profilePic']}',
                                           )));
+                              commsData.updateStatus(snapshot.data.documents[i]
+                              ['senderEmail'] ==
+                                  widget.email
+                                  ? snapshot.data.documents[i]['receiverEmail']
+                                  : snapshot.data.documents[i]['senderEmail']);
                             },
                             child: Column(
                               children: <Widget>[
@@ -282,11 +287,22 @@ class _CommsState extends State<Comms> with SingleTickerProviderStateMixin {
                                 Row(
                                   children: <Widget>[
                                     Container(
-                                      child: Text(
-                                        '${snapshot.data.documents[i]['lastMessage']}',
-                                        style: TextStyle(
-                                            color: Colors.grey, fontSize: 15),
-                                      ),
+                                      child: snapshot.data.documents[i]
+                                                  ['status'] ==
+                                              'opened'
+                                          ? Text(
+                                              '${snapshot.data.documents[i]['lastMessage']}',
+                                              style: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 15),
+                                            )
+                                          : Text(
+                                              '${snapshot.data.documents[i]['lastMessage']}',
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                     ),
                                     SizedBox(
                                       child: Icon(
