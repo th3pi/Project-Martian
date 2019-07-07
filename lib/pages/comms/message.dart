@@ -1,6 +1,9 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../services/auth_service.dart';
 import '../../models/comms_data.dart';
@@ -95,95 +98,123 @@ class _MessageScreenState extends State<MessageScreen> {
           .orderBy('dateTime', descending: true)
           .snapshots(),
       builder: (context, snapshot) {
-        return snapshot.data.documents != null ? ListView.builder(
-            reverse: true,
-            shrinkWrap: true,
-            controller: scrollController,
-            itemCount: snapshot.data.documents.length,
-            itemBuilder: (context, i) {
-              return snapshot.data.documents[i]['type'] == 'sent'
-                  ? Card(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15)),
-                      elevation: 0,
-                      margin: EdgeInsets.only(
-                          left: 40, top: 5, bottom: 5, right: 5),
-                      color: Colors.deepOrangeAccent,
-                      child: Container(
-                        padding:
-                            EdgeInsets.only(right: 15, top: 25, bottom: 25),
-                        child: Row(
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.only(left: 10),
-                              child: Text(
-                                snapshot.data.documents[i]['formattedTime'],
-                                textAlign: TextAlign.left,
-                                style: TextStyle(fontSize: 10, color: Colors.white),
-                              ),
+        return snapshot.data.documents != null
+            ? ListView.builder(
+                reverse: true,
+                shrinkWrap: true,
+                controller: scrollController,
+                itemCount: snapshot.data.documents.length,
+                itemBuilder: (context, i) {
+                  return snapshot.data.documents[i]['type'] == 'sent'
+                      ? Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15)),
+                          elevation: 0,
+                          margin: EdgeInsets.only(
+                              left: 40, top: 5, bottom: 5, right: 5),
+                          color: Colors.deepOrangeAccent,
+                          child: Container(
+                            padding:
+                                EdgeInsets.only(right: 15, top: 25, bottom: 25),
+                            child: Row(
+                              children: <Widget>[
+                                Container(
+                                  padding: EdgeInsets.only(left: 10),
+                                  child: Text(
+                                    snapshot.data.documents[i]['formattedTime'],
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                        fontSize: 10, color: Colors.white),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    snapshot.data.documents[i]['message'],
+                                    textAlign: TextAlign.right,
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ],
                             ),
-                            Expanded(
-                              child: Text(
-                                snapshot.data.documents[i]['message'],
-                                textAlign: TextAlign.right,
-                                style: TextStyle(color: Colors.white),
-
-                              ),
+                          ),
+                        )
+                      : Card(
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15)),
+                          margin: EdgeInsets.only(
+                              right: 40, top: 5, bottom: 5, left: 5),
+                          color: Colors.white70,
+                          child: Container(
+                            padding:
+                                EdgeInsets.only(left: 15, top: 20, bottom: 20),
+                            child: Row(
+                              children: <Widget>[
+                                Container(
+                                  child: CircularProfileAvatar(
+                                    widget.profilePic,
+                                    radius: 20,
+                                    cacheImage: true,
+                                    borderColor: Colors.black54,
+                                    borderWidth: 2,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    snapshot.data.documents[i]['message'],
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.only(right: 10),
+                                  child: Text(
+                                    snapshot.data.documents[i]['formattedTime'],
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 10),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
-                    )
-                  : Card(
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15)),
-                      margin: EdgeInsets.only(
-                          right: 40, top: 5, bottom: 5, left: 5),
-                      color: Colors.white70,
-                      child: Container(
-                        padding: EdgeInsets.only(left: 15, top: 20, bottom: 20),
-                        child: Row(
-                          children: <Widget>[
-                            Container(
-                              child: CircularProfileAvatar(
-                                widget.profilePic,
-                                radius: 20,
-                                cacheImage: true,
-                                borderColor: Colors.black54,
-                                borderWidth: 2,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            Expanded(
-                              child: Text(
-                                snapshot.data.documents[i]['message'],
-                                textAlign: TextAlign.left,
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.only(right: 10),
-                              child: Text(
-                                snapshot.data.documents[i]['formattedTime'],
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 10),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ));
-            }) : Center(child: Text('Send your first message', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),),);
+                          ));
+                })
+            : Center(
+                child: Text(
+                  'Send your first message',
+                  style: TextStyle(
+                      color: Colors.grey, fontWeight: FontWeight.bold),
+                ),
+              );
       },
     );
+  }
+
+
+  //TODO: Work on chat image upload
+  Future<void> getImageAndUpload(ImageSource source) async {
+    var tempImage = await ImagePicker.pickImage(source: source);
+    StorageReference ref = FirebaseStorage.instance
+        .ref()
+        .child('${widget.email}_profile_picture.jpg');
+    StorageUploadTask task = ref.putFile(tempImage);
   }
 
   Widget _sendMessageField() {
     return Row(
       children: <Widget>[
+        IconButton(
+          onPressed: () {
+
+          },
+          icon: Icon(
+            Icons.add_box,
+            color: Colors.deepOrangeAccent,
+          ),
+        ),
         Expanded(
           child: TextField(
             controller: editingController,
@@ -203,12 +234,15 @@ class _MessageScreenState extends State<MessageScreen> {
         ),
         IconButton(
           onPressed: () {
-            if(editingController.text != '') {
+            if (editingController.text != '') {
               commsData.sendMessage(widget.to, editingController.text);
               editingController.clear();
             }
           },
-          icon: Icon(Icons.send, color: Colors.deepOrangeAccent,),
+          icon: Icon(
+            Icons.send,
+            color: Colors.deepOrangeAccent,
+          ),
         )
       ],
     );
