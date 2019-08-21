@@ -41,7 +41,7 @@ Passports and the Bank of Mars card on the homescreen is an example of how homes
 
 ***Banking Page***
 
-The Banking page allows you to control your Bank of Mars account. Send or Receive money from anywhere in the known universe as they are in the MOTP protocol. 
+The Banking page allows you to control your Bank of Mars account. Send or Receive money from anywhere in the known universe as long as they are in the MOTP protocol. 
 
 ![](https://lh3.googleusercontent.com/GAUS-Sz1EjHiKxnWDpy6ZVxHLH4d9ds7BGbHfTG5EQF4EqddWcIPqJkUnWVSLHuCO39eeSnOP19JbhPYDDThVuS7wKHGl-V1nFeQ9AvMG0xTvH2Z6yEQA917HgP18d8HAjwcyZ7dYA28Vb9GbiNVT8plt8dvTwfQ50ccHcDO2piyczka60bG2lAM-fc7aOE9C9Dra2t0PuTlulD2SKjpTBMqDfYGQXk1v8Fs7yC83EkGD8P0PEMhSw66heEUqlLhSt8drGGvnR0QYdwD8QxhtxcIXAe-2OC3f-vp8eEDK7BO02Zuci0cT7-r9pTBQFc6BlpYR7pyQVKwHPGd82HlTP6b26P48Scq1fn-x9wPgOljSmlxN_OqRiwWHw-Nyq4Aa-7mJLV1g9yzSCZLGNFplb52Mbj_xwfVZztq6o2ZjNhcEdbPYZk-GYKxSiNYmjh9jAYU7PEAzbz8IQMoaEcjl3CJNG97PT3OpuR31J0VNkqc2lnML8sFlJbI3DPRNIx1WsbDElzoq04y7QrGTiyoA0yPfl5C9ETdtMTk6jTWvpyqi8JqFdgTEEZBIVn4wmV7z0vXdspLU5U0ObEqzLutIqD_vQbcVvbhRcAVWo_gBOvY3SJ-ZxHAN554eIOrJzApkDrF9H0gSc32qRkMhHF4QHhoG9hkR5BU=w604-h1307-no)
 
